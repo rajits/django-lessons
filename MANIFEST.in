@@ -1,0 +1,9 @@
+recursive-include doc_src *
+recursive-include docs *
+
+recursive-include lessons/media *
+recursive-include lessons/templates *
+
+include LICENSE
+include README
+include *.txt
