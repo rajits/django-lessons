@@ -40,16 +40,19 @@ USE_I18N = True
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.abspath(os.path.join('media'))
+#STATIC_ROOT = os.path.join(MEDIA_ROOT, 'static')
+#ADMIN_MEDIA_ROOT = os.path.join(STATIC_ROOT, 'admin_media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/static/'
+STATIC_URL = '/media' + MEDIA_URL
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/admin-media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'g2_39yupn*6j4p*cg2%w643jiq-1n_annua*%i8+rq0dx9p=$n'
@@ -82,7 +85,26 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'lessons',
+    'tinymce', # this needs to be placed *after* lessons
 )
+
+TINYMCE_JS_URL = MEDIA_URL + 'js/tiny_mce/tiny_mce_src.js'
+TINYMCE_JS_ROOT = MEDIA_ROOT + '/js/tiny_mce'
+TINYMCE_DEFAULT_CONFIG = {
+    'plugins': "table,spellchecker,paste,searchreplace",
+    'theme': "advanced",
+  # 'relative_urls': False,
+    'cleanup_on_startup': True,
+    'custom_undo_redo_levels': 10,
+  # 'language': "en",
+}
+TINYMCE_SPELLCHECKER = True
+TINYMCE_COMPRESSOR = True
+TINYMCE_ADMIN_FIELDS = {
+    'lessons.activity': ('description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'accessibility_notes', 'directions'),
+    'lessons.lesson': ('description', 'assessment', 'learning_objectives', 'background_information'),
+    'lessons.tip': ('body',),
+}
 
 LESSON_SETTINGS = {
     'RELATION_MODELS': (),
@@ -92,3 +114,8 @@ LESSON_SETTINGS = {
         ('E', 'engage'),
     ),
 }
+
+try:
+    from local_settings import *
+except ImportError, exp:
+    pass

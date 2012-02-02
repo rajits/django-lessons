@@ -13,8 +13,12 @@ Integrations
 
   * key_image (ForeignKey to NGPhoto)
   * resource carousel
-  * Share - Featured Service (note that this uses Promos)
-  * promo (e.g. edutease)
+  * promos
+
+    * Share - Featured Service (in main nav)
+    * right rail (2)
+    * (below right rail, e.g. Sponsor)
+    * bottom of page? (e.g. funders)
 
 * categories
 

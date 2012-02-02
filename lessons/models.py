@@ -104,17 +104,17 @@ TIP_TYPE_CHOICES = (
 )
 
 class Tip(models.Model):
-    content_creation_time = models.DateTimeField()
+    content_creation_time = models.DateTimeField(blank=True, null=True)
+    id_number = models.IntegerField(blank=True, null=True)
     tip_type = models.PositiveSmallIntegerField(choices=TIP_TYPE_CHOICES)
     body = models.TextField()
-    id_number = models.IntegerField()
 
 class Activity(models.Model):
-    assessment_type = models.ForeignKey(AssessmentType)
+    assessment_type = models.ForeignKey(AssessmentType, blank=True, null=True)
     description = models.TextField()
     duration_minutes = models.IntegerField()
-    id_number = models.IntegerField()
-    pedagogical_purpose_type = models.SmallIntegerField(choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
+    id_number = models.IntegerField(blank=True, null=True)
+    pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
     slug = models.SlugField(unique=True)
     subtitle_guiding_question = models.TextField()
     title = models.CharField(max_length=128)
