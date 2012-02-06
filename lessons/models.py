@@ -1,10 +1,24 @@
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.contrib.localflavor.us.us_states import STATE_CHOICES
 
 from settings import PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
 from BeautifulSoup import BeautifulSoup
+
+STANDARD_TYPE_CHOICES = (
+    ('language', 'IRA/NCTE Standards for the English Language Arts'),
+    ('social-studies', 'National Council for Social Studies Curriculum Standards'),
+    ('geography', 'National Geography Standards'),
+    ('science', 'National Science Education Standards'),
+    ('art', 'National Standards for Arts Education'),
+    ('history', 'National Standards for History'),
+    ('math', 'NCTM Principles and Standards for School Mathematics'),
+    ('ocean', 'Ocean Literacy Essential Principles and Fundamental Concepts'),
+    ('state', 'TEST: State Standards'),
+    ('econ', 'Voluntary National Content Standards in Economics'),
+)
 
 def ul_as_list(html):
     soup = BeautifulSoup(html)
@@ -109,6 +123,20 @@ class Tip(models.Model):
     tip_type = models.PositiveSmallIntegerField(choices=TIP_TYPE_CHOICES)
     body = models.TextField()
 
+class Standard(models.Model):
+    definition = models.TextField('Standard text', null=True, blank=True)
+    name = models.CharField(max_length=128, null=True, blank=True)
+    standard_type = models.CharField(max_length=60, choices=STANDARD_TYPE_CHOICES)
+    state = models.CharField(max_length=2, null=True, blank=True, choices=STATE_CHOICES)
+    url = models.CharField(max_length=128, null=True, blank=True)
+    when_updated = models.DateTimeField(null=True, blank=True, auto_now=True)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        ordering = ["name"]
+
 class Activity(models.Model):
     assessment_type = models.ForeignKey(AssessmentType, blank=True, null=True)
     description = models.TextField()
@@ -154,12 +182,12 @@ class Lesson(models.Model):
     ads_excluded = models.BooleanField()
     assessment = models.TextField()
     background_information = models.TextField()
-    create_date = models.DateTimeField()
+    create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
     duration_in_minutes = models.IntegerField()
     id_number = models.IntegerField()
     is_modular = models.BooleanField()
-    last_updated_date = models.DateTimeField()
+    last_updated_date = models.DateTimeField(auto_now=True)
     learning_objectives = models.TextField()
     materials = models.ManyToManyField(Material)
     physical_space_type = models.ForeignKey(PhysicalSpaceType)
