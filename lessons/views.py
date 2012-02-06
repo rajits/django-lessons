@@ -6,15 +6,21 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from lessons.models import Activity, Lesson
 
 def activity_detail(request, slug, template_name='lessons/activity_detail.html'):
-	activity = get_object_or_404(Activity, slug=slug)
+    activity = get_object_or_404(Activity, slug=slug)
 
     return render_to_response(template_name, {
-    	'activity': activity,
+        'activity': activity,
     }, context_instance=RequestContext(request))
 
 def lesson_detail(request, slug, template_name='lessons/lesson_detail.html'):
-	lesson = get_object_or_404(Lesson, slug=slug)
+    lesson = get_object_or_404(Lesson, slug=slug)
+
+    getvars = request.GET.copy()
+    if getvars.has_key('activities'):
+        activities = getvars['activities']
+    else:
+        activities = lesson.get_activities()
 
     return render_to_response(template_name, {
-    	'lesson': lesson,
+        'lesson': lesson,
     }, context_instance=RequestContext(request))
