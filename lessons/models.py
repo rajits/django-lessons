@@ -7,7 +7,33 @@ from settings import PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATION
 
 from BeautifulSoup import BeautifulSoup
 
-STANDARD_TYPE_CHOICES = (
+ASSESSMENT_TYPES = (
+    ('alternative', 'Alternative Assessment'),
+    ('authentic', 'Authentic Assessment'),
+    ('informal', 'Informal Assessment'),
+    ('observation', 'Observation'),
+    ('peer-evaluation', 'Peer Evaluation'),
+    ('portfolio', 'Portfolio Assessment'),
+    ('rubric', 'Rubric'),
+    ('self', 'Self Assessment'),
+    ('standardized', 'Standardized Testing'),
+    ('testing', 'Testing'),
+)
+
+GROUPING_TYPES = (
+    ('cross-age', 'Cross-age teaching'),
+    ('heterogeneous', 'Heterogeneous grouping'),
+    ('homogeneous', 'Homogeneous grouping'),
+    ('individualized', 'Individualized instruction'),
+    ('jigsaw', 'Jigsaw grouping'),
+    ('large-group', 'Large-group instruction'),
+    ('multi-level', 'Multi-level instruction'),
+    ('non-graded', 'Non-graded instructional grouping'),
+    ('one-to-one', 'One-to-one tutoring'),
+    ('small-group', 'Small-group instruction'),
+)
+
+STANDARD_TYPES = (
     ('language', 'IRA/NCTE Standards for the English Language Arts'),
     ('social-studies', 'National Council for Social Studies Curriculum Standards'),
     ('geography', 'National Geography Standards'),
@@ -20,28 +46,50 @@ STANDARD_TYPE_CHOICES = (
     ('econ', 'Voluntary National Content Standards in Economics'),
 )
 
+TEACHING_APPROACH_TYPES = (
+    ('constructivist', 'constructivist'),
+    ('inquiry', 'Inquiry-based learning'),
+    ('interdisciplinary', 'Interdisciplinary'),
+    ('for-use', 'Learning-for-use'),
+    ('montessori', 'Montessori'),
+    ('object', 'Object-based learning'),
+    ('project', 'Project-based learning'),
+    ('thematic', 'Thematic approach'),
+)
+
+TEACHING_METHOD_TYPES = (
+    ('brainstorming', 'Brainstorming'),
+    ('cooperative', 'Cooperative learning'),
+    ('demonstrations', 'Demonstrations'),
+    ('discovery', 'Discovery learning'),
+    ('discussions', 'Discussions'),
+    ('drill', 'Drill'),
+    ('experiential', 'Experiential learning'),
+    ('guided', 'Guided Listening'),
+    ('hands-on', 'Hands-on learning'),
+    ('information-organization', 'Information organization'),
+    ('inquiry', 'Inquiry'),
+    ('jigsaw', 'Jigsaw'),
+    ('lab-procs', 'Lab procedures'),
+    ('lecture', 'Lecture'),
+    ('modeling', 'Modeling'),
+    ('multimedia', 'Multimedia instruction'),
+    ('peer-tutoring', 'Peer tutoring'),
+    ('programmed', 'Programmed instruction'),
+    ('reading', 'Reading'),
+    ('reflection', 'Reflection'),
+    ('research', 'Research'),
+    ('role-playing', 'Role playing'),
+    ('self-directed', 'Self-directed learning'),
+    ('self-paced', 'Self-paced learning'),
+    ('sims-and-games', 'Simulations and games'),
+    ('visual', 'Visual instruction'),
+    ('writing', 'Writing'),
+)
+
 def ul_as_list(html):
     soup = BeautifulSoup(html)
     return [li.contents[0] for li in soup('li')]
-
-class AssessmentType(models.Model):
-    name = models.CharField(max_length=128)
-    thinkfinity_code = models.CharField(max_length=128)
-
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ["name"]
-
-class GroupingType(models.Model):
-    name = models.CharField(max_length=128)
-
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ["name"]
 
 class Material(models.Model):
     name = models.CharField(max_length=128)
@@ -84,25 +132,6 @@ class Skill(models.Model):
     class Meta:
         ordering = ["name"]
 
-class TeachingApproachType(models.Model):
-    name = models.CharField(max_length=128)
-    is_default = models.NullBooleanField()
-
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ["name"]
-
-class TeachingMethodType(models.Model):
-    name = models.CharField(max_length=128)
-
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ["name"]
-
 class TechSetupType(models.Model):
     title = models.CharField(max_length=38)
 
@@ -126,7 +155,7 @@ class Tip(models.Model):
 class Standard(models.Model):
     definition = models.TextField('Standard text', null=True, blank=True)
     name = models.CharField(max_length=128, null=True, blank=True)
-    standard_type = models.CharField(max_length=60, choices=STANDARD_TYPE_CHOICES)
+    standard_type = models.CharField(max_length=14, choices=STANDARD_TYPES)
     state = models.CharField(max_length=2, null=True, blank=True, choices=STATE_CHOICES)
     url = models.CharField(max_length=128, null=True, blank=True)
     when_updated = models.DateTimeField(null=True, blank=True, auto_now=True)
@@ -138,7 +167,7 @@ class Standard(models.Model):
         ordering = ["name"]
 
 class Activity(models.Model):
-    assessment_type = models.ForeignKey(AssessmentType, blank=True, null=True)
+    assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     description = models.TextField()
     duration_minutes = models.IntegerField()
     id_number = models.IntegerField(blank=True, null=True)
@@ -154,13 +183,13 @@ class Activity(models.Model):
    #Objectives
     learning_objectives = models.TextField()
     skills = models.ManyToManyField(Skill)
-    teaching_approach_type = models.ForeignKey(TeachingApproachType)
-    teaching_method_type = models.ForeignKey(TeachingMethodType)
+    teaching_approach_type = models.CharField(max_length=17, choices=TEACHING_APPROACH_TYPES)
+    teaching_method_type = models.CharField(max_length=24, choices=TEACHING_METHOD_TYPES)
 
    #Preparation
     accessibility_notes = models.TextField()
     materials = models.ManyToManyField(Material)
-    grouping_type = models.ForeignKey(GroupingType)
+    grouping_type = models.CharField(max_length=14, choices=GROUPING_TYPES)
     physical_space_types = models.ManyToManyField(PhysicalSpaceType)
     setup = models.TextField()
    #Required Technology
@@ -228,10 +257,18 @@ class Lesson(models.Model):
         return list(deduped_assessments)
 
     def get_learning_objectives(self):
-        return None
+        objectives = ul_as_list(self.learning_objectives)
+
+        for activity in self.get_activities():
+            objectives += ul_as_list(activity.learning_objectives)
+        return objectives
 
     def get_background_information(self):
-        return None
+        bg_info = self.background_information
+
+        for activity in self.get_activities():
+            bg_info += activity.background_information
+        return bg_info
 
 #lessonrelation_limits = reduce(lambda x,y: x|y, RELATIONS)
 class LessonRelationManager(models.Manager):
