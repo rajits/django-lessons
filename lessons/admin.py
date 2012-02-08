@@ -12,10 +12,7 @@ class ActivityAdmin(admin.ModelAdmin):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('accessibility_notes', 'background_information', 'description', 'directions', 'learning_objectives', 'prior_knowledge', 'subtitle_guiding_question'):
-            return db_field.formfield(widget=TinyMCE(
-                attrs={'cols': 80, 'rows': 30},
-                mce_attrs={'external_link_list_url': reverse('tinymce.views.flatpages_link_list')},
-            ))
+            return db_field.formfield(widget=TinyMCE())
         return super(ActivityAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
 class ActivityInline(admin.TabularInline):
@@ -36,23 +33,23 @@ class LessonAdmin(admin.ModelAdmin):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('assessment', 'background_information', 'description', 'learning_objectives'):
-            return db_field.formfield(widget=TinyMCE(
-                attrs={'cols': 80, 'rows': 30},
-                mce_attrs={'external_link_list_url': reverse('tinymce.views.flatpages_link_list')},
-            ))
+            return db_field.formfield(widget=TinyMCE())
         return super(LessonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
-class TipAdmin(admin.ModelAdmin):
+class StandardAdmin(admin.ModelAdmin):
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name in ('definition'):
+            return db_field.formfield(widget=TinyMCE())
+        return super(StandardAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
+class TipAdmin(admin.ModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('body'):
-            return db_field.formfield(widget=TinyMCE(
-                attrs={'cols': 80, 'rows': 30},
-            ))
+            return db_field.formfield(widget=TinyMCE())
         return super(TipAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Material)
-admin.site.register(Standard)
+admin.site.register(Standard, StandardAdmin)
 admin.site.register(Tip, TipAdmin)
