@@ -1,7 +1,14 @@
+from django import forms
+from django.conf import settings
 from django.contrib import admin
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 
-from models import Activity, Lesson, LessonActivity, Material, Standard, Tip
+from genericcollection import GenericCollectionTabularInline
+
+from dummy.models import Photo, Promo, ResourceCarousel
+from models import *
+from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 
 from tinymce.widgets import TinyMCE
 
@@ -18,23 +25,84 @@ class ActivityAdmin(admin.ModelAdmin):
 class ActivityInline(admin.TabularInline):
     model = LessonActivity
 
+if RELATION_MODELS:
+    class LessonFormSet(forms.models.BaseInlineFormSet):
+        def get_queryset(self):
+            'Returns all LessonRelation objects which point to our Lesson'
+            orig_qs = super(LessonFormSet, self).get_queryset() # .filter(main=False)
+            filtered_qs = []
+            for obj in orig_qs:
+                ctype = obj.content_type
+                if ctype.app_label + '.' + ctype.model in RELATION_MODELS:
+                    filtered_qs += obj
+            return filtered_qs
+
+    class InlineLessonRelation(GenericCollectionTabularInline):
+        model = LessonRelation
+        formset = LessonFormSet # forms.models.inlineformset_factory(Lesson, LessonRelation)
+
+class LessonForm(forms.ModelForm):
+    class Meta:
+        model = Lesson
+
+    def __init__(self, *args, **kwargs):
+        super(LessonForm, self).__init__(*args, **kwargs)
+        for field in REQUIRED_FIELDS:
+            field_name = field[0]
+            app_label, model = field[1].split('.')
+            ctype = ContentType.objects.get(app_label=app_label, model=model)
+            self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all())
+            # for existing lessons, initialize the fields
+            if kwargs.has_key('instance'):
+                objects = LessonRelation.objects.filter(lesson=kwargs['instance'], content_type=ctype)
+                if len(objects) > 0:
+                    self.fields[field_name].initial = objects[0].object_id
+
+    def clean(self):
+        cleaned_data = super(LessonForm, self).clean()
+        for field in REQUIRED_FIELDS:
+            field_name = field[0]
+            app_label, model = field[1].split('.')
+
+            if self.cleaned_data[field_name].id != self.fields[field_name].initial:
+                lr = LessonRelation()
+                # return an object of the model without saving to the DB
+                lr.lesson = self.save(commit=False)
+                lr.content_type = ContentType.objects.get(app_label=app_label, model=model)
+                lr.object_id = self.cleaned_data[field_name].id
+                lr.content_object = self.cleaned_data[field_name]
+                lr.save()
+        return cleaned_data
+
 class LessonAdmin(admin.ModelAdmin):
-    fieldsets = [
-        ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration_in_minutes', 'id_number', 'is_modular', 'ads_excluded', 'materials', 'physical_space_type'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
-        ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
-        ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
-        ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
-    ]
     filter_horizontal = ['materials',]
-    inlines = [
-        ActivityInline,
-    ]
+    form = LessonForm
+    if RELATION_MODELS:
+        inlines = [ActivityInline, InlineLessonRelation,]
+    else:
+        inlines = [ActivityInline,]
     prepopulated_fields = {"slug": ("title",)}
+
+    class Media:
+        js = (JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
+              JAVASCRIPT_URL + 'genericcollections.js',
+              JAVASCRIPT_URL + 'init-inlines.js')
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('assessment', 'background_information', 'description', 'learning_objectives'):
             return db_field.formfield(widget=TinyMCE())
         return super(LessonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = [
+            ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration_in_minutes', 'id_number', 'is_modular', 'ads_excluded', 'materials', 'physical_space_type'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
+            ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
+            ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
+            ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
+        ]
+        for field in REQUIRED_FIELDS:
+            fieldsets[0][1]['fields'].insert(4, field[0])
+        return fieldsets
 
 class StandardAdmin(admin.ModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):

@@ -147,7 +147,7 @@ TIP_TYPE_CHOICES = (
 )
 
 class Tip(models.Model):
-    content_creation_time = models.DateTimeField(blank=True, null=True)
+    content_creation_time = models.DateTimeField(auto_now_add=True)
     id_number = models.IntegerField(blank=True, null=True)
     tip_type = models.PositiveSmallIntegerField(choices=TIP_TYPE_CHOICES)
     body = models.TextField()
@@ -218,8 +218,8 @@ class Lesson(models.Model):
     is_modular = models.BooleanField()
     last_updated_date = models.DateTimeField(auto_now=True)
     learning_objectives = models.TextField()
-    materials = models.ManyToManyField(Material)
-    physical_space_type = models.ForeignKey(PhysicalSpaceType)
+    materials = models.ManyToManyField(Material, blank=True, null=True)
+    physical_space_type = models.ForeignKey(PhysicalSpaceType, blank=True, null=True)
     slug = models.SlugField(unique=True)
     subtitle_guiding_question = models.TextField()
     title = models.CharField(max_length=128)
@@ -248,29 +248,32 @@ class Lesson(models.Model):
     def get_activities(self):
         return [lessonactivity.activity for lessonactivity in self.lessonactivity_set.all()]
 
-    def get_assessment(self):
+    def get_assessments(self, activities=None):
         assessments = ul_as_list(self.assessments)
 
-        for activity in self.get_activities():
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
             assessments += ul_as_list(activity.assessments)
         deduped_assessments = set(assessments)
         return list(deduped_assessments)
 
-    def get_learning_objectives(self):
+    def get_learning_objectives(self, activities=None):
         objectives = ul_as_list(self.learning_objectives)
 
         for activity in self.get_activities():
             objectives += ul_as_list(activity.learning_objectives)
-        return objectives
+        deduped_objectives = set(objectives)
+        return list(deduped_objectives)
 
-    def get_background_information(self):
+    def get_background_information(self, activities=None):
         bg_info = self.background_information
 
         for activity in self.get_activities():
             bg_info += activity.background_information
         return bg_info
 
-#lessonrelation_limits = reduce(lambda x,y: x|y, RELATIONS)
+lessonrelation_limits = reduce(lambda x,y: x|y, RELATIONS)
 class LessonRelationManager(models.Manager):
     def get_content_type(self, content_type):
         qs = self.get_query_set()
@@ -283,7 +286,7 @@ class LessonRelationManager(models.Manager):
 class LessonRelation(models.Model):
     lesson = models.ForeignKey(Lesson)
     content_type = models.ForeignKey(
-        ContentType) # , limit_choices_to=lessonrelation_limits)
+        ContentType, limit_choices_to=lessonrelation_limits)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey()
     relation_type = models.CharField("Relation Type", 
@@ -295,7 +298,7 @@ class LessonRelation(models.Model):
     objects = LessonRelationManager()
 
     def __unicode__(self):
-        out = "%s related to %s" % (self.content_object, self.collection)
+        out = "%s related to %s" % (self.content_object, self.lesson)
         if self.relation_type:
             out += " as %s" % self.relation_type
         return out

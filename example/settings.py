@@ -83,6 +83,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'tinymce',
     'lessons',
+    'dummy',
 )
 
 TINYMCE_JS_URL = "%sjs/tiny_mce/tiny_mce_src.js" % MEDIA_URL
@@ -111,12 +112,20 @@ TINYMCE_COMPRESSOR = False
 TINYMCE_FILEBROWSER = False
 
 LESSON_SETTINGS = {
-    'RELATION_MODELS': (),
+    'RELATION_MODELS': (
+        'dummy.promo',
+      # 'lessons.activity', # for use as model student work, picture of practice
+    ),
+    'REQUIRED_FIELDS': (
+        ('resource_carousel', 'dummy.resourcecarousel'),
+        ('key_image', 'dummy.photo'),
+    ),
     'PEDAGOGICAL_PURPOSE_TYPE_CHOICES': (
         ('A', 'apply'),
         ('D', 'develop'),
         ('E', 'engage'),
     ),
+    'JAVASCRIPT_URL': MEDIA_URL + 'js/'
 }
 
 try:
