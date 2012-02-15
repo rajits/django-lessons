@@ -6,6 +6,7 @@ from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from settings import PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
 from BeautifulSoup import BeautifulSoup
+from edumetadata.models import Grade
 
 ASSESSMENT_TYPES = (
     ('alternative', 'Alternative Assessment'),
@@ -170,6 +171,7 @@ class Activity(models.Model):
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     description = models.TextField()
     duration_minutes = models.IntegerField()
+    grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(blank=True, null=True)
     pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
     slug = models.SlugField(unique=True)

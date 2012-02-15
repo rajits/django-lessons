@@ -1,2 +1,4 @@
+--extra-index-url http://callowayproject.com/pypi/
 BeautifulSoup
 Django==1.1.1
+django-edumetadata-0.1

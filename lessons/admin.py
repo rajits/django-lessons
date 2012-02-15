@@ -6,14 +6,13 @@ from django.core.urlresolvers import reverse
 
 from genericcollection import GenericCollectionTabularInline
 
-from dummy.models import Photo, Promo, ResourceCarousel
 from models import *
 from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 
 from tinymce.widgets import TinyMCE
 
 class ActivityAdmin(admin.ModelAdmin):
-    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'directions', 'assessment_type', 'duration_minutes', 'teaching_approach_type', 'teaching_method_type', 'grouping_type', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types']
+    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'directions', 'assessment_type', 'duration_minutes', 'grades', 'teaching_approach_type', 'teaching_method_type', 'grouping_type', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types']
     filter_horizontal = ['materials', 'physical_space_types', 'skills', 'tech_setup_types', 'tips']
     prepopulated_fields = {"slug": ("title",)}
 
@@ -29,17 +28,12 @@ if RELATION_MODELS:
     class LessonFormSet(forms.models.BaseInlineFormSet):
         def get_queryset(self):
             'Returns all LessonRelation objects which point to our Lesson'
-            orig_qs = super(LessonFormSet, self).get_queryset() # .filter(main=False)
-            filtered_qs = []
-            for obj in orig_qs:
-                ctype = obj.content_type
-                if ctype.app_label + '.' + ctype.model in RELATION_MODELS:
-                    filtered_qs += obj
-            return filtered_qs
+            return [x for x in super(LessonFormSet, self).get_queryset()
+                if x.content_type.app_label + '.' + x.content_type.model in RELATION_MODELS]
 
     class InlineLessonRelation(GenericCollectionTabularInline):
         model = LessonRelation
-        formset = LessonFormSet # forms.models.inlineformset_factory(Lesson, LessonRelation)
+        formset = LessonFormSet
 
 class LessonForm(forms.ModelForm):
     class Meta:
@@ -51,7 +45,7 @@ class LessonForm(forms.ModelForm):
             field_name = field[0]
             app_label, model = field[1].split('.')
             ctype = ContentType.objects.get(app_label=app_label, model=model)
-            self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all())
+            self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all(), widget=forms.TextInput) # admin.widgets.ForeignKeyRawIdWidget(LessonRelation._meta.get_field('content_type').rel))
             # for existing lessons, initialize the fields
             if kwargs.has_key('instance'):
                 objects = LessonRelation.objects.filter(lesson=kwargs['instance'], content_type=ctype)

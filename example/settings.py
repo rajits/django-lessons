@@ -82,6 +82,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'tinymce',
+    'edumetadata',
     'lessons',
     'dummy',
 )
