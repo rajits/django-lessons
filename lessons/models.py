@@ -216,6 +216,7 @@ class Lesson(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
     duration_in_minutes = models.IntegerField()
+    grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField()
     is_modular = models.BooleanField()
     last_updated_date = models.DateTimeField(auto_now=True)

@@ -1,0 +1,16 @@
+.tab {
+    background-color: #EEE;
+    border-color: #DDDDDD #AAAAAA #AAAAAA #DDDDDD;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0 10px;
+}
+a.selected {
+    background-color: #7CA0C7;
+}
+a.tab:link {
+    color: black;
+}
+a.selected:link {
+    color: white;
+}

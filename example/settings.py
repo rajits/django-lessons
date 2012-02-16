@@ -74,6 +74,10 @@ ROOT_URLCONF = 'example.urls'
 TEMPLATE_DIRS = (
     "%s/%s/" % (ROOT_PATH, 'templates'),
 )
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.auth',
+    'django.core.context_processors.request',
+)
 
 INSTALLED_APPS = (
     'django.contrib.admin',

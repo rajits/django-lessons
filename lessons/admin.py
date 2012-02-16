@@ -93,6 +93,7 @@ class LessonAdmin(admin.ModelAdmin):
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
+            ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
