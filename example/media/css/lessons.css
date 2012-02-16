@@ -11,6 +11,3 @@ a.selected {
 a.tab:link {
     color: black;
 }
-a.selected:link {
-    color: white;
-}

@@ -67,22 +67,22 @@
           {{ adminform.form.non_field_errors }}
       {% endif %}
 
-      <a class="tab{% ifequal request|active_tab '1'%} selected{% endifequal %}" href="{{ request.path }}?active_tab=1">Content</a>
-      <a class="tab{% ifequal request|active_tab '2'%} selected{% endifequal %}" href="{{ request.path }}?active_tab=2">Metadata</a>
-      <a class="tab{% ifequal request|active_tab '3'%} selected{% endifequal %}" href="{{ request.path }}?active_tab=3">Schedule</a>
+      <a class="tab selected" id="tab0">Content</a>
+      <a class="tab" id="tab1">Metadata</a>
+      <a class="tab" id="tab2">Schedule</a>
       {% for fieldset in adminform %}
-        {% if fieldset|display_in_tab:request %}
+        <div class="page page{{ fieldset|tab_num }}">
           {% include "admin/includes/fieldset.html" %}
-        {% endif %}
+        </div>
       {% endfor %}
 
       {% block after_field_sets %}{% endblock %}
 
-      {% ifequal request|active_tab '1' %}
+      <div class="page page0">
         {% for inline_admin_formset in inline_admin_formsets %}
             {% include inline_admin_formset.opts.template %}
         {% endfor %}
-      {% endifequal %}
+      </div>
 
       {% block after_related_objects %}{% endblock %}
 
