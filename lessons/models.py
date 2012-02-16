@@ -6,7 +6,7 @@ from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from settings import PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
 from BeautifulSoup import BeautifulSoup
-from edumetadata.models import Grade
+from edumetadata.models import *
 
 ASSESSMENT_TYPES = (
     ('alternative', 'Alternative Assessment'),
@@ -175,6 +175,7 @@ class Activity(models.Model):
     id_number = models.IntegerField(blank=True, null=True)
     pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
     slug = models.SlugField(unique=True)
+    subjects = models.ManyToManyField(Subject, verbose_name="Subjects and Disciplines")
     subtitle_guiding_question = models.TextField()
     title = models.CharField(max_length=128)
 
@@ -216,6 +217,7 @@ class Lesson(models.Model):
     create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
     duration_in_minutes = models.IntegerField()
+    geologic_time = models.ForeignKey(GeologicTime)
     grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField()
     is_modular = models.BooleanField()
@@ -223,7 +225,9 @@ class Lesson(models.Model):
     learning_objectives = models.TextField()
     materials = models.ManyToManyField(Material, blank=True, null=True)
     physical_space_type = models.ForeignKey(PhysicalSpaceType, blank=True, null=True)
+    secondary_types = models.ManyToManyField(AlternateType, verbose_name="Secondary Content Types")
     slug = models.SlugField(unique=True)
+    subjects = models.ManyToManyField(Subject)
     subtitle_guiding_question = models.TextField()
     title = models.CharField(max_length=128)
 

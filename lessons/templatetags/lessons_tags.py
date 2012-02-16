@@ -14,9 +14,10 @@ def active_tab(request):
 
 @register.filter(name='display_in_tab')
 def display_in_tab(fieldset, request):
+    tabs = [
+        ('Overview', 'Directions', 'Objectives', 'Background'),
+        ('Global Metadata', 'Time and Date Metadata'),
+    ]
     tab = active_tab(request)
-    if tab == '1':
-        return fieldset.name != 'Global Metadata'
-    elif tab == '2':
-        return fieldset.name == 'Global Metadata'
-    return False
+    index = int(tab) - 1 # list is zero-based
+    return fieldset.name in tabs[index]

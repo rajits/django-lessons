@@ -69,7 +69,7 @@ class LessonForm(forms.ModelForm):
         return cleaned_data
 
 class LessonAdmin(admin.ModelAdmin):
-    filter_horizontal = ['materials',]
+    filter_horizontal = ['grades', 'materials', 'secondary_types', 'subjects']
     form = LessonForm
     if RELATION_MODELS:
         inlines = [ActivityInline, InlineLessonRelation,]
@@ -93,7 +93,8 @@ class LessonAdmin(admin.ModelAdmin):
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
-            ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
+            ('Global Metadata', {'fields': ['secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
+            ('Time and Date Metadata', {'fields': ['geologic_time'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
