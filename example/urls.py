@@ -5,7 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-#    (r'^lessons/', include('lessons.urls')),
+    (r'^lessons/', include('lessons.urls')),
 )
 
 urlpatterns += patterns('',
