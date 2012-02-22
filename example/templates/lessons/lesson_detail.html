@@ -1,7 +1,6 @@
 {{ lesson.title }}<br/>
 {{ lesson.slug }}<br/>
 {{ lesson.subtitle_guiding_question }}<br/>
-{% for activity in activities %}{{ forloop.counter }}{% endfor %}
 {% if resource_carousel %}{{ resource_carousel }}{% endif %}
 {% if key_image %}{{ key_image }}{% endif %}
 {% if promo %}{{ promo }}{% endif %}
@@ -46,4 +45,6 @@
     {% if forloop.last %}</ul>{% endif %}
 {% endfor %}<br/>
 {% if lesson.geologic_time %}{{ lesson.geologic_time }}{% endif %}
-{% for activity in activities %}{{ activity }}{% endfor %}
+{% for lessonactivity in lesson.lessonactivity_set.all %}
+    {{ lessonactivity.activity }}, {{ lessonactivity.transition_text }}
+{% endfor %}
