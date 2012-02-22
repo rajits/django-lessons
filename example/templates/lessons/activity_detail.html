@@ -1,0 +1,41 @@
+{{ activity.title }}<br/>
+{{ activity.get_assessment_type_display }}<br/>
+{{ activity.description }}<br/>
+{{ activity.duration }} minutes<br/>
+{% for grade in activity.grades.all %}
+    {% if forloop.first %}Grades {% endif %}
+    {{ grade }}
+    {% if not forloop.last %}, {% endif %}
+{% endfor %}<br/>
+{{ activity.id_number }}<br/>
+{{ activity.get_pedagogical_purpose_type_display }}<br/>
+{% for standard in activity.standards.all %}
+    {{ standard }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+{% for subject in activity.subjects.all %}{{ subject }}{% endfor %}
+{{ activity.subtitle_guiding_question|safe }}
+{{ activity.directions }}
+{% for tip in activity.tips.all %}{{ tip.body }}<br/>{% endfor %}
+{{ activity.learning_objectives|safe }}
+{% for skill in activity.skills.all %}
+    {{ skill }}{% if not forloop.last %}, {% endif %}
+{% endfor %}<br/>
+{{ activity.get_teaching_approach_type_display }}<br/>
+{{ activity.teaching_method_type }}
+{{ activity.accessibility_notes }}
+{% for material in activity.materials.all %}
+    {% if forloop.first %}Materials: {% endif %}
+    {{ material }}
+    {% if not forloop.last %}, {% endif %}
+{% endfor %}
+{{ activity.grouping_type }}
+{% for physical_space_type in activity.physical_space_types.all %}
+    {{ physical_space_type }}
+{% endfor %}
+{{ activity.setup }}
+{{ activity.plugin_types }}
+{% for tech_setup_type in activity.tech_setup_types.all %}
+    {{ activity.tech_setup_type }}
+{% endfor %}
+{{ activity.background_information|safe }}
+{{ activity.prior_knowledge|safe }}
