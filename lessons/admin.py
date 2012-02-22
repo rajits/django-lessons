@@ -12,7 +12,7 @@ from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 from tinymce.widgets import TinyMCE
 
 class ActivityAdmin(admin.ModelAdmin):
-    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'directions', 'assessment_type', 'duration_minutes', 'grades', 'teaching_approach_type', 'teaching_method_type', 'grouping_type', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types']
+    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'directions', 'assessment_type', 'duration', 'grades', 'teaching_approach_type', 'teaching_method_type', 'grouping_type', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types', 'standards']
     filter_horizontal = ['materials', 'physical_space_types', 'skills', 'tech_setup_types', 'tips']
     prepopulated_fields = {"slug": ("title",)}
 
@@ -61,7 +61,7 @@ class LessonForm(forms.ModelForm):
             if self.cleaned_data[field_name].id != self.fields[field_name].initial:
                 lr = LessonRelation()
                 # return an object of the model without saving to the DB
-                lr.lesson = self.save(commit=False)
+                lr.lesson = self.instance # self.save(commit=False)
                 lr.content_type = ContentType.objects.get(app_label=app_label, model=model)
                 lr.object_id = self.cleaned_data[field_name].id
                 lr.content_object = self.cleaned_data[field_name]

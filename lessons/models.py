@@ -123,7 +123,7 @@ class PluginType(models.Model):
         ordering = ["name"]
 
 class Skill(models.Model):
-    parent_skill = models.ForeignKey('self')
+    parent_skill = models.ForeignKey('self', blank=True, null=True)
     name = models.CharField(max_length=128)
     url = models.CharField(max_length=128)
 
@@ -153,6 +153,11 @@ class Tip(models.Model):
     tip_type = models.PositiveSmallIntegerField(choices=TIP_TYPE_CHOICES)
     body = models.TextField()
 
+    def __unicode__(self):
+        # truncate
+        limit = 44
+        return self.body[:limit] + (self.body[limit:] and '...')
+
 class Standard(models.Model):
     definition = models.TextField('Standard text', null=True, blank=True)
     name = models.CharField(max_length=128, null=True, blank=True)
@@ -170,11 +175,12 @@ class Standard(models.Model):
 class Activity(models.Model):
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     description = models.TextField()
-    duration_minutes = models.IntegerField()
+    duration = models.IntegerField(verbose_name="Duration Minutes")
     grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(blank=True, null=True)
     pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
     slug = models.SlugField(unique=True)
+    standards = models.ManyToManyField(Standard)
     subjects = models.ManyToManyField(Subject, verbose_name="Subjects and Disciplines")
     subtitle_guiding_question = models.TextField()
     title = models.CharField(max_length=128)
@@ -196,7 +202,7 @@ class Activity(models.Model):
     physical_space_types = models.ManyToManyField(PhysicalSpaceType)
     setup = models.TextField()
    #Required Technology
-    plugin_types = models.ForeignKey(PluginType)
+    plugin_types = models.ForeignKey(PluginType, blank=True, null=True)
     tech_setup_types = models.ManyToManyField(TechSetupType)
 
    #Background & Vocabulary
@@ -216,10 +222,10 @@ class Lesson(models.Model):
     background_information = models.TextField()
     create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
-    duration_in_minutes = models.IntegerField()
-    geologic_time = models.ForeignKey(GeologicTime)
+    duration = models.IntegerField(verbose_name="Duration in Minutes")
+    geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
     grades = models.ManyToManyField(Grade)
-    id_number = models.IntegerField()
+    id_number = models.IntegerField(blank=True, null=True)
     is_modular = models.BooleanField()
     last_updated_date = models.DateTimeField(auto_now=True)
     learning_objectives = models.TextField()
