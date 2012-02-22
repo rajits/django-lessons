@@ -89,7 +89,7 @@ class LessonAdmin(admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
-            ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration_in_minutes', 'id_number', 'is_modular', 'ads_excluded', 'materials', 'physical_space_type'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
+            ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded', 'materials', 'physical_space_type'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
