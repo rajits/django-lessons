@@ -11,9 +11,8 @@ def init_data():
         m = Material(name=material)
         m.save()
 
-    a = Activity(title='Drawing Political Borders')
+    a = Activity(title='Drawing Political Borders', id_number=418)
     a.slug ='drawing-political-borders'
-    a.id_number = 418
     a.pedagogical_purpose_type = 2
     a.description = '''Students examine maps that show physical and cultural features of a fictitious area. Students draw borders based on how they think the land 
                     should be divided.'''
@@ -100,6 +99,70 @@ def init_data():
         s.save()
         a.standards.add(s)
     a.save()
+
+    a2 = Activity(title='Comparing Political Borders', id_number=419)
+    a2.slug ='comparing-political-borders'
+    a2.pedagogical_purpose_type = 2
+    a2.description = '''<!-- SANITIZE EXEMPT --><p>Students compare their border selections based on physical and cultural 
+                     features. They discuss other factors that could impact where borders are established.</p>'''
+    a2.subtitle_guiding_question = '''<!-- SANITIZE EXEMPT --><p>What factors impact where borders are established?</p>'''
+    a2.learning_objectives = '''<!-- SANITIZE EXEMPT --><p>Students will be able to:</p>
+                            <ul>
+                            <li>explain and compare their border selections based on physical and cultural features </li>
+                            <li>discuss other factors that could impact where borders are established</li>
+                            </ul>'''
+    a2.background_information = '''<!-- SANITIZE EXEMPT --><p>Maps can be used as tools to help us understand our world. Specifically, 
+                                maps can help demonstrate how borders intersect physical and human geographical features, and how 
+                                those intersections can lead to cooperation and/or conflict. Borders of regions or of countries define an 
+                                area, which has a particular shape and size. Sometimes physical features define the border of a region or 
+                                a country. For example, coastlines are borders between the regions of land and water, and mountains 
+                                may serve as borders between different countries or different cultural groups. Country borders, however 
+                                determined, define a physical space over which a country exercises control. When a political border is 
+                                imposed on the physical landscape, it defines the area, shape, and size of the country, as well as the 
+                                physical features and natural resources available. These factors of shape and size can influence the ways 
+                                in which human activity is structured; for example, land use, transportation, and settlement patterns. 
+                                Sometimes the shape and size suggest that a country may want to expand its borders in order to 
+                                increase its size, change its shape, and/or control more resources.</p>'''
+    a2.prior_knowledge = '<!-- SANITIZE EXEMPT --><ul><li>None</li></ul>'
+  # a.directions = '''<!-- SANITIZE EXEMPT --><p><strong>1. Activate students' prior knowledge and introduce vocabulary. </strong></p>'''
+    a2.assessment_type = 'informal'
+    a2.assessment = '''<!-- SANITIZE EXEMPT --><p>Evaluate students based on their participation in the whole-class 
+                    discussion.</p>'''
+    a2.duration = 50
+    a2.internet_access_type = 'no'
+    a2.teaching_approach_type = 'for-use'
+    a2.teaching_methods = ['brainstorming', 'discussions', 'reflection']
+    a2.grouping_types = ['large-group']
+    a2.save()
+    a2.grades = grades
+    a2.skills = []
+    for skill in ['Critical Thinking Skills: Understanding',
+                'Critical Thinking Skills: Analyzing',
+                'Critical Thinking Skills: Evaluating',
+                'Geographic Skills: Analyzing Geographic Information',
+                'Geographic Skills: Asking Geographic Questions',
+                'Geographic Skills: Answering Geographic Questions']:
+        s, created = Skill.objects.get_or_create(name=skill)
+        a2.skills.add(s)
+    a2.subjects = []
+    for subject in ['Geography: Human Geography', 'Geography: Physical Geography',
+                  'Social Studies: Human behavior', 'Social Studies: Human relations']:
+        s, created = Subject.objects.get_or_create(name=subject)
+        a2.subjects.add(s)
+    a2.materials = []
+    for material in ['Pencils', 'Pens', 'Lined or ruled paper', 'Completed worksheets from Lesson 1, Activity 1']:
+        m = Material.objects.get(name=material)
+        a2.materials.add(m)
+    a2.physical_space_type = [p]
+    a2.standards = []
+    for name in ['National Geography Standards: Standard 1',
+                 'National Geography Standards: Standard 5',
+                 'National Geography Standards: Standard 13',
+                 'National Council for Social Studies Curriculum Standards: Theme 3']:
+        s = Standard(name=name)
+        s.save()
+        a2.standards.add(s)
+    a2.save()
 
     l = Lesson(title='Political Borders', slug='political-borders')
     l.subtitle_guiding_question = 'Why are the borders of countries located in certain places?'
