@@ -21,19 +21,6 @@ ASSESSMENT_TYPES = (
     ('testing', 'Testing'),
 )
 
-GROUPING_TYPES = (
-    ('cross-age', 'Cross-age teaching'),
-    ('heterogeneous', 'Heterogeneous grouping'),
-    ('homogeneous', 'Homogeneous grouping'),
-    ('individualized', 'Individualized instruction'),
-    ('jigsaw', 'Jigsaw grouping'),
-    ('large-group', 'Large-group instruction'),
-    ('multi-level', 'Multi-level instruction'),
-    ('non-graded', 'Non-graded instructional grouping'),
-    ('one-to-one', 'One-to-one tutoring'),
-    ('small-group', 'Small-group instruction'),
-)
-
 STANDARD_TYPES = (
     ('language', 'IRA/NCTE Standards for the English Language Arts'),
     ('social-studies', 'National Council for Social Studies Curriculum Standards'),
@@ -58,39 +45,15 @@ TEACHING_APPROACH_TYPES = (
     ('thematic', 'Thematic approach'),
 )
 
-TEACHING_METHOD_TYPES = (
-    ('brainstorming', 'Brainstorming'),
-    ('cooperative', 'Cooperative learning'),
-    ('demonstrations', 'Demonstrations'),
-    ('discovery', 'Discovery learning'),
-    ('discussions', 'Discussions'),
-    ('drill', 'Drill'),
-    ('experiential', 'Experiential learning'),
-    ('guided', 'Guided Listening'),
-    ('hands-on', 'Hands-on learning'),
-    ('information-organization', 'Information organization'),
-    ('inquiry', 'Inquiry'),
-    ('jigsaw', 'Jigsaw'),
-    ('lab-procs', 'Lab procedures'),
-    ('lecture', 'Lecture'),
-    ('modeling', 'Modeling'),
-    ('multimedia', 'Multimedia instruction'),
-    ('peer-tutoring', 'Peer tutoring'),
-    ('programmed', 'Programmed instruction'),
-    ('reading', 'Reading'),
-    ('reflection', 'Reflection'),
-    ('research', 'Research'),
-    ('role-playing', 'Role playing'),
-    ('self-directed', 'Self-directed learning'),
-    ('self-paced', 'Self-paced learning'),
-    ('sims-and-games', 'Simulations and games'),
-    ('visual', 'Visual instruction'),
-    ('writing', 'Writing'),
-)
-
 def ul_as_list(html):
     soup = BeautifulSoup(html)
     return [li.contents[0] for li in soup('li')]
+
+class GroupingType(models.Model):
+    name = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.name
 
 class Material(models.Model):
     name = models.CharField(max_length=128)
@@ -132,6 +95,12 @@ class Skill(models.Model):
     
     class Meta:
         ordering = ["name"]
+
+class TeachingMethodType(models.Model):
+    name = models.CharField(max_length=128)
+
+    def __unicode__(self):
+        return self.name
 
 class TechSetupType(models.Model):
     title = models.CharField(max_length=38)
@@ -194,12 +163,12 @@ class Activity(models.Model):
     learning_objectives = models.TextField()
     skills = models.ManyToManyField(Skill)
     teaching_approach_type = models.CharField(max_length=17, choices=TEACHING_APPROACH_TYPES)
-    teaching_method_type = models.CharField(max_length=24, choices=TEACHING_METHOD_TYPES)
+    teaching_method_types = models.ManyToManyField(TeachingMethodType)
 
    #Preparation
     accessibility_notes = models.TextField()
     materials = models.ManyToManyField(Material)
-    grouping_type = models.CharField(max_length=14, choices=GROUPING_TYPES)
+    grouping_types = models.ManyToManyField(GroupingType)
     other_notes = models.TextField()
     physical_space_types = models.ManyToManyField(PhysicalSpaceType)
     setup = models.TextField()

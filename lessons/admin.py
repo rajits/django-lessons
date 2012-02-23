@@ -12,7 +12,7 @@ from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 from tinymce.widgets import TinyMCE
 
 class ActivityAdmin(admin.ModelAdmin):
-    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'other_notes', 'directions', 'assessment_type', 'assessment', 'duration', 'grades', 'teaching_approach_type', 'teaching_method_type', 'grouping_type', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types', 'standards']
+    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'other_notes', 'directions', 'assessment_type', 'assessment', 'duration', 'grades', 'teaching_approach_type', 'teaching_method_types', 'grouping_types', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types', 'standards']
     filter_horizontal = ['materials', 'physical_space_types', 'skills', 'tech_setup_types', 'tips']
     prepopulated_fields = {"slug": ("title",)}
 
@@ -115,7 +115,9 @@ class TipAdmin(admin.ModelAdmin):
         return super(TipAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
 admin.site.register(Activity, ActivityAdmin)
+admin.site.register(GroupingType)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Material)
 admin.site.register(Standard, StandardAdmin)
+admin.site.register(TeachingMethodType)
 admin.site.register(Tip, TipAdmin)
