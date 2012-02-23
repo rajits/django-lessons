@@ -7,6 +7,10 @@ def init_data():
     p = PhysicalSpaceType(name='Classroom')
     p.save()
 
+    for material in [u'Atlas', u'Beaker', u'Calculators', u'Chalk', u'Clay', u'Compasses', u'Crayons', u'Erasers', u'Globe', u'Glue', u'Highlighters', u'Magazines', u'Magnets', u'Markers', u'Microscopes', u'Newspapers', u'Paper', u'Pencils', u'Pens', u'Protractor', u'Rulers', u'Safety goggles', u'Scissors', u'String', u'Thermometers', u'Apple peels', u'Black construction paper', u'Black paint', u'Bunson burner', u'Chart paper', u'Cheesecloth', u'Clipboards', u'Colored paper', u'Colored pencils', u'Completed worksheets from previous activity', u'Construction paper', u'Drawing paper', u'Dry erase markers', u'Field guides', u'Fine mesh', u'Fishing line', u'Food coloring', u'Grass clippings', u'Index cards', u'Latex gloves', u'Leaves', u'Lined or ruled paper', u'Meter sticks', u'Modeling clay', u'Paint', u'Paintbrushes', u'Paper clips', u'Petri dish', u'Pipe cleaners', u'Plastic containers', u"Rope (6-8')", u'Rubber bands', u'Rubber dishwashing gloves', u'Safety scissors', u'Shoe boxes with lids', u'Species keys', u'Sticky notes', u'Stopwatch', u'String (several different colors)', u'Two-liter plastic bottles', u'Vegetable shortening', u'Wall map of the world', u'Water', u'Writing paper', u'Watercolors', u'Transparent tape', u'2-liter plastic bottles, tops and bottoms cut off', u'Scale', u'Bucket', u'Ice water', u'Thumbtacks', u'A small, solid object such as a shell, coin, key', u'Stir sticks', u'Photo of your school', u'Plaster of Paris', u'Toothpicks', u'Sponge', u'Labels', u'Notebooks', u'Photographs of a place in your community', u'Yarn', u'Stapler', u'Binoculars', u'National weather map from the local newspaper', u'Backpack', u'Items that might be found in a backpack', u'Cork', u'Large pan', u'Contour maps of your local area', u'Tape measure', u'Art paper', u'Push pins', u'Removable adhesive dots', u'Graph paper', u'Large container for collecting trash', u'Large calendar', u'Gardening trowels', u'Magnifying glasses', u'Pasta in assorted shapes', u'Waxed paper', u'Blue enamel paint', u'Tempera paint', u'A miniature item, such as a toy car', u'Plastic or metal trays', u'Blank transparencies', u'Edible baking ingredients', u'Edible snack foods', u'Wall map of the United States', u'Spoons', u'Clear cups or bowls', u'Vegetable oil', u'Hula hoop', u'Posterboard', u'Balls of clay (3" in diameter)', u'Maps of a shopping mall', u'Photographs of your neighborhood, town, or state', u'Historical documents about your community', u'Glue sticks', u'State weather maps from the local newspaper', u'Photos of weather from magazines', u'Paper tablecloths', u'Encyclopedias (online access or hard copies)', u'The Very Hungry Caterpillar by Eric Carle', u'Several sheets of blank paper per student', u'Blindfolds', u'1 small, soft ball', u'Student journals', u'Large plastic garbage bags', u'Baseball cap', u'Centimeter tape measure', u'Example of haiku poetry', u'They Swim the Seas by Seymour Simon', u'Unifix Cube', u'Measuring Tape', u'Colored Markers', u'Garbage bags', u'Recycling container', u'Giant sticky notes', u'Large bulletin board', u'Colored thread', u'Fish-shaped pretzels ', u'Fish-shaped crackers ', u'One medium-sized bowl per group', u'Butcher paper', u'Removable tape or glue', u'Calendar', u'Flashlights', u'Polystyrene foam balls or round fruit', u'8-inch or 9-inch pie tins', u'Spoons or stirrers', u'Glass pie plate', u'Cornstarch', u'Meter sticks or rulers', u'Aluminum foil', u'Sewing needles or push pins', u'Shoeboxes, or 2-foot rectangular cardboard boxes', u'Telescope or binoculars', u'White paper', u'White poster board', u'Clear packing tape', u'Quart-sized glass jars with lids', u'2-liter plastic soda bottles', u'Laser pointer or gooseneck lamp', u'Low-melt glue or superglue', u'Plastic straws', u'Sand', u'Small bar magnets (not refrigerator magnets)', u'Small craft mirrors', u'Thread', u'2-liter bottle preforms (optional)', u'Bar or earth magnets', u'Fine metal filings or magnetic laser printer toner', u'Magnetic compasses', u'Mineral oil', u'Paper towels', u'Plastic petri dishes', u'Sealable plastic sandwich bags', u'Stirrers', u'Tablespoons or graduated cylinders', u'2 pieces of stiff, white cardboard', u'Colored construction paper', u'Duct tape or other strong tape', u'Hole puncher', u'Paper towel or wrapping paper tubes', u'2 Cups of water', u'2 Cups of dry ice (frozen carbon dioxide)', u'2 spoonfuls of sand or dirt', u'Dash of dark corn syrup or other organic material', u'Dash of ammonia', u'Large, plastic mixing bowl', u'4 medium-sized plastic garbage bags', u'Work gloves', u'Hammer', u'Large mixing spoon', u'Bubble wrap', u'Egg cartons, cut up into sections', u'Paper cups', u'Plastic garbage bags', u'Raw eggs (5 per small group)', u'Stepladder', u'Styrofoam', u'Tarp or large sheet of plastic', u'Timer or stopwatch', u'Drop cloth', u'Hand mirrors', u'Hats', u'Ball of string', u'World atlas', u"Groups' completed worksheets from Lesson 1, Act. 1", u'Completed worksheets from Lesson 1, Activity 1', u'Blank paper', u'Map transparencies', u'Reading passage from Lesson 3, Activity 1', u'White card stock', u'White card stock or construction paper', u'Completed worksheets from Lesson 5, Activity 2', u'Notes from Lesson 2, Activity 2 of this unit']:
+        m = Material(name=material)
+        m.save()
+
     a = Activity(title='Drawing Political Borders')
     a.slug ='drawing-political-borders'
     a.id_number = 418
@@ -80,13 +84,11 @@ def init_data():
     a.subjects = []
     for subject in ['Geography: Human Geography', 'Geography: Physical Geography',
                   'Social Studies: Human behavior', 'Social Studies: Human relations']:
-        s = Subject(name=subject)
-        s.save()
+        s, created = Subject.objects.get_or_create(name=subject)
         a.subjects.add(s)
     a.materials = []
     for material in ['Colored pencils', 'Pencils', 'Pens', 'Sticky notes']:
-        m = Material(name=material)
-        m.save()
+        m = Material.objects.get(name=material)
         a.materials.add(m)
     a.physical_space_type = [p]
     a.standards = []
@@ -104,7 +106,12 @@ def init_data():
     l.description = '''Students think about regions and borders by determining where they would place borders in 
                     an artificial continent, based on a set of physical and cultural features of the area.'''
     l.duration = 100
+    l.other_notes = 'This is lesson 1 in a series of 10 lessons in a unit on Europe.'
     # instance needs a pk before a m2m relationship can be used
     l.save()
     l.grades = grades
     l.save()
+
+    lr = LessonActivity(lesson=l, activity=a)
+    lr.transition_text = "Make sure you have groups' completed maps from Lesson 1, Activity 1 in the Beyond Borders unit"
+    lr.save()
