@@ -12,12 +12,12 @@ from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 from tinymce.widgets import TinyMCE
 
 class ActivityAdmin(admin.ModelAdmin):
-    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'directions', 'assessment_type', 'duration', 'grades', 'teaching_approach_type', 'teaching_method_type', 'grouping_type', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types', 'standards']
+    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'directions', 'assessment_type', 'assessment', 'duration', 'grades', 'teaching_approach_type', 'teaching_method_type', 'grouping_type', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types', 'standards']
     filter_horizontal = ['materials', 'physical_space_types', 'skills', 'tech_setup_types', 'tips']
     prepopulated_fields = {"slug": ("title",)}
 
     def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name in ('accessibility_notes', 'background_information', 'description', 'directions', 'learning_objectives', 'prior_knowledge', 'subtitle_guiding_question'):
+        if db_field.name in ('accessibility_notes', 'assessment', 'background_information', 'description', 'directions', 'learning_objectives', 'prior_knowledge', 'subtitle_guiding_question'):
             return db_field.formfield(widget=TinyMCE())
         return super(ActivityAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 

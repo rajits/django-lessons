@@ -173,6 +173,7 @@ class Standard(models.Model):
         ordering = ["name"]
 
 class Activity(models.Model):
+    assessment = models.TextField()
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     description = models.TextField()
     duration = models.IntegerField(verbose_name="Duration Minutes")
@@ -199,6 +200,7 @@ class Activity(models.Model):
     accessibility_notes = models.TextField()
     materials = models.ManyToManyField(Material)
     grouping_type = models.CharField(max_length=14, choices=GROUPING_TYPES)
+    other_notes = models.TextField()
     physical_space_types = models.ManyToManyField(PhysicalSpaceType)
     setup = models.TextField()
    #Required Technology
@@ -230,6 +232,7 @@ class Lesson(models.Model):
     last_updated_date = models.DateTimeField(auto_now=True)
     learning_objectives = models.TextField()
     materials = models.ManyToManyField(Material, blank=True, null=True)
+    other_notes = models.TextField()
     physical_space_type = models.ForeignKey(PhysicalSpaceType, blank=True, null=True)
     secondary_types = models.ManyToManyField(AlternateType, verbose_name="Secondary Content Types")
     slug = models.SlugField(unique=True)
@@ -274,7 +277,9 @@ class Lesson(models.Model):
     def get_learning_objectives(self, activities=None):
         objectives = ul_as_list(self.learning_objectives)
 
-        for activity in self.get_activities():
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
             objectives += ul_as_list(activity.learning_objectives)
         deduped_objectives = set(objectives)
         return list(deduped_objectives)
@@ -282,9 +287,30 @@ class Lesson(models.Model):
     def get_background_information(self, activities=None):
         bg_info = self.background_information
 
-        for activity in self.get_activities():
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
             bg_info += activity.background_information
         return bg_info
+
+    def get_other_notes(self, activities=None):
+        other_notes = self.other_notes
+
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
+            other_notes += activity.other_notes
+        return other_notes
+
+    def get_subjects(self, activities=None):
+        subjects = self.subjects.all()
+
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
+            subjects |= activity.subjects.all()
+        deduped_subjects = set(subjects)
+        return list(deduped_subjects)
 
 lessonrelation_limits = reduce(lambda x,y: x|y, RELATIONS)
 class LessonRelationManager(models.Manager):
