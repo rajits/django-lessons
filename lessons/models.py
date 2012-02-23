@@ -264,16 +264,6 @@ class Lesson(models.Model):
     def get_activities(self):
         return [lessonactivity.activity for lessonactivity in self.lessonactivity_set.all()]
 
-    def get_assessments(self, activities=None):
-        assessments = ul_as_list(self.assessments)
-
-        if activities is None:
-            activities = self.get_activities()
-        for activity in activities:
-            assessments += ul_as_list(activity.assessments)
-        deduped_assessments = set(assessments)
-        return list(deduped_assessments)
-
     def get_learning_objectives(self, activities=None):
         objectives = ul_as_list(self.learning_objectives)
 
