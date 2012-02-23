@@ -86,6 +86,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'tinymce',
+    'categories',
+    'categories.editor',
     'edumetadata',
     'lessons',
     'dummy',
@@ -131,6 +133,15 @@ LESSON_SETTINGS = {
         ('E', 'engage'),
     ),
     'JAVASCRIPT_URL': MEDIA_URL + 'js/'
+}
+
+CATEGORIES_SETTINGS = {
+    'FK_REGISTRY': { 'lessons.Lesson': (
+        {'name': 'primary_category', 'related_name': 'primary_cat', 'blank': True, 'null': True},
+    )},
+    'M2M_REGISTRY': { 'lessons.Lesson': (
+        {'name': 'secondary_categories', 'blank': True, 'null': True },
+    )}
 }
 
 try:

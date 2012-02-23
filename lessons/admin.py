@@ -94,10 +94,12 @@ class LessonAdmin(admin.ModelAdmin):
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
             ('Global Metadata', {'fields': ['secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
+            ('Content Related Metadata', {'fields': [], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
+        fieldsets[5][1]['fields'] = ['primary_category', 'secondary_categories']
         return fieldsets
 
 class StandardAdmin(admin.ModelAdmin):
