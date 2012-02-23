@@ -220,8 +220,8 @@ class Activity(models.Model):
 
 class Lesson(models.Model):
     ads_excluded = models.BooleanField()
-    assessment = models.TextField()
-    background_information = models.TextField()
+    assessment = models.TextField(blank=True, null=True)
+    background_information = models.TextField(blank=True, null=True)
     create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
     duration = models.IntegerField(verbose_name="Duration in Minutes")
@@ -230,13 +230,13 @@ class Lesson(models.Model):
     id_number = models.IntegerField(blank=True, null=True)
     is_modular = models.BooleanField()
     last_updated_date = models.DateTimeField(auto_now=True)
-    learning_objectives = models.TextField()
+    learning_objectives = models.TextField(blank=True, null=True)
     materials = models.ManyToManyField(Material, blank=True, null=True)
     other_notes = models.TextField()
     physical_space_type = models.ForeignKey(PhysicalSpaceType, blank=True, null=True)
-    secondary_types = models.ManyToManyField(AlternateType, verbose_name="Secondary Content Types")
+    secondary_types = models.ManyToManyField(AlternateType, blank=True, null=True, verbose_name="Secondary Content Types")
     slug = models.SlugField(unique=True)
-    subjects = models.ManyToManyField(Subject)
+    subjects = models.ManyToManyField(Subject, blank=True, null=True)
     subtitle_guiding_question = models.TextField()
     title = models.CharField(max_length=128)
 
@@ -263,6 +263,10 @@ class Lesson(models.Model):
 
     def get_activities(self):
         return [lessonactivity.activity for lessonactivity in self.lessonactivity_set.all()]
+
+    # TODO
+    def get_glossary(self):
+        pass
 
     def get_learning_objectives(self, activities=None):
         objectives = ul_as_list(self.learning_objectives)
@@ -335,7 +339,7 @@ class LessonRelation(models.Model):
 class LessonActivity(models.Model):
     lesson = models.ForeignKey(Lesson)
     activity = models.ForeignKey(Activity)
-    transition_text = models.TextField()
+    transition_text = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name_plural = 'Activities'
