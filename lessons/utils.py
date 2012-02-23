@@ -178,3 +178,6 @@ def init_data():
     lr = LessonActivity(lesson=l, activity=a)
     lr.transition_text = "Make sure you have groups' completed maps from Lesson 1, Activity 1 in the Beyond Borders unit"
     lr.save()
+
+    lr2 = LessonActivity(lesson=l, activity=a2)
+    lr2.save()
