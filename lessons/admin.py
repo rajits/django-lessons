@@ -13,14 +13,22 @@ from tinymce.widgets import TinyMCE
 from concepts.admin import ConceptItemInline
 
 class ActivityAdmin(admin.ModelAdmin):
-    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type',
-              'description', 'subtitle_guiding_question',
-              'learning_objectives', 'background_information',
-              'prior_knowledge', 'setup', 'accessibility_notes', 'other_notes',
-              'directions', 'assessment_type', 'assessment', 'duration',
-              'grades', 'teaching_approach_type', 'teaching_method_types',
-              'grouping_types', 'tech_setup_types', 'plugin_types', 'tips',
-              'skills', 'materials', 'physical_space_types', 'standards']
+    fieldsets = [
+        ('Overview',
+            {'fields': [
+                'id_number', 'title', 'slug', 'pedagogical_purpose_type',
+                'description', 'subtitle_guiding_question', 'prior_knowledge',
+                'setup', 'accessibility_notes', 'other_notes', 'directions',
+                'duration', 'teaching_approach_type', 'teaching_method_types',
+                'grouping_types', 'tech_setup_types', 'plugin_types', 'tips',
+                'skills', 'materials', 'physical_space_types', 'standards'
+             ],
+             'classes': ['collapse']}),
+        ('Directions', {'fields': ['assessment_type', 'assessment'], 'classes': ['collapse']}),
+        ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
+        ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
+        ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
+    ]
     filter_horizontal = ['materials', 'physical_space_types', 'skills', 'tech_setup_types', 'tips']
     inlines = [ConceptItemInline, ]
     prepopulated_fields = {"slug": ("title",)}
