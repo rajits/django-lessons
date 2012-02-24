@@ -68,7 +68,10 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
+    'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+  # 'django.contrib.messages.middleware.MessageMiddleware',
+    'publisher.middleware.PreviewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
@@ -88,11 +91,15 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+  # 'django.contrib.messages',
+  # 'south',
     'tinymce',
     'categories',
     'categories.editor',
     'concepts',
     'edumetadata',
+  # 'reversion',
+  # 'publisher',
     'lessons',
     'dummy',
 )
@@ -146,6 +153,10 @@ CATEGORIES_SETTINGS = {
     'M2M_REGISTRY': { 'lessons.Lesson': (
         {'name': 'secondary_categories', 'blank': True, 'null': True },
     )}
+}
+
+CONCEPTS_SETTINGS = {
+    'WEIGHTS': ((0, 'Hide'), (10, 'Very Low'), (20, 'Low'), (30, 'Medium'), (40, 'High'), (50, ' Very High')),
 }
 
 try:
