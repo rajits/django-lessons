@@ -205,7 +205,7 @@ class Lesson(models.Model): # Publish):
     last_updated_date = models.DateTimeField(auto_now=True)
     learning_objectives = models.TextField(blank=True, null=True)
     materials = models.ManyToManyField(Material, blank=True, null=True)
-    other_notes = models.TextField()
+    other_notes = models.TextField(blank=True, null=True)
     physical_space_type = models.ForeignKey(PhysicalSpaceType, blank=True, null=True)
   # publish_date = models.DateTimeField(default=datetime.datetime.now)
     secondary_types = models.ManyToManyField(AlternateType, blank=True, null=True, verbose_name="Secondary Content Types")
