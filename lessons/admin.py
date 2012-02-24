@@ -10,10 +10,19 @@ from models import *
 from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 
 from tinymce.widgets import TinyMCE
+from concepts.admin import ConceptItemInline
 
 class ActivityAdmin(admin.ModelAdmin):
-    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type', 'description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'setup', 'accessibility_notes', 'other_notes', 'directions', 'assessment_type', 'assessment', 'duration', 'grades', 'teaching_approach_type', 'teaching_method_types', 'grouping_types', 'tech_setup_types', 'plugin_types', 'tips', 'skills', 'materials', 'physical_space_types', 'standards']
+    fields = ['slug', 'id_number', 'title', 'pedagogical_purpose_type',
+              'description', 'subtitle_guiding_question',
+              'learning_objectives', 'background_information',
+              'prior_knowledge', 'setup', 'accessibility_notes', 'other_notes',
+              'directions', 'assessment_type', 'assessment', 'duration',
+              'grades', 'teaching_approach_type', 'teaching_method_types',
+              'grouping_types', 'tech_setup_types', 'plugin_types', 'tips',
+              'skills', 'materials', 'physical_space_types', 'standards']
     filter_horizontal = ['materials', 'physical_space_types', 'skills', 'tech_setup_types', 'tips']
+    inlines = [ConceptItemInline, ]
     prepopulated_fields = {"slug": ("title",)}
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -72,7 +81,7 @@ class LessonAdmin(admin.ModelAdmin):
     filter_horizontal = ['grades', 'materials', 'secondary_types', 'subjects']
     form = LessonForm
     if RELATION_MODELS:
-        inlines = [ActivityInline, InlineLessonRelation,]
+        inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
     else:
         inlines = [ActivityInline,]
     prepopulated_fields = {"slug": ("title",)}
@@ -80,7 +89,7 @@ class LessonAdmin(admin.ModelAdmin):
     class Media:
         js = (JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
               JAVASCRIPT_URL + 'genericcollections.js',
-              JAVASCRIPT_URL + 'init-inlines.js')
+              JAVASCRIPT_URL + 'admin.js')
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('assessment', 'background_information', 'description', 'learning_objectives'):

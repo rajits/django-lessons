@@ -6,6 +6,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^lessons/', include('lessons.urls')),
+    (r'^concepts/', include('concepts.urls')),
 )
 
 urlpatterns += patterns('',

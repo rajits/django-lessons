@@ -48,6 +48,9 @@ MEDIA_ROOT = "%s/%s/" % (ROOT_PATH, 'media')
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/media/'
 
+# required by django-concepts
+STATIC_URL = '/static/'
+
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
@@ -88,6 +91,7 @@ INSTALLED_APPS = (
     'tinymce',
     'categories',
     'categories.editor',
+    'concepts',
     'edumetadata',
     'lessons',
     'dummy',
