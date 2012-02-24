@@ -33,6 +33,9 @@ class ActivityAdmin(admin.ModelAdmin):
     inlines = [ConceptItemInline, ]
     prepopulated_fields = {"slug": ("title",)}
 
+    class Media:
+        js = (JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
+              JAVASCRIPT_URL + 'admin.js')
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('accessibility_notes', 'assessment', 'background_information', 'description', 'directions', 'learning_objectives', 'prior_knowledge', 'subtitle_guiding_question'):
             return db_field.formfield(widget=TinyMCE())
