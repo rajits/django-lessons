@@ -36,6 +36,7 @@ class ActivityAdmin(admin.ModelAdmin):
     class Media:
         js = (JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
               JAVASCRIPT_URL + 'admin.js')
+
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('accessibility_notes', 'assessment', 'background_information', 'description', 'directions', 'learning_objectives', 'prior_knowledge', 'subtitle_guiding_question'):
             return db_field.formfield(widget=TinyMCE())
@@ -59,6 +60,8 @@ class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
 
+    __original_values = {}
+
     def __init__(self, *args, **kwargs):
         super(LessonForm, self).__init__(*args, **kwargs)
         for field in REQUIRED_FIELDS:
@@ -78,7 +81,9 @@ class LessonForm(forms.ModelForm):
             field_name = field[0]
             app_label, model = field[1].split('.')
 
-            if self.cleaned_data[field_name].id != self.fields[field_name].initial:
+            if field_name not in self.cleaned_data:
+                raise forms.ValidationError("%s is required." % field_name)
+            elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
                 lr = LessonRelation()
                 # return an object of the model without saving to the DB
                 lr.lesson = self.instance # self.save(commit=False)
@@ -86,6 +91,7 @@ class LessonForm(forms.ModelForm):
                 lr.object_id = self.cleaned_data[field_name].id
                 lr.content_object = self.cleaned_data[field_name]
                 lr.save()
+      # print self._errors
         return cleaned_data
 
 class LessonAdmin(admin.ModelAdmin):
@@ -109,9 +115,10 @@ class LessonAdmin(admin.ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
-            ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded', 'materials', 'physical_space_type'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
+            ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
+            ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),
             ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
             ('Global Metadata', {'fields': ['secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
             ('Content Related Metadata', {'fields': [], 'classes': ['collapse']}),
@@ -119,7 +126,7 @@ class LessonAdmin(admin.ModelAdmin):
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
-        fieldsets[5][1]['fields'] = ['primary_category', 'secondary_categories']
+        fieldsets[6][1]['fields'] = ['primary_category', 'secondary_categories']
         return fieldsets
 
 class StandardAdmin(admin.ModelAdmin):

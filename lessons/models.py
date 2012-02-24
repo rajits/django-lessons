@@ -206,7 +206,6 @@ class Lesson(models.Model): # Publish):
     learning_objectives = models.TextField(blank=True, null=True)
     materials = models.ManyToManyField(Material, blank=True, null=True)
     other_notes = models.TextField(blank=True, null=True)
-    physical_space_type = models.ForeignKey(PhysicalSpaceType, blank=True, null=True)
   # publish_date = models.DateTimeField(default=datetime.datetime.now)
     secondary_types = models.ManyToManyField(AlternateType, blank=True, null=True, verbose_name="Secondary Content Types")
     slug = models.SlugField(unique=True)
@@ -256,6 +255,7 @@ class Lesson(models.Model): # Publish):
         return list(deduped_objectives)
 
     def get_background_information(self, activities=None):
+        '''Used by the admin to import text'''
         bg_info = self.background_information
 
         if activities is None:
