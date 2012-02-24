@@ -1,3 +1,4 @@
+#import datetime
 from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -7,6 +8,8 @@ from settings import PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATION
 
 from BeautifulSoup import BeautifulSoup
 from edumetadata.models import *
+#from publisher import register
+#from publisher.models import Publish
 
 ASSESSMENT_TYPES = (
     ('alternative', 'Alternative Assessment'),
@@ -121,6 +124,7 @@ class Tip(models.Model):
     id_number = models.IntegerField(blank=True, null=True)
     tip_type = models.PositiveSmallIntegerField(choices=TIP_TYPE_CHOICES)
     body = models.TextField()
+    category = models.ForeignKey(EducationCategory, blank=True, null=True)
 
     def __unicode__(self):
         # truncate
@@ -157,7 +161,7 @@ class Activity(models.Model):
 
    #Directions
     directions = models.TextField()
-    tips = models.ManyToManyField(Tip)
+    tips = models.ManyToManyField(Tip, blank=True, null=True)
 
    #Objectives
     learning_objectives = models.TextField()
@@ -166,15 +170,15 @@ class Activity(models.Model):
     teaching_method_types = models.ManyToManyField(TeachingMethodType)
 
    #Preparation
-    accessibility_notes = models.TextField()
+    accessibility_notes = models.TextField(blank=True, null=True)
     materials = models.ManyToManyField(Material)
     grouping_types = models.ManyToManyField(GroupingType)
-    other_notes = models.TextField()
+    other_notes = models.TextField(blank=True, null=True)
     physical_space_types = models.ManyToManyField(PhysicalSpaceType)
-    setup = models.TextField()
+    setup = models.TextField(blank=True, null=True)
    #Required Technology
     plugin_types = models.ForeignKey(PluginType, blank=True, null=True)
-    tech_setup_types = models.ManyToManyField(TechSetupType)
+    tech_setup_types = models.ManyToManyField(TechSetupType, blank=True, null=True)
 
    #Background & Vocabulary
     background_information = models.TextField()
@@ -187,10 +191,10 @@ class Activity(models.Model):
         ordering = ["title"]
         verbose_name_plural = 'Activities'
 
-class Lesson(models.Model):
+class Lesson(models.Model): # Publish):
     ads_excluded = models.BooleanField()
     assessment = models.TextField(blank=True, null=True)
-    background_information = models.TextField(blank=True, null=True)
+    background_information = models.TextField(blank=True, null=True) 
     create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
     duration = models.IntegerField(verbose_name="Duration in Minutes")
@@ -203,6 +207,7 @@ class Lesson(models.Model):
     materials = models.ManyToManyField(Material, blank=True, null=True)
     other_notes = models.TextField()
     physical_space_type = models.ForeignKey(PhysicalSpaceType, blank=True, null=True)
+  # publish_date = models.DateTimeField(default=datetime.datetime.now)
     secondary_types = models.ManyToManyField(AlternateType, blank=True, null=True, verbose_name="Secondary Content Types")
     slug = models.SlugField(unique=True)
     subjects = models.ManyToManyField(Subject, blank=True, null=True)
@@ -214,6 +219,9 @@ class Lesson(models.Model):
     
     class Meta:
         ordering = ["title"]
+
+  # class PublishingMeta:
+  #     published_datefield = 'publish_date'
 
     if RELATION_MODELS:
         def get_related_content_type(self, content_type):
@@ -312,3 +320,6 @@ class LessonActivity(models.Model):
 
     class Meta:
         verbose_name_plural = 'Activities'
+
+#register(Activity)
+#register(Lesson)
