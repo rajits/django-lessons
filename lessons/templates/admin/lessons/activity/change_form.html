@@ -60,7 +60,7 @@
     <div>
       {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
       {% submit_row %}
-      {% if errors %}{{ errors }}
+      {% if errors %}
           <p class="errornote">
             {% blocktrans count errors|length as counter %}Please correct the error below.{% plural %}Please correct the errors below.{% endblocktrans %}
           </p>
