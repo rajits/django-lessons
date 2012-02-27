@@ -240,6 +240,16 @@ class Lesson(models.Model): # Publish):
     def get_activities(self):
         return [lessonactivity.activity for lessonactivity in self.lessonactivity_set.all()]
 
+    def get_accessibility(self, activities=None):
+        accessibility_notes = []
+
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
+            accessibility_notes += ul_as_list(activity.accessibility_notes)
+        deduped_notes = set(accessibility_notes)
+        return list(deduped_notes)
+
     # TODO
     def get_glossary(self):
         pass
@@ -264,6 +274,16 @@ class Lesson(models.Model): # Publish):
             bg_info += activity.background_information
         return bg_info
 
+    def get_materials(self, activities=None):
+        materials = self.materials.all()
+
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
+            materials |= activity.materials.all()
+        deduped_materials = set(materials)
+        return list(deduped_materials)
+
     def get_other_notes(self, activities=None):
         other_notes = self.other_notes
 
@@ -272,6 +292,38 @@ class Lesson(models.Model): # Publish):
         for activity in activities:
             other_notes += activity.other_notes
         return other_notes
+
+    def get_physical_space(self, activities=None):
+        physical_space_types = []
+
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
+            physical_space_types += activity.physical_space_types.all()
+        deduped_physical_space_types = set(physical_space_types)
+        return list(deduped_physical_space_types)
+
+    def get_required_technology(self, activities=None):
+        required_technology = []
+
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
+            if activity.plugin_types:
+                required_technology += activity.plugin_types
+            required_technology += activity.tech_setup_types.all()
+        deduped_technology = set(required_technology)
+        return list(deduped_technology)
+
+    def get_setup(self, activities=None):
+        setup = []
+
+        if activities is None:
+            activities = self.get_activities()
+        for activity in activities:
+            setup += ul_as_list(activity.setup)
+        deduped_setup = set(setup)
+        return list(deduped_setup)
 
     def get_subjects(self, activities=None):
         subjects = self.subjects.all()

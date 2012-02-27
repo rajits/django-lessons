@@ -103,7 +103,7 @@ def init_data():
     for material in ['Colored pencils', 'Pencils', 'Pens', 'Sticky notes']:
         m = Material.objects.get(name=material)
         a.materials.add(m)
-    a.physical_space_type = [p]
+    a.physical_space_types.add(p)
     a.standards = []
     for name in ['National Geography Standards: Standard 1',
                  'National Geography Standards: Standard 5',
@@ -170,7 +170,7 @@ def init_data():
     for material in ['Pencils', 'Pens', 'Lined or ruled paper', 'Completed worksheets from Lesson 1, Activity 1']:
         m = Material.objects.get(name=material)
         a2.materials.add(m)
-    a2.physical_space_type = [p]
+    a2.physical_space_types.add(p)
     a2.standards = []
     for name in ['National Geography Standards: Standard 1',
                  'National Geography Standards: Standard 5',
