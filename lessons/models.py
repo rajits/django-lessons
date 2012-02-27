@@ -145,6 +145,11 @@ class Standard(models.Model):
     class Meta:
         ordering = ["name"]
 
+class ContentManager(models.Manager):
+    def get_published(self):
+        qs = self.get_query_set()
+        return qs.filter(published=True)
+
 class Activity(models.Model):
     assessment = models.TextField()
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
@@ -186,6 +191,8 @@ class Activity(models.Model):
     background_information = models.TextField()
     prior_knowledge = models.TextField()
 
+    objects = ContentManager()
+
     def __unicode__(self):
         return self.title
     
@@ -215,6 +222,8 @@ class Lesson(models.Model): # Publish):
     subjects = models.ManyToManyField(Subject, blank=True, null=True)
     subtitle_guiding_question = models.TextField()
     title = models.CharField(max_length=128)
+
+    objects = ContentManager()
 
     def __unicode__(self):
         return self.title
