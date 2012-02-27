@@ -22,4 +22,11 @@ $(function() {
     $(".tab").click(function() {
         showtab(this.id.replace(/[^\d]/g, ""));
     });
+
+    // (EDU-2396) When user checks published checkbox, update
+    // published_date with current date and time.
+    $("#id_published").click(function() {
+        DateTimeShortcuts.handleCalendarQuickLink(0, 0);
+        DateTimeShortcuts.handleClockQuicklink(0, new Date().getHourMinuteSecond());
+    });
 });
