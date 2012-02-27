@@ -68,7 +68,7 @@ class LessonForm(forms.ModelForm):
             field_name = field[0]
             app_label, model = field[1].split('.')
             ctype = ContentType.objects.get(app_label=app_label, model=model)
-            self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all(), widget=forms.TextInput) # admin.widgets.ForeignKeyRawIdWidget(LessonRelation._meta.get_field('content_type').rel))
+            self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all(), widget=forms.TextInput)
             # for existing lessons, initialize the fields
             if kwargs.has_key('instance'):
                 objects = LessonRelation.objects.filter(lesson=kwargs['instance'], content_type=ctype)

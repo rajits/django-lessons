@@ -15,13 +15,9 @@ def tab_num(fieldset):
             return count
     return 0
 
-@register.filter(name='is_required')
-def is_required(field):
-	for name, model in settings.LESSON_SETTINGS['REQUIRED_FIELDS']:
-		if field == name:
-			return True
-	return False
-
-@register.filter(name='content_types')
-def content_types(field):
-	return None
+@register.filter(name='get_model')
+def get_model(field):
+    for name, model in settings.LESSON_SETTINGS['REQUIRED_FIELDS']:
+        if field == name:
+            return model
+    return None

@@ -8,7 +8,18 @@ function showGenericRelatedObjectLookupPopup(triggeringLink, ctArray) {
         return false;
     }
     var selectedItem = select.item(select.selectedIndex).value;
-    var href = triggeringLink.href.replace(/#/,'../../../'+ctArray[selectedItem]+"/?t=id");
+    return showRelatedObjectLookupPopup(name, triggeringLink, ctArray[selectedItem]);
+}
+
+function showGenericRequiredModelLookupPopup(triggeringLink, ctItem) {
+    ctItem = ctItem.replace('.', '/');
+    var realName = triggeringLink.id.replace(/^lookup_/, '');
+    var name = id_to_windowname(realName);
+    return showRelatedObjectLookupPopup(name, triggeringLink, ctItem);
+}
+
+function showRelatedObjectLookupPopup(name, triggeringLink, ctItem) {
+    var href = triggeringLink.href.replace(/#/,'../../../' + ctItem + '/?t=id');
     if (href.search(/\?/) >= 0) {
         href = href + '&pop=1';
     } else {
