@@ -18,15 +18,16 @@ def init_data():
     for teaching_method_type in ['Brainstorming', 'Cooperative learning', 'Demonstrations', 'Discovery learning', 'Discussions', 'Drill', 'Experiential learning', 'Guided Listening', 'Hands-on learning', 'Information organization', 'Inquiry', 'Jigsaw', 'Lab procedures', 'Lecture', 'Modeling', 'Multimedia instruction', 'Peer tutoring', 'Programmed instruction', 'Reading', 'Reflection', 'Research', 'Role playing', 'Self-directed learning', 'Self-paced learning', 'Simulations and games', 'Visual instruction', 'Writing']:
         tmt = TeachingMethodType(name=teaching_method_type)
         tmt.save()
-    for tst in [u'1 computer per classroom', u'1 computer per learner', u'1 computer per small group', u'Audio recording device', u'DVD player', u'Digital camera (and related equipment)', u'GPS units', u'Interactive whiteboard', u'Media production software', u'Microphone', u'Mobile data device (mobile phone, PDAs)', u'Mobile media player (MP3 player)', u'Presentation software', u'Printer', u'Projector', u'Scanner', u'Speakers', u'Television', u'VCR', u'Video camera (and related equipment)', u'Webcam', u'Word processing software']
+    for tst in [u'1 computer per classroom', u'1 computer per learner', u'1 computer per small group', u'Audio recording device', u'DVD player', u'Digital camera (and related equipment)', u'GPS units', u'Interactive whiteboard', u'Media production software', u'Microphone', u'Mobile data device (mobile phone, PDAs)', u'Mobile media player (MP3 player)', u'Presentation software', u'Printer', u'Projector', u'Scanner', u'Speakers', u'Television', u'VCR', u'Video camera (and related equipment)', u'Webcam', u'Word processing software']:
         tst = TechSetupType(title=tst)
         tst.save()
-    for name, url in {('Active X', 'http://www.activexguide.com/new/downloads.php'),
-                      ('Flash', 'http://get.adobe.com/flashplayer/'),
-                      ('Microsoft Silverlight', 'http://www.microsoft.com/silverlight/'),
-                      ('Quicktime', 'http://www.apple.com/quicktime/'),
-                      ('Real Player', 'http://www.real.com/'),
-                      ('Shockwave', 'http://get.adobe.com/shockwave/')}:
+    plugin_types = {'Active X': 'http://www.activexguide.com/new/downloads.php',
+                    'Flash': 'http://get.adobe.com/flashplayer/',
+                    'Microsoft Silverlight': 'http://www.microsoft.com/silverlight/',
+                    'Quicktime': 'http://www.apple.com/quicktime/',
+                    'Real Player': 'http://www.real.com/',
+                    'Shockwave': 'http://get.adobe.com/shockwave/'}
+    for name, url in plugin_types.iteritems():
         pt = PluginType(name=name, source_url=url)
         pt.save()
 
