@@ -91,7 +91,7 @@ class PluginType(models.Model):
 class Skill(models.Model):
     parent_skill = models.ForeignKey('self', blank=True, null=True)
     name = models.CharField(max_length=128)
-    url = models.CharField(max_length=128)
+    url = models.CharField(max_length=128, blank=True, null=True)
 
     def __unicode__(self):
         return self.name
@@ -121,7 +121,7 @@ TIP_TYPE_CHOICES = (
 
 class Tip(models.Model):
     content_creation_time = models.DateTimeField(auto_now_add=True)
-    id_number = models.IntegerField(blank=True, null=True)
+    id_number = models.CharField(max_length=5, blank=True, null=True)
     tip_type = models.PositiveSmallIntegerField(choices=TIP_TYPE_CHOICES)
     body = models.TextField()
     category = models.ForeignKey(EducationCategory, blank=True, null=True)

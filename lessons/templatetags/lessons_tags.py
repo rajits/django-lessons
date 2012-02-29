@@ -5,7 +5,7 @@ register = template.Library()
 
 tabs = (
     ('Overview', 'Directions', 'Objectives', 'Background'),
-    ('Global Metadata', 'Content Related Metadata', 'Time and Date Metadata'),
+    ('Global Metadata', 'Content Related Metadata', 'Time and Date Metadata', 'Publishing'),
 )
 
 @register.filter(name='tab_num')

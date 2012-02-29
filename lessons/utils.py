@@ -3,9 +3,11 @@ from edumetadata.models import Grade, Subject
 
 def init_data():
     grades = [Grade.objects.get(slug=x) for x in ['6', '7', '8']]
-
-    p = PhysicalSpaceType(name='Classroom')
-    p.save()
+    
+    for pst in [u'Aquarium', u'Auditorium', u'Classroom', u'Community center', u'Computer lab', u'Farm', u'Grocery store', u'Gymnasium', u'Home', u'Kitchen', u'Laboratory space', u'Local business', u'Media Center/Library', u'Meeting space', u'Museum', u'Nature Center', u'Other', u'Outdoor natural environment', u'Outdoor recreation space', u'Park', u'Parking lot', u'Performance space', u'Rehearsal space', u'School playground', u'Theater/Stage', u'Vacant lot', u'Visual Arts Studio', u'Workplace', u'Zoo']:
+        p = PhysicalSpaceType(name=pst)
+        p.save()
+    p = PhysicalSpaceType.objects.get(name='Classroom')
 
     for grouping_type in ['Cross-age teaching', 'Heterogeneous grouping', 'Homogeneous grouping', 'Individualized instruction', 'Jigsaw grouping', 'Large-group instruction', 'Multi-level instruction', 'Non-graded instructional grouping', 'One-to-one tutoring', 'Small-group instruction']:
         g = GroupingType(name=grouping_type)
