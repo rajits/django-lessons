@@ -216,6 +216,37 @@ class Activity(models.Model):
         ordering = ["title"]
         verbose_name_plural = 'Activities'
 
+relation_limits = reduce(lambda x,y: x|y, RELATIONS)
+
+class RelationManager(models.Manager):
+    def get_content_type(self, content_type):
+        qs = self.get_query_set()
+        return qs.filter(content_type__name=content_type)
+
+    def get_relation_type(self, relation_type):
+        qs = self.get_query_set()
+        return qs.filter(relation_type=relation_type)
+
+class ActivityRelation(models.Model):
+    activity = models.ForeignKey(Activity)
+    content_type = models.ForeignKey(
+        ContentType, limit_choices_to=relation_limits)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey()
+    relation_type = models.CharField("Relation Type",
+        max_length="200",
+        blank=True,
+        null=True,
+        help_text="A generic text field to tag a relation, like 'primaryphoto'.")
+
+    objects = RelationManager()
+
+    def __unicode__(self):
+        out = "%s related to %s" % (self.content_object, self.activity)
+        if self.relation_type:
+            out += " as %s" % self.relation_type
+        return out
+
 class Lesson(models.Model): # Publish):
     ads_excluded = models.BooleanField()
     assessment = models.TextField(blank=True, null=True)
@@ -363,29 +394,19 @@ class Lesson(models.Model): # Publish):
         deduped_subjects = set(subjects)
         return list(deduped_subjects)
 
-lessonrelation_limits = reduce(lambda x,y: x|y, RELATIONS)
-class LessonRelationManager(models.Manager):
-    def get_content_type(self, content_type):
-        qs = self.get_query_set()
-        return qs.filter(content_type__name=content_type)
-
-    def get_relation_type(self, relation_type):
-        qs = self.get_query_set()
-        return qs.filter(relation_type=relation_type)
-
 class LessonRelation(models.Model):
     lesson = models.ForeignKey(Lesson)
     content_type = models.ForeignKey(
-        ContentType, limit_choices_to=lessonrelation_limits)
+        ContentType, limit_choices_to=relation_limits)
     object_id = models.PositiveIntegerField()
     content_object = generic.GenericForeignKey()
-    relation_type = models.CharField("Relation Type", 
-        max_length="200", 
-        blank=True, 
+    relation_type = models.CharField("Relation Type",
+        max_length="200",
+        blank=True,
         null=True,
         help_text="A generic text field to tag a relation, like 'primaryphoto'.")
 
-    objects = LessonRelationManager()
+    objects = RelationManager()
 
     def __unicode__(self):
         out = "%s related to %s" % (self.content_object, self.lesson)

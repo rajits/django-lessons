@@ -12,6 +12,17 @@ from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 from tinymce.widgets import TinyMCE
 from concepts.admin import ConceptItemInline
 
+if RELATION_MODELS:
+    class ActivityFormSet(forms.models.BaseInlineFormSet):
+        def get_queryset(self):
+            'Returns all LessonRelation objects which point to our Lesson'
+            return [x for x in super(ActivityFormSet, self).get_queryset()
+                if x.content_type.app_label + '.' + x.content_type.model in RELATION_MODELS]
+
+    class InlineActivityRelation(GenericCollectionTabularInline):
+        model = ActivityRelation
+        formset = ActivityFormSet
+
 class ActivityAdmin(admin.ModelAdmin):
     fieldsets = [
         ('Overview',
@@ -35,7 +46,10 @@ class ActivityAdmin(admin.ModelAdmin):
         ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
     ]
     filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
-    inlines = [ConceptItemInline,]
+    if RELATION_MODELS:
+        inlines = [ConceptItemInline, InlineActivityRelation,]
+    else:
+        inlines = [ConceptItemInline,]
     prepopulated_fields = {"slug": ("title",)}
 
     class Media:
