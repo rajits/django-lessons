@@ -36,7 +36,7 @@ class ActivityForm(forms.ModelForm):
             self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all(), widget=forms.TextInput)
             # for existing lessons, initialize the fields
             if kwargs.has_key('instance'):
-                objects = ActivityRelation.objects.filter(lesson=kwargs['instance'], content_type=ctype)
+                objects = ActivityRelation.objects.filter(activity=kwargs['instance'], content_type=ctype)
                 if len(objects) > 0:
                     self.fields[field_name].initial = objects[0].object_id
 
@@ -49,13 +49,13 @@ class ActivityForm(forms.ModelForm):
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
             elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
-                lr = ActivityRelation()
+                ar = ActivityRelation()
                 # return an object of the model without saving to the DB
-                lr.lesson = self.instance # self.save(commit=False)
-                lr.content_type = ContentType.objects.get(app_label=app_label, model=model)
-                lr.object_id = self.cleaned_data[field_name].id
-                lr.content_object = self.cleaned_data[field_name]
-                lr.save()
+                ar.lesson = self.instance # self.save(commit=False)
+                ar.content_type = ContentType.objects.get(app_label=app_label, model=model)
+                ar.object_id = self.cleaned_data[field_name].id
+                ar.content_object = self.cleaned_data[field_name]
+                ar.save()
       # print self._errors
         return cleaned_data
 
