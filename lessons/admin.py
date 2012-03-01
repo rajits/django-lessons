@@ -93,7 +93,7 @@ class ActivityAdmin(admin.ModelAdmin):
                 {'fields': [
                     'materials', 'tech_setup_types', 'plugin_types',
                     'physical_space_types', 'setup', 'grouping_types',
-                    'accessibility_notes', 'other_notes', 'prior_activities'
+                    'accessibility_notes', 'other_notes', 'prior_activities', 'is_pip', 'is_msw'
                  ],
                  'classes': ['collapse']}),
             ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge'], 'classes': ['collapse']}),

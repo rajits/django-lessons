@@ -170,6 +170,8 @@ class Activity(models.Model):
     grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(blank=True, null=True)
     is_modular = models.BooleanField(default=True)
+    is_msw = models.BooleanField(verbose_name="Is MSW")
+    is_pip = models.BooleanField(verbose_name="Is PIP")
     learner_group = models.SmallIntegerField(blank=True, null=True, choices=LEARNER_GROUP_TYPES)
     notes_on_readability_score = models.TextField(blank=True, null=True)
     pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
