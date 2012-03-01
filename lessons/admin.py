@@ -17,20 +17,25 @@ class ActivityAdmin(admin.ModelAdmin):
         ('Overview',
             {'fields': [
                 'id_number', 'title', 'slug', 'pedagogical_purpose_type',
-                'description', 'subtitle_guiding_question', 'prior_knowledge',
-                'setup', 'accessibility_notes', 'other_notes', 'directions',
-                'duration', 'teaching_approach_type', 'teaching_method_types',
-                'grouping_types', 'tech_setup_types', 'plugin_types', 'tips',
-                'skills', 'materials', 'physical_space_types', 'standards'
+                'description', 'subtitle_guiding_question',
+                'directions', 'duration', 'standards'
              ],
              'classes': ['collapse']}),
-        ('Directions', {'fields': ['assessment_type', 'assessment'], 'classes': ['collapse']}),
-        ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
-        ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
+        ('Directions', {'fields': ['assessment_type', 'assessment', 'tips'], 'classes': ['collapse']}),
+        ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'teaching_method_types', 'skills'], 'classes': ['collapse']}),
+        ('Preparation',
+            {'fields': [
+                'materials', 'tech_setup_types', 'plugin_types',
+                'physical_space_types', 'setup', 'grouping_types',
+                'accessibility_notes', 'other_notes', 'prior_activities'
+             ],
+             'classes': ['collapse']}),
+        ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge'], 'classes': ['collapse']}),
         ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
+        ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
     ]
-    filter_horizontal = ['materials', 'physical_space_types', 'skills', 'tech_setup_types', 'tips']
-    inlines = [ConceptItemInline, ]
+    filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
+    inlines = [ConceptItemInline,]
     prepopulated_fields = {"slug": ("title",)}
 
     class Media:
@@ -44,6 +49,7 @@ class ActivityAdmin(admin.ModelAdmin):
 
 class ActivityInline(admin.TabularInline):
     model = LessonActivity
+    raw_id_fields = ('activity',)
 
 if RELATION_MODELS:
     class LessonFormSet(forms.models.BaseInlineFormSet):
@@ -123,6 +129,7 @@ class LessonAdmin(admin.ModelAdmin):
             ('Global Metadata', {'fields': ['secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
             ('Content Related Metadata', {'fields': [], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time'], 'classes': ['collapse']}),
+            ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])

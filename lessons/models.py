@@ -24,6 +24,17 @@ ASSESSMENT_TYPES = (
     ('testing', 'Testing'),
 )
 
+LEARNER_GROUP_TYPES = (
+    (1, 'Advanced Placement'),
+    (2, 'English Language Learners (ELL)'),
+    (3, 'Gifted and Talented'),
+    (4, 'International Baccalaureate'),
+    (5, 'Special Education'),
+    (6, 'Struggling Students'),
+    (7, 'Adult Education'),
+    (8, 'Continuing Education'),
+)
+
 STANDARD_TYPES = (
     ('language', 'IRA/NCTE Standards for the English Language Arts'),
     ('social-studies', 'National Council for Social Studies Curriculum Standards'),
@@ -133,7 +144,7 @@ class Tip(models.Model):
 
 class Standard(models.Model):
     definition = models.TextField('Standard text', null=True, blank=True)
-    name = models.CharField(max_length=128, null=True, blank=True)
+    name = models.CharField(max_length=256, null=True, blank=True)
     standard_type = models.CharField(max_length=14, choices=STANDARD_TYPES)
     state = models.CharField(max_length=2, null=True, blank=True, choices=STATE_CHOICES)
     url = models.CharField(max_length=128, null=True, blank=True)
@@ -151,24 +162,28 @@ class ContentManager(models.Manager):
         return qs.filter(published=True)
 
 class Activity(models.Model):
+    ads_excluded = models.BooleanField(default=True, verbose_name="Are ads excluded?")
     assessment = models.TextField()
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     description = models.TextField()
     duration = models.IntegerField(verbose_name="Duration Minutes")
     grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(blank=True, null=True)
+    is_modular = models.BooleanField(default=True)
+    learner_group = models.SmallIntegerField(blank=True, null=True, choices=LEARNER_GROUP_TYPES)
+    notes_on_readability_score = models.TextField(blank=True, null=True)
     pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
     published = models.BooleanField()
     published_date = models.DateTimeField(blank=True, null=True)
     slug = models.SlugField(unique=True)
     standards = models.ManyToManyField(Standard)
     subjects = models.ManyToManyField(Subject, verbose_name="Subjects and Disciplines")
-    subtitle_guiding_question = models.TextField()
+    subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
     title = models.CharField(max_length=128)
 
    #Directions
     directions = models.TextField()
-    tips = models.ManyToManyField(Tip, blank=True, null=True)
+    tips = models.ManyToManyField(Tip, blank=True, null=True, verbose_name="Tips & Modifications")
 
    #Objectives
     learning_objectives = models.TextField()
@@ -182,6 +197,7 @@ class Activity(models.Model):
     grouping_types = models.ManyToManyField(GroupingType)
     other_notes = models.TextField(blank=True, null=True)
     physical_space_types = models.ManyToManyField(PhysicalSpaceType)
+    prior_activities = models.ManyToManyField('self')
     setup = models.TextField(blank=True, null=True)
    #Required Technology
     plugin_types = models.ForeignKey(PluginType, blank=True, null=True)
@@ -220,7 +236,7 @@ class Lesson(models.Model): # Publish):
     secondary_types = models.ManyToManyField(AlternateType, blank=True, null=True, verbose_name="Secondary Content Types")
     slug = models.SlugField(unique=True)
     subjects = models.ManyToManyField(Subject, blank=True, null=True)
-    subtitle_guiding_question = models.TextField()
+    subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
     title = models.CharField(max_length=128)
 
     objects = ContentManager()
