@@ -23,29 +23,45 @@ if RELATION_MODELS:
         model = ActivityRelation
         formset = ActivityFormSet
 
+class ActivityForm(forms.ModelForm):
+    class Meta:
+        model = Activity
+
+    def __init__(self, *args, **kwargs):
+        super(ActivityForm, self).__init__(*args, **kwargs)
+        for field in REQUIRED_FIELDS:
+            field_name = field[0]
+            app_label, model = field[1].split('.')
+            ctype = ContentType.objects.get(app_label=app_label, model=model)
+            self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all(), widget=forms.TextInput)
+            # for existing lessons, initialize the fields
+            if kwargs.has_key('instance'):
+                objects = ActivityRelation.objects.filter(lesson=kwargs['instance'], content_type=ctype)
+                if len(objects) > 0:
+                    self.fields[field_name].initial = objects[0].object_id
+
+    def clean(self):
+        cleaned_data = super(ActivityForm, self).clean()
+        for field in REQUIRED_FIELDS:
+            field_name = field[0]
+            app_label, model = field[1].split('.')
+
+            if field_name not in self.cleaned_data:
+                raise forms.ValidationError("%s is required." % field_name)
+            elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
+                lr = ActivityRelation()
+                # return an object of the model without saving to the DB
+                lr.lesson = self.instance # self.save(commit=False)
+                lr.content_type = ContentType.objects.get(app_label=app_label, model=model)
+                lr.object_id = self.cleaned_data[field_name].id
+                lr.content_object = self.cleaned_data[field_name]
+                lr.save()
+      # print self._errors
+        return cleaned_data
+
 class ActivityAdmin(admin.ModelAdmin):
-    fieldsets = [
-        ('Overview',
-            {'fields': [
-                'id_number', 'title', 'slug', 'pedagogical_purpose_type',
-                'description', 'subtitle_guiding_question',
-                'directions', 'duration', 'standards'
-             ],
-             'classes': ['collapse']}),
-        ('Directions', {'fields': ['assessment_type', 'assessment', 'tips'], 'classes': ['collapse']}),
-        ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'teaching_method_types', 'skills'], 'classes': ['collapse']}),
-        ('Preparation',
-            {'fields': [
-                'materials', 'tech_setup_types', 'plugin_types',
-                'physical_space_types', 'setup', 'grouping_types',
-                'accessibility_notes', 'other_notes', 'prior_activities'
-             ],
-             'classes': ['collapse']}),
-        ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge'], 'classes': ['collapse']}),
-        ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
-        ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
-    ]
     filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
+    form = ActivityForm
     if RELATION_MODELS:
         inlines = [ConceptItemInline, InlineActivityRelation,]
     else:
@@ -54,12 +70,39 @@ class ActivityAdmin(admin.ModelAdmin):
 
     class Media:
         js = (JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
+              JAVASCRIPT_URL + 'genericcollections.js',
               JAVASCRIPT_URL + 'admin.js')
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('accessibility_notes', 'assessment', 'background_information', 'description', 'directions', 'learning_objectives', 'prior_knowledge', 'subtitle_guiding_question'):
             return db_field.formfield(widget=TinyMCE())
         return super(ActivityAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = [
+            ('Overview',
+                {'fields': [
+                    'id_number', 'title', 'slug', 'pedagogical_purpose_type',
+                    'description', 'subtitle_guiding_question',
+                    'directions', 'duration', 'standards'
+                 ],
+                 'classes': ['collapse']}),
+            ('Directions', {'fields': ['assessment_type', 'assessment', 'tips'], 'classes': ['collapse']}),
+            ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'teaching_method_types', 'skills'], 'classes': ['collapse']}),
+            ('Preparation',
+                {'fields': [
+                    'materials', 'tech_setup_types', 'plugin_types',
+                    'physical_space_types', 'setup', 'grouping_types',
+                    'accessibility_notes', 'other_notes', 'prior_activities'
+                 ],
+                 'classes': ['collapse']}),
+            ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge'], 'classes': ['collapse']}),
+            ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
+            ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
+        ]
+        for field in REQUIRED_FIELDS:
+            fieldsets[0][1]['fields'].insert(4, field[0])
+        return fieldsets
 
 class ActivityInline(admin.TabularInline):
     model = LessonActivity
@@ -79,8 +122,6 @@ if RELATION_MODELS:
 class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
-
-    __original_values = {}
 
     def __init__(self, *args, **kwargs):
         super(LessonForm, self).__init__(*args, **kwargs)
@@ -111,7 +152,6 @@ class LessonForm(forms.ModelForm):
                 lr.object_id = self.cleaned_data[field_name].id
                 lr.content_object = self.cleaned_data[field_name]
                 lr.save()
-      # print self._errors
         return cleaned_data
 
 class LessonAdmin(admin.ModelAdmin):
