@@ -99,7 +99,7 @@ class ActivityAdmin(admin.ModelAdmin):
                     'directions', 'duration', 'standards'
                  ],
                  'classes': ['collapse']}),
-            ('Directions', {'fields': ['assessment_type', 'assessment', 'tips'], 'classes': ['collapse']}),
+            ('Directions', {'fields': ['assessment_type', 'assessment', 'tips', 'extending_the_learning'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'teaching_method_types', 'skills'], 'classes': ['collapse']}),
             ('Preparation',
                 {'fields': [

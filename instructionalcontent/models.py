@@ -168,6 +168,7 @@ class Activity(models.Model):
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     description = models.TextField()
     duration = models.IntegerField(verbose_name="Duration Minutes")
+    extending_the_learning = models.TextField(blank=True, null=True)
     grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(blank=True, null=True)
     is_modular = models.BooleanField(default=True)
