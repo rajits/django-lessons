@@ -1,4 +1,4 @@
-from lessons.models import *
+from models import *
 from edumetadata.models import Grade, Subject
 
 def init_data():

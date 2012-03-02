@@ -5,13 +5,15 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^lessons/', include('lessons.urls')),
+    (r'^instructionalcontent/', include('instructionalcontent.urls')),
     (r'^concepts/', include('concepts.urls')),
+  # (r'^publishing/', include('publisher.urls')),
+    (r'^admin/', include(admin.site.urls)),
 )
 
 urlpatterns += patterns('',
     url(r'^tinymce/', include('tinymce.urls')),
-    url(r'^admin/(.*)', admin.site.root),
+  # url(r'^admin/(.*)', admin.site.root),
     url(r'^%s(?P<path>.*)$' % settings.MEDIA_URL[1:],
         'django.views.static.serve', {"document_root": settings.MEDIA_ROOT}),
 )
