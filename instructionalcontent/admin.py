@@ -71,19 +71,30 @@ class ActivityForm(forms.ModelForm):
       # print self._errors
         return cleaned_data
 
-class ActivityAdmin(admin.ModelAdmin):
-    filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
-    form = ActivityForm
-    if RELATION_MODELS:
-        inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline, InlineActivityRelation]
-    else:
-        inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
+class ContentAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 
     class Media:
         js = (JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
               JAVASCRIPT_URL + 'genericcollections.js',
               JAVASCRIPT_URL + 'admin.js')
+
+    def grade_levels(self, obj):
+        levels = ""
+        for grade in obj.grades.all():
+            levels += grade.name + ', '
+        return levels.rstrip(', ')
+
+class ActivityAdmin(ContentAdmin):
+    filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
+    form = ActivityForm
+    if RELATION_MODELS:
+        inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline, InlineActivityRelation]
+    else:
+        inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
+    list_display = ('title', 'description', 'pedagogical_purpose_type', 'grade_levels')
+    list_filter = ('pedagogical_purpose_type',)
+    search_fields = ['title', 'subtitle_guiding_question', 'description', 'id_number']
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('accessibility_notes', 'assessment', 'background_information', 'description', 'directions', 'learning_objectives', 'prior_knowledge', 'subtitle_guiding_question'):
@@ -166,19 +177,15 @@ class LessonForm(forms.ModelForm):
                 lr.save()
         return cleaned_data
 
-class LessonAdmin(admin.ModelAdmin):
+class LessonAdmin(ContentAdmin):
     filter_horizontal = ['grades', 'materials', 'secondary_types', 'subjects']
     form = LessonForm
     if RELATION_MODELS:
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
     else:
         inlines = [ActivityInline,]
-    prepopulated_fields = {"slug": ("title",)}
-
-    class Media:
-        js = (JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
-              JAVASCRIPT_URL + 'genericcollections.js',
-              JAVASCRIPT_URL + 'admin.js')
+    list_display = ('title', 'description', 'grade_levels')
+    search_fields = ['title', 'description', 'id_number']
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('assessment', 'background_information', 'description', 'learning_objectives'):
