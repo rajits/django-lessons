@@ -16,6 +16,14 @@ class VocabularyInline(admin.TabularInline):
     model = Vocabulary
     raw_id_fields = ('glossary_term',)
 
+class QuestionAnswerInline(admin.TabularInline):
+    model = QuestionAnswerItem
+    raw_id_fields = ('questionanswer',)
+
+class ResourceInline(admin.TabularInline):
+    model = ResourceItem
+    raw_id_fields = ('resource',)
+
 if RELATION_MODELS:
     class ActivityFormSet(forms.models.BaseInlineFormSet):
         def get_queryset(self):
@@ -67,9 +75,9 @@ class ActivityAdmin(admin.ModelAdmin):
     filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
     form = ActivityForm
     if RELATION_MODELS:
-        inlines = [ConceptItemInline, VocabularyInline, InlineActivityRelation]
+        inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline, InlineActivityRelation]
     else:
-        inlines = [ConceptItemInline, VocabularyInline]
+        inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
     prepopulated_fields = {"slug": ("title",)}
 
     class Media:
