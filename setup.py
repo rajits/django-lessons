@@ -19,12 +19,12 @@ def get_readme():
     return ''
 
 # Use the docstring of the __init__ file to be the description
-__import__('lessons')
-DESC = " ".join(sys.modules['lessons'].__doc__.splitlines()).strip()
+__import__('instructionalcontent')
+DESC = " ".join(sys.modules['instructionalcontent'].__doc__.splitlines()).strip()
 
 setup(
     name = "django-lessons",
-    version = sys.modules['lessons'].get_version().replace(' ', '-'),
+    version = sys.modules['instructionalcontent'].get_version().replace(' ', '-'),
     url = 'github.com',
     author = 'rsarkar',
     author_email = 'rsarkar@celerity.com',
