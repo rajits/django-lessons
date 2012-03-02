@@ -10,6 +10,7 @@ from BeautifulSoup import BeautifulSoup
 from edumetadata.models import *
 #from publisher import register
 #from publisher.models import Publish
+from education.edu_core.models import GlossaryTerm
 
 ASSESSMENT_TYPES = (
     ('alternative', 'Alternative Assessment'),
@@ -217,6 +218,13 @@ class Activity(models.Model):
     class Meta:
         ordering = ["title"]
         verbose_name_plural = 'Activities'
+
+class Vocabulary(models.Model):
+    activity = models.ForeignKey(Activity)
+    glossary_term = models.ForeignKey(GlossaryTerm)
+
+    class Meta:
+        verbose_name_plural = 'Vocabulary'
 
 relation_limits = reduce(lambda x,y: x|y, RELATIONS)
 

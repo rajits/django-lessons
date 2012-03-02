@@ -12,6 +12,10 @@ from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 from tinymce.widgets import TinyMCE
 from concepts.admin import ConceptItemInline
 
+class VocabularyInline(admin.TabularInline):
+    model = Vocabulary
+    raw_id_fields = ('glossary_term',)
+
 if RELATION_MODELS:
     class ActivityFormSet(forms.models.BaseInlineFormSet):
         def get_queryset(self):
@@ -63,9 +67,9 @@ class ActivityAdmin(admin.ModelAdmin):
     filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
     form = ActivityForm
     if RELATION_MODELS:
-        inlines = [ConceptItemInline, InlineActivityRelation,]
+        inlines = [ConceptItemInline, VocabularyInline, InlineActivityRelation]
     else:
-        inlines = [ConceptItemInline,]
+        inlines = [ConceptItemInline, VocabularyInline]
     prepopulated_fields = {"slug": ("title",)}
 
     class Media:
