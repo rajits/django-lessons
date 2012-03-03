@@ -118,7 +118,7 @@ class TeachingMethodType(models.Model):
         return self.name
 
 class TechSetupType(models.Model):
-    title = models.CharField(max_length=38)
+    title = models.CharField(max_length=64)
 
     def __unicode__(self):
         return self.title
