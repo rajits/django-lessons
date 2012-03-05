@@ -114,7 +114,7 @@ class ContentManager(models.Manager):
         return qs.filter(published=True)
 
 class Activity(models.Model):
-    ads_excluded = models.BooleanField(default=True, verbose_name="Are ads excluded?")
+    ads_excluded = models.BooleanField(default=True, verbose_name="Are ads excluded?", help_text="Are all ads excluded?")
     assessment = models.TextField()
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     description = models.TextField()
@@ -122,7 +122,7 @@ class Activity(models.Model):
     extending_the_learning = models.TextField(blank=True, null=True)
     grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(blank=True, null=True)
-    is_modular = models.BooleanField(default=True)
+    is_modular = models.BooleanField(default=True, help_text="Modular means that the activity is stand-alone.")
     is_msw = models.BooleanField(verbose_name="Is model student work")
     is_pip = models.BooleanField(verbose_name="Is picture of practice")
     learner_group = models.SmallIntegerField(blank=True, null=True, choices=LEARNER_GROUP_TYPES)
@@ -218,7 +218,7 @@ class ActivityRelation(models.Model):
         return out
 
 class Lesson(models.Model): # Publish):
-    ads_excluded = models.BooleanField()
+    ads_excluded = models.BooleanField(help_text="Are all ads excluded?")
     assessment = models.TextField(blank=True, null=True)
     background_information = models.TextField(blank=True, null=True) 
     create_date = models.DateTimeField(auto_now_add=True)
@@ -227,7 +227,7 @@ class Lesson(models.Model): # Publish):
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
     grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(blank=True, null=True)
-    is_modular = models.BooleanField()
+    is_modular = models.BooleanField(help_text="Modular means that the activity is stand-alone.")
     last_updated_date = models.DateTimeField(auto_now=True)
     learning_objectives = models.TextField(blank=True, null=True)
     materials = models.ManyToManyField(Material, blank=True, null=True)
