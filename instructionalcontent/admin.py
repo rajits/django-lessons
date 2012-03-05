@@ -80,10 +80,7 @@ class ContentAdmin(admin.ModelAdmin):
               JAVASCRIPT_URL + 'admin.js')
 
     def grade_levels(self, obj):
-        levels = ""
-        for grade in obj.grades.all():
-            levels += grade.name + ', '
-        return levels.rstrip(', ')
+        return obj.grades.all().as_grade_range()
 
 class ActivityAdmin(ContentAdmin):
     filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']

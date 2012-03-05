@@ -52,8 +52,8 @@ DEFAULT_SETTINGS = {
         ('object', 'Object-based learning'),
         ('project', 'Project-based learning'),
         ('thematic', 'Thematic approach'),
-    )
-    'JAVASCRIPT_URL': MEDIA_URL + 'js/'
+    ),
+    'JAVASCRIPT_URL': settings.MEDIA_URL + 'js/'
 }
 
 DEFAULT_SETTINGS.update(getattr(settings, 'LESSON_SETTINGS', {}))
