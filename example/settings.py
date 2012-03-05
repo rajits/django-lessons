@@ -138,12 +138,6 @@ LESSON_SETTINGS = {
         ('resource_carousel', 'dummy.resourcecarousel'),
         ('key_image', 'dummy.photo'),
     ),
-    'PEDAGOGICAL_PURPOSE_TYPE_CHOICES': (
-        ('A', 'apply'),
-        ('D', 'develop'),
-        ('E', 'engage'),
-    ),
-    'JAVASCRIPT_URL': MEDIA_URL + 'js/'
 }
 
 CATEGORIES_SETTINGS = {

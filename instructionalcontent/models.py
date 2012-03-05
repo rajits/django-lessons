@@ -4,61 +4,13 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.localflavor.us.us_states import STATE_CHOICES
 
-from settings import PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
+from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, TEACHING_APPROACH_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
 from BeautifulSoup import BeautifulSoup
 from edumetadata.models import *
 #from publisher import register
 #from publisher.models import Publish
 from education.edu_core.models import GlossaryTerm, QuestionAnswer, Resource
-
-ASSESSMENT_TYPES = (
-    ('alternative', 'Alternative Assessment'),
-    ('authentic', 'Authentic Assessment'),
-    ('informal', 'Informal Assessment'),
-    ('observation', 'Observation'),
-    ('peer-evaluation', 'Peer Evaluation'),
-    ('portfolio', 'Portfolio Assessment'),
-    ('rubric', 'Rubric'),
-    ('self', 'Self Assessment'),
-    ('standardized', 'Standardized Testing'),
-    ('testing', 'Testing'),
-)
-
-LEARNER_GROUP_TYPES = (
-    (1, 'Advanced Placement'),
-    (2, 'English Language Learners (ELL)'),
-    (3, 'Gifted and Talented'),
-    (4, 'International Baccalaureate'),
-    (5, 'Special Education'),
-    (6, 'Struggling Students'),
-    (7, 'Adult Education'),
-    (8, 'Continuing Education'),
-)
-
-STANDARD_TYPES = (
-    ('language', 'IRA/NCTE Standards for the English Language Arts'),
-    ('social-studies', 'National Council for Social Studies Curriculum Standards'),
-    ('geography', 'National Geography Standards'),
-    ('science', 'National Science Education Standards'),
-    ('art', 'National Standards for Arts Education'),
-    ('history', 'National Standards for History'),
-    ('math', 'NCTM Principles and Standards for School Mathematics'),
-    ('ocean', 'Ocean Literacy Essential Principles and Fundamental Concepts'),
-    ('state', 'TEST: State Standards'),
-    ('econ', 'Voluntary National Content Standards in Economics'),
-)
-
-TEACHING_APPROACH_TYPES = (
-    ('constructivist', 'constructivist'),
-    ('inquiry', 'Inquiry-based learning'),
-    ('interdisciplinary', 'Interdisciplinary'),
-    ('for-use', 'Learning-for-use'),
-    ('montessori', 'Montessori'),
-    ('object', 'Object-based learning'),
-    ('project', 'Project-based learning'),
-    ('thematic', 'Thematic approach'),
-)
 
 def ul_as_list(html):
     soup = BeautifulSoup(html)
