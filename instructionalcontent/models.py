@@ -91,7 +91,6 @@ class PhysicalSpaceType(models.Model):
 
 class PluginType(models.Model):
     name = models.CharField(max_length=128)
-    thinkfinity_code = models.CharField(max_length=128)
     source_url = models.CharField(max_length=128)
 
     def __unicode__(self):
