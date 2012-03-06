@@ -104,7 +104,7 @@ class ActivityAdmin(ContentAdmin):
                     'id_number', 'title', 'slug', 'pedagogical_purpose_type',
                     'description', 'subtitle_guiding_question',
                     'directions', 'duration', 'standards',
-                    'notes_on_readability_score', 'is_modular', 'is_excluded'
+                    'notes_on_readability_score', 'is_modular', 'ads_excluded'
                  ],
                  'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment_type', 'assessment', 'tips', 'extending_the_learning'], 'classes': ['collapse']}),
@@ -181,7 +181,7 @@ class LessonAdmin(ContentAdmin):
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
     else:
         inlines = [ActivityInline,]
-    list_display = ('title', 'description', 'grade_levels')
+    list_display = ('title', 'description', 'appropriate_for', 'grade_levels')
     search_fields = ['title', 'description', 'id_number']
 
     def formfield_for_dbfield(self, db_field, **kwargs):
