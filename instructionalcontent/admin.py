@@ -17,8 +17,7 @@ class VocabularyInline(admin.TabularInline):
     raw_id_fields = ('glossary_term',)
 
 class QuestionAnswerInline(admin.TabularInline):
-    model = QuestionAnswerItem
-    raw_id_fields = ('questionanswer',)
+    model = QuestionAnswer
 
 class ResourceInline(admin.TabularInline):
     model = ResourceItem
@@ -104,7 +103,8 @@ class ActivityAdmin(ContentAdmin):
                 {'fields': [
                     'id_number', 'title', 'slug', 'pedagogical_purpose_type',
                     'description', 'subtitle_guiding_question',
-                    'directions', 'duration', 'standards'
+                    'directions', 'duration', 'standards',
+                    'notes_on_readability_score', 'is_modular', 'is_excluded'
                  ],
                  'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment_type', 'assessment', 'tips', 'extending_the_learning'], 'classes': ['collapse']}),
@@ -113,7 +113,7 @@ class ActivityAdmin(ContentAdmin):
                 {'fields': [
                     'materials', 'tech_setup_types', 'plugin_types',
                     'physical_space_types', 'setup', 'grouping_types',
-                    'accessibility_notes', 'other_notes', 'prior_activities', 'is_pip', 'is_msw'
+                    'accessibility_notes', 'other_notes', 'prior_activities'
                  ],
                  'classes': ['collapse']}),
             ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge'], 'classes': ['collapse']}),

@@ -10,7 +10,7 @@ from BeautifulSoup import BeautifulSoup
 from edumetadata.models import *
 #from publisher import register
 #from publisher.models import Publish
-from education.edu_core.models import GlossaryTerm, QuestionAnswer, Resource
+from education.edu_core.models import GlossaryTerm, Resource
 
 def ul_as_list(html):
     soup = BeautifulSoup(html)
@@ -123,8 +123,6 @@ class Activity(models.Model):
     grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(blank=True, null=True)
     is_modular = models.BooleanField(default=True, help_text="Modular means that the activity is stand-alone.")
-    is_msw = models.BooleanField(verbose_name="Is model student work")
-    is_pip = models.BooleanField(verbose_name="Is picture of practice")
     learner_group = models.SmallIntegerField(blank=True, null=True, choices=LEARNER_GROUP_TYPES)
     notes_on_readability_score = models.TextField(blank=True, null=True)
     pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
@@ -178,9 +176,15 @@ class Vocabulary(models.Model):
     class Meta:
         verbose_name_plural = 'Vocabulary'
 
-class QuestionAnswerItem(models.Model):
+class QuestionAnswer(models.Model):
     activity = models.ForeignKey(Activity)
-    questionanswer = models.ForeignKey(QuestionAnswer, related_name='question_answer')
+    question = models.TextField()
+    answer = models.TextField()
+
+    def __unicode__(self):
+        # truncate
+        limit = 44
+        return self.question[:limit] + (self.question[limit:] and '...')
 
 class ResourceItem(models.Model):
     activity = models.ForeignKey(Activity)
