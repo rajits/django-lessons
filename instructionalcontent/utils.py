@@ -14,14 +14,13 @@ def init_data():
     if created:
         a.description = '''Students examine maps that show physical and cultural features of a fictitious area. Students draw borders based on how they think the land 
                         should be divided.'''
-        a.subtitle_guiding_question = '''<!-- SANITIZE EXEMPT --><!-- SANITIZE EXEMPT -->
-                                      <p>How are regions defined? How are land and resources divided <br />among countries?</p>'''
-        a.learning_objectives = '''<!-- SANITIZE EXEMPT --><p>Students will be able to:</p>
+        a.subtitle_guiding_question = '''<p>How are regions defined? How are land and resources divided <br />among countries?</p>'''
+        a.learning_objectives = '''<p>Students will be able to:</p>
                                 <ul>
                                 <li>consider how physical and cultural features could be used to define country borders </li>
                                 <li>discuss their ideas about which features are most important in establishing good borders</li>
                                 </ul>'''
-        a.background_information = '''<!-- SANITIZE EXEMPT --><p>Maps can be used as tools to help us understand our world. Specifically, 
+        a.background_information = '''<p>Maps can be used as tools to help us understand our world. Specifically, 
                                    maps can help demonstrate how borders intersect physical and human geographical features, and how 
                                    those intersections can lead to cooperation and/or conflict. Borders of regions or of countries define an 
                                    area, which has a particular shape and size. Sometimes physical features define the border of a region or 
@@ -33,13 +32,13 @@ def init_data():
                                    in which human activity is structured; for example, land use, transportation, and settlement patterns. 
                                    Sometimes the shape and size suggest that a country may want to expand its borders in order to 
                                    increase its size, change its shape, and/or control more resources.</p>'''
-        a.prior_knowledge = '<!-- SANITIZE EXEMPT --><ul><li>None</li></ul>'
-        a.other_notes = '''<!-- SANITIZE EXEMPT --><p>Optional: Before starting the activity, increase the size and make 
+        a.prior_knowledge = '<ul><li>None</li></ul>'
+        a.other_notes = '''<p>Optional: Before starting the activity, increase the size and make 
                         full-sized transparencies of the four maps on the worksheet Draw  Political Borders, by printing the 
                         images on transparency paper.</p>'''
       # a.directions = '''<!-- SANITIZE EXEMPT --><p><strong>1. Activate students' prior knowledge and introduce vocabulary. </strong></p>'''
         a.assessment_type = 'informal'
-        a.assessment = '''<!-- SANITIZE EXEMPT --><p>During the small group discussions, ask students to explain their 
+        a.assessment = '''<p>During the small group discussions, ask students to explain their 
                        understanding of borders and regions, and their reasons for creating borders where they did on their 
                        maps. Encourage students to use the information in the Religions, Mountains and Rivers, and Languages 
                        maps in their explanations.</p>'''
@@ -108,15 +107,15 @@ def init_data():
                                                  pedagogical_purpose_type=2,
                                                  duration=50)
     if created:
-        a2.description = '''<!-- SANITIZE EXEMPT --><p>Students compare their border selections based on physical and cultural 
+        a2.description = '''<p>Students compare their border selections based on physical and cultural 
                          features. They discuss other factors that could impact where borders are established.</p>'''
-        a2.subtitle_guiding_question = '''<!-- SANITIZE EXEMPT --><p>What factors impact where borders are established?</p>'''
-        a2.learning_objectives = '''<!-- SANITIZE EXEMPT --><p>Students will be able to:</p>
+        a2.subtitle_guiding_question = '''<p>What factors impact where borders are established?</p>'''
+        a2.learning_objectives = '''<p>Students will be able to:</p>
                                 <ul>
                                 <li>explain and compare their border selections based on physical and cultural features </li>
                                 <li>discuss other factors that could impact where borders are established</li>
                                 </ul>'''
-        a2.background_information = '''<!-- SANITIZE EXEMPT --><p>Maps can be used as tools to help us understand our world. Specifically, 
+        a2.background_information = '''<p>Maps can be used as tools to help us understand our world. Specifically, 
                                     maps can help demonstrate how borders intersect physical and human geographical features, and how 
                                     those intersections can lead to cooperation and/or conflict. Borders of regions or of countries define an 
                                     area, which has a particular shape and size. Sometimes physical features define the border of a region or 
@@ -128,10 +127,10 @@ def init_data():
                                     in which human activity is structured; for example, land use, transportation, and settlement patterns. 
                                     Sometimes the shape and size suggest that a country may want to expand its borders in order to 
                                     increase its size, change its shape, and/or control more resources.</p>'''
-        a2.prior_knowledge = '<!-- SANITIZE EXEMPT --><ul><li>None</li></ul>'
+        a2.prior_knowledge = '<ul><li>None</li></ul>'
       # a.directions = '''<!-- SANITIZE EXEMPT --><p><strong>1. Activate students' prior knowledge and introduce vocabulary. </strong></p>'''
         a2.assessment_type = 'informal'
-        a2.assessment = '''<!-- SANITIZE EXEMPT --><p>Evaluate students based on their participation in the whole-class 
+        a2.assessment = '''<p>Evaluate students based on their participation in the whole-class 
                         discussion.</p>'''
         a2.internet_access_type = 'no'
         a2.teaching_approach_type = 'for-use'
