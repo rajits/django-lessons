@@ -119,6 +119,7 @@ class ActivityAdmin(ContentAdmin):
             ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge'], 'classes': ['collapse']}),
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
             ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
+            ('Time and Date Metadata', {'fields': ['relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:
@@ -200,7 +201,7 @@ class LessonAdmin(ContentAdmin):
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
             ('Global Metadata', {'fields': ['secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
             ('Content Related Metadata', {'fields': [], 'classes': ['collapse']}),
-            ('Time and Date Metadata', {'fields': ['geologic_time'], 'classes': ['collapse']}),
+            ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:

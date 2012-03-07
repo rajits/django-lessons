@@ -9,6 +9,7 @@ from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, TEAC
 from BeautifulSoup import BeautifulSoup
 from credits.models import CreditGroup
 from edumetadata.models import *
+from edumetadata.fields import HistoricalDateField
 #from publisher import register
 #from publisher.models import Publish
 from education.edu_core.models import GlossaryTerm, Resource
@@ -164,6 +165,10 @@ class Activity(models.Model):
   # Credits, Sponsors, Partners
     credit = models.ForeignKey(CreditGroup)
 
+  # Time and Date Metadata
+    relevant_start_date = HistoricalDateField()
+    relevant_end_date = HistoricalDateField()
+
     objects = ContentManager()
 
     def __unicode__(self):
@@ -250,6 +255,10 @@ class Lesson(models.Model): # Publish):
 
   # Credits, Sponsors, Partners
     credit = models.ForeignKey(CreditGroup)
+
+  # Time and Date Metadata
+    relevant_start_date = HistoricalDateField()
+    relevant_end_date = HistoricalDateField()
 
     objects = ContentManager()
 
