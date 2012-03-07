@@ -19,6 +19,11 @@ class VocabularyInline(admin.TabularInline):
 class QuestionAnswerInline(admin.TabularInline):
     model = QuestionAnswer
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name in ('question', 'answer'):
+            return db_field.formfield(widget=TinyMCE(mce_attrs={'width': 375, 'height': 125}))
+        return super(QuestionAnswerInline, self).formfield_for_dbfield(db_field, **kwargs)
+
 class ResourceInline(admin.TabularInline):
     model = ResourceItem
     raw_id_fields = ('resource',)
