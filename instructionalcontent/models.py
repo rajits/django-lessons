@@ -163,12 +163,12 @@ class Activity(models.Model):
     prior_knowledge = models.TextField()
 
   # Credits, Sponsors, Partners
-    credit = models.ForeignKey(CreditGroup)
+    credit = models.ForeignKey(CreditGroup, blank=True, null=True)
 
   # Time and Date Metadata
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
-    relevant_start_date = HistoricalDateField()
-    relevant_end_date = HistoricalDateField()
+    relevant_start_date = HistoricalDateField(blank=True, null=True)
+    relevant_end_date = HistoricalDateField(blank=True, null=True)
 
     objects = ContentManager()
 
@@ -255,11 +255,11 @@ class Lesson(models.Model): # Publish):
     title = models.CharField(max_length=128)
 
   # Credits, Sponsors, Partners
-    credit = models.ForeignKey(CreditGroup)
+    credit = models.ForeignKey(CreditGroup, blank=True, null=True)
 
   # Time and Date Metadata
-    relevant_start_date = HistoricalDateField()
-    relevant_end_date = HistoricalDateField()
+    relevant_start_date = HistoricalDateField(blank=True, null=True)
+    relevant_end_date = HistoricalDateField(blank=True, null=True)
 
     objects = ContentManager()
 
