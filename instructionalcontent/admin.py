@@ -117,6 +117,7 @@ class ActivityAdmin(ContentAdmin):
                  ],
                  'classes': ['collapse']}),
             ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge'], 'classes': ['collapse']}),
+            ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
             ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
@@ -195,7 +196,8 @@ class LessonAdmin(ContentAdmin):
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),
-            ('Background', {'fields': ['background_information'], 'classes': ['collapse']}),
+            ('Background & Vocabulary', {'fields': ['background_information'], 'classes': ['collapse']}),
+            ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
             ('Global Metadata', {'fields': ['secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
             ('Content Related Metadata', {'fields': [], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time'], 'classes': ['collapse']}),

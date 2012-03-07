@@ -2,5 +2,5 @@
 BeautifulSoup
 django-categories==1.0.1b1
 django-concepts==0.2
-django-edumetadata==0.2b2
+django-edumetadata==0.3b1
 # django-publisher==0.1

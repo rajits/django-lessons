@@ -7,6 +7,7 @@ from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, TEACHING_APPROACH_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
 from BeautifulSoup import BeautifulSoup
+from credits.models import CreditGroup
 from edumetadata.models import *
 #from publisher import register
 #from publisher.models import Publish
@@ -160,6 +161,9 @@ class Activity(models.Model):
     background_information = models.TextField()
     prior_knowledge = models.TextField()
 
+  # Credits, Sponsors, Partners
+    credit = models.ForeignKey(CreditGroup)
+
     objects = ContentManager()
 
     def __unicode__(self):
@@ -243,6 +247,9 @@ class Lesson(models.Model): # Publish):
     subjects = models.ManyToManyField(Subject, blank=True, null=True)
     subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
     title = models.CharField(max_length=128)
+
+  # Credits, Sponsors, Partners
+    credit = models.ForeignKey(CreditGroup)
 
     objects = ContentManager()
 

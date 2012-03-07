@@ -4,7 +4,7 @@ from django.conf import settings
 register = template.Library()
 
 tabs = (
-    ('Overview', 'Directions', 'Objectives', 'Background'),
+    ('Overview', 'Directions', 'Objectives', 'Background & Vocabulary', 'Credits, Sponsors, Partners'),
     ('Global Metadata', 'Content Related Metadata', 'Time and Date Metadata', 'Publishing'),
 )
 
