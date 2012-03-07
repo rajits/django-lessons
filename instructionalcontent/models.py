@@ -166,6 +166,7 @@ class Activity(models.Model):
     credit = models.ForeignKey(CreditGroup)
 
   # Time and Date Metadata
+    geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
     relevant_start_date = HistoricalDateField()
     relevant_end_date = HistoricalDateField()
 
