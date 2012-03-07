@@ -93,7 +93,7 @@ class ActivityAdmin(ContentAdmin):
         inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline, InlineActivityRelation]
     else:
         inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
-    list_display = ('title', 'description', 'pedagogical_purpose_type', 'grade_levels')
+    list_display = ('title', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
     list_filter = ('pedagogical_purpose_type',)
     search_fields = ['title', 'subtitle_guiding_question', 'description', 'id_number']
 
@@ -188,7 +188,8 @@ class LessonAdmin(ContentAdmin):
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
     else:
         inlines = [ActivityInline,]
-    list_display = ('title', 'description', 'appropriate_for', 'grade_levels')
+    list_display = ('title', 'description', 'appropriate_for', 'grade_levels', 'published_date')
+    list_filter = ('published_date',)
     search_fields = ['title', 'description', 'id_number']
 
     def formfield_for_dbfield(self, db_field, **kwargs):
