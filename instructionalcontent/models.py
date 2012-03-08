@@ -12,7 +12,7 @@ from edumetadata.models import *
 from edumetadata.fields import HistoricalDateField
 #from publisher import register
 #from publisher.models import Publish
-from education.edu_core.models import GlossaryTerm, Resource
+from education.edu_core.models import GlossaryTerm, Resource, ResourceCarouselSlide
 
 def ul_as_list(html):
     soup = BeautifulSoup(html)
@@ -245,6 +245,7 @@ class Lesson(models.Model): # Publish):
     last_updated_date = models.DateTimeField(auto_now=True)
     learning_objectives = models.TextField(blank=True, null=True)
     materials = models.ManyToManyField(Material, blank=True, null=True)
+    overview_rcslide = models.ForeignKey(ResourceCarouselSlide, null=True, blank=True)
     other_notes = models.TextField(blank=True, null=True)
     published = models.BooleanField()
     published_date = models.DateTimeField(blank=True, null=True)
@@ -384,6 +385,30 @@ class Lesson(models.Model): # Publish):
             subjects |= activity.subjects.all()
         deduped_subjects = set(subjects)
         return list(deduped_subjects)
+
+    # this override is, unfortunately, copied from education.edu_core.models - raj
+    def save(self):
+        from education.edu_core.models import ResourceCarouselModuleType, ResourceCategoryType
+
+        if not self.overview_rcslide:
+            if not self.id:
+                super(Lesson, self).save()
+
+            name = "Overview Lesson %s" % self.id
+            rcs_type = ResourceCarouselModuleType.objects.get(name="Overview Module")
+            _rctype = ResourceCategoryType.objects.get(name="Websites")
+
+            new_rcs = ResourceCarouselSlide.objects.create(
+                    name=name,
+                    title=name,
+                    resource_carousel_module_type=rcs_type,
+                    resource_category_type=_rctype)
+            _ctype = ContentType.objects.get_for_model(Lesson)
+          # new_rcs.object_id_order = u"%s-%s" % (_ctype.id, self.id)
+            new_rcs.save()
+
+            self.overview_rcslide = new_rcs
+        super(Lesson, self).save()
 
 class LessonRelation(models.Model):
     lesson = models.ForeignKey(Lesson)
