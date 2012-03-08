@@ -67,7 +67,7 @@ class ActivityForm(forms.ModelForm):
             elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
                 ar = ActivityRelation()
                 # return an object of the model without saving to the DB
-                ar.lesson = self.instance # self.save(commit=False)
+                ar.activity = self.instance # self.save(commit=False)
                 ar.content_type = ContentType.objects.get(app_label=app_label, model=model)
                 ar.object_id = self.cleaned_data[field_name].id
                 ar.content_object = self.cleaned_data[field_name]
@@ -89,10 +89,10 @@ class ContentAdmin(admin.ModelAdmin):
 class ActivityAdmin(ContentAdmin):
     filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
     form = ActivityForm
+    inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
     if RELATION_MODELS:
-        inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline, InlineActivityRelation]
-    else:
-        inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
+        inlines.append(InlineActivityRelation)
+
     list_display = ('title', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
     list_filter = ('pedagogical_purpose_type',)
     search_fields = ['title', 'subtitle_guiding_question', 'description', 'id_number']
