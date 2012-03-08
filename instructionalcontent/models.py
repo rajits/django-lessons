@@ -80,8 +80,8 @@ class TechSetupType(models.Model):
         ordering = ["title"]
 
 TIP_TYPE_CHOICES = (
-    ('T', 'Tip'),
-    ('M', 'Modification'),
+    (1, 'Tip'),
+    (2, 'Modification'),
 )
 
 class Tip(models.Model):
@@ -245,7 +245,7 @@ class Lesson(models.Model): # Publish):
     last_updated_date = models.DateTimeField(auto_now=True)
     learning_objectives = models.TextField(blank=True, null=True)
     materials = models.ManyToManyField(Material, blank=True, null=True)
-    overview_rcslide = models.ForeignKey(ResourceCarouselSlide, null=True, blank=True)
+    overview_rcslide = models.ForeignKey(ResourceCarouselSlide, null=True, blank=True, related_name="rc_slide")
     other_notes = models.TextField(blank=True, null=True)
     published = models.BooleanField()
     published_date = models.DateTimeField(blank=True, null=True)
