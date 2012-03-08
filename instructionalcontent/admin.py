@@ -106,29 +106,33 @@ class ActivityAdmin(ContentAdmin):
         fieldsets = [
             ('Overview',
                 {'fields': [
-                    'id_number', 'title', 'slug', 'pedagogical_purpose_type',
-                    'description', 'subtitle_guiding_question',
-                    'directions', 'duration', 'standards',
-                    'notes_on_readability_score', 'is_modular', 'ads_excluded'
+                    'appropriate_for', 'title', 'slug',
+                    'subtitle_guiding_question', 'description',
+                    'pedagogical_purpose_type', 'duration', 'id_number',
+                    'is_modular', 'ads_excluded', 'notes_on_readability_score'
                  ],
                  'classes': ['collapse']}),
-            ('Directions', {'fields': ['assessment_type', 'assessment', 'tips', 'extending_the_learning'], 'classes': ['collapse']}),
-            ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'teaching_method_types', 'skills'], 'classes': ['collapse']}),
+            ('Directions', {'fields': ['directions', 'assessment_type', 'assessment', 'extending_the_learning', 'tips'], 'classes': ['collapse']}),
+            ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'skills', 'standards', 'teaching_method_types'], 'classes': ['collapse']}),
             ('Preparation',
                 {'fields': [
-                    'materials', 'tech_setup_types', 'plugin_types',
-                    'physical_space_types', 'setup', 'grouping_types',
-                    'accessibility_notes', 'other_notes', 'prior_activities'
+                    'setup', 'accessibility_notes', 'other_notes',
+                    'grouping_types', 'materials', 'tech_setup_types',
+                    'plugin_types', 'physical_space_types'
                  ],
                  'classes': ['collapse']}),
-            ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge'], 'classes': ['collapse']}),
+            ('Background', {'fields': ['background_information', 'prior_knowledge', 'prior_activities'], 'classes': ['collapse']}),
+          # ('Vocabulary', {'fields': [], 'classes': ['collapse']}),
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
-            ('Global Metadata', {'fields': ['grades'], 'classes': ['collapse']}),
+          # ('HTML Header Metadata', {'fields': [], 'classes': ['collapse']}),
+            ('Content Related Metadata', {'fields': ['subjects', 'grades'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
+        index = fieldsets.index(('Content Related Metadata', {'fields': ['subjects', 'grades'], 'classes': ['collapse']}))
+        fieldsets[index][1]['fields'] = ['primary_category', 'secondary_categories']
         return fieldsets
 
 class ActivityInline(admin.TabularInline):
@@ -199,7 +203,7 @@ class LessonAdmin(ContentAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
-            ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
+            ('Overview', {'fields': ['appropriate_for', 'title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),
@@ -212,7 +216,8 @@ class LessonAdmin(ContentAdmin):
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
-        fieldsets[6][1]['fields'] = ['primary_category', 'secondary_categories']
+        index = fieldsets.index(('Content Related Metadata', {'fields': [], 'classes': ['collapse']}))
+        fieldsets[index][1]['fields'] = ['primary_category', 'secondary_categories']
         return fieldsets
 
 class StandardAdmin(admin.ModelAdmin):
