@@ -103,9 +103,10 @@ class Standard(models.Model):
     state = models.CharField(max_length=2, null=True, blank=True, choices=STATE_CHOICES)
     url = models.CharField(max_length=128, null=True, blank=True)
     when_updated = models.DateTimeField(null=True, blank=True, auto_now=True)
+    grades = models.ManyToManyField(Grade)
 
     def __unicode__(self):
-        return self.name
+        return "%s: %s" % (self.get_standard_type_display(), self.name)
 
     class Meta:
         ordering = ["name"]

@@ -210,10 +210,13 @@ class LessonAdmin(ContentAdmin):
         fieldsets[index][1]['fields'] = ['primary_category', 'secondary_categories']
         return fieldsets
 
+class StandardAdmin(admin.ModelAdmin):
+    filter_horizontal = ['grades']
+
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(GroupingType)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Material)
-admin.site.register(Standard)
+admin.site.register(Standard, StandardAdmin)
 admin.site.register(TeachingMethodType)
 admin.site.register(Tip)
