@@ -152,7 +152,7 @@ class Activity(models.Model):
     grouping_types = models.ManyToManyField(GroupingType)
     other_notes = models.TextField(blank=True, null=True)
     physical_space_types = models.ManyToManyField(PhysicalSpaceType)
-    prior_activities = models.ManyToManyField('self', verbose_name="Recommended Prior Activities")
+    prior_activities = models.ManyToManyField('self', blank=True, null=True, verbose_name="Recommended Prior Activities")
     setup = models.TextField(blank=True, null=True)
    #Required Technology
     plugin_types = models.ForeignKey(PluginType, blank=True, null=True)
