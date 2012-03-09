@@ -97,11 +97,6 @@ class ActivityAdmin(ContentAdmin):
     list_filter = ('pedagogical_purpose_type',)
     search_fields = ['title', 'subtitle_guiding_question', 'description', 'id_number']
 
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name in ('accessibility_notes', 'assessment', 'background_information', 'description', 'directions', 'learning_objectives', 'prior_knowledge', 'subtitle_guiding_question'):
-            return db_field.formfield(widget=TinyMCE())
-        return super(ActivityAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
             ('Overview',
@@ -196,11 +191,6 @@ class LessonAdmin(ContentAdmin):
     list_filter = ('published_date',)
     search_fields = ['title', 'description', 'id_number']
 
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name in ('assessment', 'background_information', 'description', 'learning_objectives'):
-            return db_field.formfield(widget=TinyMCE())
-        return super(LessonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
             ('Overview', {'fields': ['appropriate_for', 'title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
@@ -220,22 +210,10 @@ class LessonAdmin(ContentAdmin):
         fieldsets[index][1]['fields'] = ['primary_category', 'secondary_categories']
         return fieldsets
 
-class StandardAdmin(admin.ModelAdmin):
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name in ('definition'):
-            return db_field.formfield(widget=TinyMCE())
-        return super(StandardAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-
-class TipAdmin(admin.ModelAdmin):
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name in ('body'):
-            return db_field.formfield(widget=TinyMCE())
-        return super(TipAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(GroupingType)
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Material)
-admin.site.register(Standard, StandardAdmin)
+admin.site.register(Standard)
 admin.site.register(TeachingMethodType)
-admin.site.register(Tip, TipAdmin)
+admin.site.register(Tip)
