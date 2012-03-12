@@ -202,14 +202,11 @@ class LessonAdmin(ContentAdmin):
             ('Background & Vocabulary', {'fields': ['background_information'], 'classes': ['collapse']}),
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
             ('Global Metadata', {'fields': ['secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
-            ('Content Related Metadata', {'fields': [], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
-        index = fieldsets.index(('Content Related Metadata', {'fields': [], 'classes': ['collapse']}))
-        fieldsets[index][1]['fields'] = ['primary_category', 'secondary_categories']
         return fieldsets
 
 class StandardAdmin(admin.ModelAdmin):
