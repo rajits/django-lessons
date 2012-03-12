@@ -17,6 +17,7 @@ class VocabularyInline(admin.TabularInline):
     raw_id_fields = ('glossary_term',)
 
 class QuestionAnswerInline(admin.TabularInline):
+    extra = 1
     model = QuestionAnswer
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -87,7 +88,7 @@ class ContentAdmin(admin.ModelAdmin):
         return obj.grades.all().as_grade_range()
 
 class ActivityAdmin(ContentAdmin):
-    filter_horizontal = ['materials', 'physical_space_types', 'prior_activities', 'skills', 'tech_setup_types', 'tips']
+    filter_horizontal = ['grades', 'grouping_types', 'materials', 'physical_space_types', 'prior_activities', 'skills', 'standards', 'subjects', 'teaching_method_types', 'tech_setup_types', 'tips']
     form = ActivityForm
     inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
     if RELATION_MODELS:
@@ -108,7 +109,7 @@ class ActivityAdmin(ContentAdmin):
                  ],
                  'classes': ['collapse']}),
             ('Directions', {'fields': ['directions', 'assessment_type', 'assessment', 'extending_the_learning', 'tips'], 'classes': ['collapse']}),
-            ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'skills', 'standards', 'teaching_method_types'], 'classes': ['collapse']}),
+            ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'teaching_method_types', 'skills', 'standards'], 'classes': ['collapse']}),
             ('Preparation',
                 {'fields': [
                     'setup', 'accessibility_notes', 'other_notes',
@@ -127,7 +128,8 @@ class ActivityAdmin(ContentAdmin):
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
         index = fieldsets.index(('Content Related Metadata', {'fields': ['subjects', 'grades'], 'classes': ['collapse']}))
-        fieldsets[index][1]['fields'] = ['primary_category', 'secondary_categories']
+        fieldsets[index][1]['fields'].insert(0, 'primary_category')
+        fieldsets[index][1]['fields'].insert(1, 'secondary_categories')
         return fieldsets
 
 class ActivityInline(admin.TabularInline):
