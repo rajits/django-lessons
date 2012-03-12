@@ -26,7 +26,7 @@ class GroupingType(models.Model):
         return self.name
 
 class Material(models.Model):
-    name = models.CharField(max_length=128)
+    name = models.TextField()
 
     def __unicode__(self):
         return self.name
@@ -110,6 +110,7 @@ class ContentManager(models.Manager):
         return qs.filter(published=True)
 
 class Activity(models.Model):
+    title = models.TextField(help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
     ads_excluded = models.BooleanField(default=True, verbose_name="Are ads excluded?", help_text="If unchecked, this field indicates that external ads are allowed.")
     assessment = models.TextField()
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
@@ -128,7 +129,6 @@ class Activity(models.Model):
     standards = models.ManyToManyField(Standard)
     subjects = models.ManyToManyField(Subject, limit_choices_to={'parent__isnull': False}, verbose_name="Subjects and Disciplines")
     subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
-    title = models.CharField(max_length=128, help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
 
    #Directions
     directions = models.TextField()

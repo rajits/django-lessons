@@ -13,6 +13,7 @@ from tinymce.widgets import TinyMCE
 from concepts.admin import ConceptItemInline
 
 class VocabularyInline(admin.TabularInline):
+    extra = 10
     model = Vocabulary
     raw_id_fields = ('glossary_term',)
 
@@ -22,7 +23,7 @@ class QuestionAnswerInline(admin.TabularInline):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('question', 'answer'):
-            return db_field.formfield(widget=TinyMCE(mce_attrs={'width': 375, 'height': 125}))
+            return db_field.formfield(widget=TinyMCE(mce_attrs={'theme': "simple", 'width': 30, 'height': 5}))
         return super(QuestionAnswerInline, self).formfield_for_dbfield(db_field, **kwargs)
 
 class ResourceInline(admin.TabularInline):
@@ -193,13 +194,13 @@ class LessonAdmin(ContentAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
-            ('Overview', {'fields': ['appropriate_for', 'title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
+            ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),
             ('Background & Vocabulary', {'fields': ['background_information'], 'classes': ['collapse']}),
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
-            ('Global Metadata', {'fields': ['secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
+            ('Global Metadata', {'fields': ['appropriate_for', 'secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
