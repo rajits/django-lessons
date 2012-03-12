@@ -136,7 +136,7 @@ class Activity(models.Model):
 
    #Objectives
     learning_objectives = models.TextField(help_text="If this activity is part of an already-created lesson and you update the learning objectives, you must also also make the same change in lesson for this field.")
-    skills = models.ManyToManyField(Skill)
+    skills = models.ManyToManyField(Skill, limit_choices_to={'parent__isnull': False})
     teaching_approach_type = models.CharField(max_length=17, choices=TEACHING_APPROACH_TYPES)
     teaching_method_types = models.ManyToManyField(TeachingMethodType)
 
