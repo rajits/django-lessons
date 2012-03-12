@@ -7,6 +7,7 @@ from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, TEACHING_APPROACH_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
 from BeautifulSoup import BeautifulSoup
+from categories.models import Category, CategoryBase
 from credits.models import CreditGroup
 from edumetadata.models import *
 from edumetadata.fields import HistoricalDateField
@@ -53,16 +54,8 @@ class PluginType(models.Model):
     class Meta:
         ordering = ["name"]
 
-class Skill(models.Model):
-    parent_skill = models.ForeignKey('self', blank=True, null=True)
-    name = models.CharField(max_length=128)
+class Skill(CategoryBase):
     url = models.CharField(max_length=128, blank=True, null=True)
-
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ["name"]
 
 class TeachingMethodType(models.Model):
     name = models.CharField(max_length=128)
@@ -133,7 +126,7 @@ class Activity(models.Model):
     published_date = models.DateTimeField(blank=True, null=True)
     slug = models.SlugField(unique=True)
     standards = models.ManyToManyField(Standard)
-    subjects = models.ManyToManyField(Subject, verbose_name="Subjects and Disciplines")
+    subjects = models.ManyToManyField(Subject, limit_choices_to={'parent__isnull': False}, verbose_name="Subjects and Disciplines")
     subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
     title = models.CharField(max_length=128)
 
@@ -165,6 +158,10 @@ class Activity(models.Model):
 
   # Credits, Sponsors, Partners
     credit = models.ForeignKey(CreditGroup, blank=True, null=True)
+
+  # Content Related Metadata
+    category = models.ForeignKey(Category, verbose_name="Primary Category", related_name="primary_category")
+    categories = models.ManyToManyField(Category, verbose_name="Secondary Categories", related_name="secondary_categories")
 
   # Time and Date Metadata
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)

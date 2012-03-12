@@ -96,6 +96,7 @@ class ActivityAdmin(ContentAdmin):
 
     list_display = ('title', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
     list_filter = ('pedagogical_purpose_type',)
+    raw_id_fields = ("credit",)
     search_fields = ['title', 'subtitle_guiding_question', 'description', 'id_number']
 
     def get_fieldsets(self, request, obj=None):
@@ -121,15 +122,12 @@ class ActivityAdmin(ContentAdmin):
           # ('Vocabulary', {'fields': [], 'classes': ['collapse']}),
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
           # ('HTML Header Metadata', {'fields': [], 'classes': ['collapse']}),
-            ('Content Related Metadata', {'fields': ['subjects', 'grades'], 'classes': ['collapse']}),
+            ('Content Related Metadata', {'fields': ['primary_category', 'secondary_categories', 'subjects', 'grades'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in REQUIRED_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
-        index = fieldsets.index(('Content Related Metadata', {'fields': ['subjects', 'grades'], 'classes': ['collapse']}))
-        fieldsets[index][1]['fields'].insert(0, 'primary_category')
-        fieldsets[index][1]['fields'].insert(1, 'secondary_categories')
         return fieldsets
 
 class ActivityInline(admin.TabularInline):
