@@ -230,6 +230,7 @@ class ActivityRelation(models.Model):
         return out
 
 class Lesson(models.Model): # Publish):
+    title = models.TextField(help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
     ads_excluded = models.BooleanField(help_text="If unchecked, this field indicates that external ads are allowed.")
     create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
@@ -246,7 +247,6 @@ class Lesson(models.Model): # Publish):
     slug = models.SlugField(unique=True, help_text="The URL slug is auto-generated, but producers should adjust it if: a) punctuation in the title causes display errors; and/or b) the title changes after the slug has been generated.")
     subjects = models.ManyToManyField(Subject, blank=True, null=True)
     subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
-    title = models.CharField(max_length=128, help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
 
   # Directions
     assessment = models.TextField(blank=True, null=True, help_text="This field is for a new, lesson-level assessment. It is not impacted by activity-level assessments.")
