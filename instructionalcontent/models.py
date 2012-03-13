@@ -160,8 +160,8 @@ class Activity(models.Model):
     credit = models.ForeignKey(CreditGroup, blank=True, null=True)
 
   # Content Related Metadata
-    category = models.ForeignKey(Category, verbose_name="Primary Category", related_name="primary_category")
-    categories = models.ManyToManyField(Category, verbose_name="Secondary Categories", related_name="secondary_categories")
+    category = models.ForeignKey(Category, blank=True, null=True, verbose_name="Primary Category", related_name="primary_category")
+    categories = models.ManyToManyField(Category, blank=True, null=True, verbose_name="Secondary Categories", related_name="secondary_categories")
 
   # Time and Date Metadata
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)

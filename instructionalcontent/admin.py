@@ -123,7 +123,7 @@ class ActivityAdmin(ContentAdmin):
           # ('Vocabulary', {'fields': [], 'classes': ['collapse']}),
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
           # ('HTML Header Metadata', {'fields': [], 'classes': ['collapse']}),
-            ('Content Related Metadata', {'fields': ['primary_category', 'secondary_categories', 'subjects', 'grades'], 'classes': ['collapse']}),
+            ('Content Related Metadata', {'fields': ['category', 'categories', 'subjects', 'grades'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
