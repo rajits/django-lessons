@@ -10,6 +10,10 @@ from models import *
 from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 
 from tinymce.widgets import TinyMCE
+from audience.admin import appropriate_display
+from audience.models import AUDIENCE_FLAGS
+from audience.widgets import AdminBitFieldWidget
+from bitfield import BitField
 from concepts.admin import ConceptItemInline
 
 class VocabularyInline(admin.TabularInline):
@@ -19,6 +23,13 @@ class VocabularyInline(admin.TabularInline):
 
 class QuestionAnswerInline(admin.TabularInline):
     extra = 1
+    formfield_overrides = {
+        BitField: {
+            'choices': AUDIENCE_FLAGS,
+            'required': False,
+            'widget': AdminBitFieldWidget()
+        }
+    }
     model = QuestionAnswer
 
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -78,10 +89,19 @@ class ActivityForm(forms.ModelForm):
         return cleaned_data
 
 class ContentAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        BitField: {
+            'choices': AUDIENCE_FLAGS,
+            'initial': 1,
+            'widget': AdminBitFieldWidget()
+        }
+    }
     prepopulated_fields = {"slug": ("title",)}
 
     class Media:
-        js = (JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
+        css = {'all': ('audience/bitfield.css',)}
+        js = ('audience/bitfield.js',
+              JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
               JAVASCRIPT_URL + 'genericcollections.js',
               JAVASCRIPT_URL + 'admin.js')
 
@@ -208,7 +228,19 @@ class LessonAdmin(ContentAdmin):
             fieldsets[0][1]['fields'].insert(4, field[0])
         return fieldsets
 
-class StandardAdmin(admin.ModelAdmin):
+class AppropriateAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        BitField: {
+            'choices': AUDIENCE_FLAGS,
+            'widget': AdminBitFieldWidget()
+        }
+    }
+
+    class Media:
+        css = {'all': ('audience/bitfield.css',)}
+        js = ('audience/bitfield.js',)
+
+class StandardAdmin(AppropriateAdmin):
     filter_horizontal = ['grades']
 
 admin.site.register(Activity, ActivityAdmin)
@@ -217,4 +249,4 @@ admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Material)
 admin.site.register(Standard, StandardAdmin)
 admin.site.register(TeachingMethodType)
-admin.site.register(Tip)
+admin.site.register(Tip, AppropriateAdmin)

@@ -12,6 +12,7 @@ def init_data():
                                                 pedagogical_purpose_type=2,
                                                 duration=50)
     if created:
+        a.appropriate_for = 1
         a.description = '''Students examine maps that show physical and cultural features of a fictitious area. Students draw borders based on how they think the land 
                         should be divided.'''
         a.subtitle_guiding_question = '''<p>How are regions defined? How are land and resources divided <br />among countries?</p>'''
@@ -107,6 +108,7 @@ def init_data():
                                                  pedagogical_purpose_type=2,
                                                  duration=50)
     if created:
+        a2.appropriate_for = 1
         a2.description = '''<p>Students compare their border selections based on physical and cultural 
                          features. They discuss other factors that could impact where borders are established.</p>'''
         a2.subtitle_guiding_question = '''<p>What factors impact where borders are established?</p>'''
@@ -171,6 +173,7 @@ def init_data():
         a2.save()
 
     l = Lesson(title='Political Borders', slug='political-borders')
+    l.appropriate_for = 1
     l.subtitle_guiding_question = 'Why are the borders of countries located in certain places?'
     l.description = '''Students think about regions and borders by determining where they would place borders in 
                     an artificial continent, based on a set of physical and cultural features of the area.'''

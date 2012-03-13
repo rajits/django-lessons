@@ -6,7 +6,9 @@ from django.contrib.localflavor.us.us_states import STATE_CHOICES
 
 from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, TEACHING_APPROACH_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
+from audience.models import AUDIENCE_FLAGS
 from BeautifulSoup import BeautifulSoup
+from bitfield import BitField
 from categories.models import Category, CategoryBase
 from credits.models import CreditGroup
 from edumetadata.models import *
@@ -55,6 +57,7 @@ class PluginType(models.Model):
         ordering = ["name"]
 
 class Skill(CategoryBase):
+    appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     url = models.CharField(max_length=128, blank=True, null=True)
 
 class TeachingMethodType(models.Model):
@@ -78,6 +81,7 @@ TIP_TYPE_CHOICES = (
 )
 
 class Tip(models.Model):
+    appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     content_creation_time = models.DateTimeField(auto_now_add=True)
     id_number = models.CharField(max_length=5, blank=True, null=True)
     tip_type = models.PositiveSmallIntegerField(choices=TIP_TYPE_CHOICES)
@@ -90,6 +94,7 @@ class Tip(models.Model):
         return self.body[:limit] + (self.body[limit:] and '...')
 
 class Standard(models.Model):
+    appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     definition = models.TextField('Standard text', null=True, blank=True)
     name = models.CharField(max_length=256, null=True, blank=True)
     standard_type = models.CharField(max_length=14, choices=STANDARD_TYPES)
@@ -110,6 +115,9 @@ class ContentManager(models.Manager):
         return qs.filter(published=True)
 
 class Activity(models.Model):
+    appropriate_for = BitField(flags=AUDIENCE_FLAGS, help_text='''Select the audience(s) for which this content is appropriate. Selecting audiences means that a separate audience view of the page will exist for those audiences.
+
+Note that the text you input in this form serves as the default text. If you indicate this activity is for multiple audiences, you either need to add text variations or the default text must be okay for all audiences. Per the NG Education instructional content guidelines, these are the only possible audience overlaps for activities: T/IE and F/K and S.''')
     title = models.TextField(help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
     ads_excluded = models.BooleanField(default=True, verbose_name="Are ads excluded?", help_text="If unchecked, this field indicates that external ads are allowed.")
     assessment = models.TextField()
@@ -188,6 +196,7 @@ class QuestionAnswer(models.Model):
     activity = models.ForeignKey(Activity)
     question = models.TextField()
     answer = models.TextField()
+    appropriate_for = BitField(flags=AUDIENCE_FLAGS, blank=True, null=True)
 
     def __unicode__(self):
         # truncate
@@ -262,6 +271,11 @@ class Lesson(models.Model): # Publish):
 
   # Credits, Sponsors, Partners
     credit = models.ForeignKey(CreditGroup, blank=True, null=True)
+
+  # Global Metadata
+    appropriate_for = BitField(flags=AUDIENCE_FLAGS, help_text='''Select the audience(s) for which this content is appropriate. Selecting audiences means that a separate audience view of the page will exist for those audiences. For a lesson, the only possible choices are Teachers and Informal Educators.
+
+Note that the text you input in this form serves as the default text. If you indicate this activity is for both T/IE audiences, you either need to add text variations or the default text must be okay for both T/IE audiences.''')
 
   # Time and Date Metadata
     relevant_start_date = HistoricalDateField(blank=True, null=True)
