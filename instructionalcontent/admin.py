@@ -10,9 +10,8 @@ from models import *
 from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
 
 from tinymce.widgets import TinyMCE
-from audience.admin import appropriate_display
 from audience.models import AUDIENCE_FLAGS
-from audience.widgets import AdminBitFieldWidget
+from audience.widgets import AdminBitFieldWidget, bitfield_display
 from bitfield import BitField
 from concepts.admin import ConceptItemInline
 
@@ -99,8 +98,8 @@ class ContentAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 
     class Media:
-        css = {'all': ('audience/bitfield.css',)}
-        js = ('audience/bitfield.js',
+        css = {'all': ('/media/static/audience/bitfield.css',)}
+        js = ('/media/static/audience/bitfield.js',
               JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
               JAVASCRIPT_URL + 'genericcollections.js',
               JAVASCRIPT_URL + 'admin.js')
@@ -208,9 +207,14 @@ class LessonAdmin(ContentAdmin):
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
     else:
         inlines = [ActivityInline,]
-    list_display = ('title', 'description', 'appropriate_for', 'grade_levels', 'published_date')
+    list_display = ('title', 'thumbnail_display', 'description', 'appropriate_display', 'grade_levels', 'published_date')
     list_filter = ('published_date',)
     search_fields = ['title', 'description', 'id_number']
+
+    def appropriate_display(self, obj):
+        return bitfield_display(obj.appropriate_for)
+    appropriate_display.short_description = 'Appropriate For'
+    appropriate_display.allow_tags = True
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
@@ -228,6 +232,15 @@ class LessonAdmin(ContentAdmin):
             fieldsets[0][1]['fields'].insert(4, field[0])
         return fieldsets
 
+    def thumbnail_display(self, obj):
+        ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
+        lr = LessonRelation.objects.filter(lesson=obj, content_type=ctype)
+        if len(lr) > 0:
+            return '<img src="%s"/>' % lr[0].content_object.thumbnail_url()
+        else:
+            return None
+    thumbnail_display.allow_tags = True
+
 class AppropriateAdmin(admin.ModelAdmin):
     formfield_overrides = {
         BitField: {
@@ -237,8 +250,8 @@ class AppropriateAdmin(admin.ModelAdmin):
     }
 
     class Media:
-        css = {'all': ('audience/bitfield.css',)}
-        js = ('audience/bitfield.js',)
+        css = {'all': ('/media/static/audience/bitfield.css',)}
+        js = ('/media/static/audience/bitfield.js',)
 
 class StandardAdmin(AppropriateAdmin):
     filter_horizontal = ['grades']
