@@ -96,6 +96,7 @@ class ContentAdmin(admin.ModelAdmin):
             'widget': AdminBitFieldWidget()
         }
     }
+    prepopulated_fields = {"slug": ("title",)}
 
     class Media:
         css = {'all': ('/media/static/audience/bitfield.css',)}
@@ -224,13 +225,13 @@ class LessonAdmin(ContentAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
-            ('Overview', {'fields': ['title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
+            ('Overview', {'fields': ['appropriate_for', 'title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),
             ('Background & Vocabulary', {'fields': ['background_information'], 'classes': ['collapse']}),
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
-            ('Global Metadata', {'fields': ['appropriate_for', 'secondary_types'], 'classes': ['collapse']}),
+            ('Global Metadata', {'fields': ['secondary_types'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
