@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from django.utils.html import strip_tags
 
 from genericcollection import GenericCollectionTabularInline
 
@@ -95,7 +96,6 @@ class ContentAdmin(admin.ModelAdmin):
             'widget': AdminBitFieldWidget()
         }
     }
-    prepopulated_fields = {"slug": ("title",)}
 
     class Media:
         css = {'all': ('/media/static/audience/bitfield.css',)}
@@ -104,8 +104,9 @@ class ContentAdmin(admin.ModelAdmin):
               JAVASCRIPT_URL + 'genericcollections.js',
               JAVASCRIPT_URL + 'admin.js')
 
-    def grade_levels(self, obj):
-        return obj.grades.all().as_grade_range()
+    def get_title(self, obj):
+        return strip_tags(obj.title)
+    get_title.short_description = 'Title'
 
 class ActivityAdmin(ContentAdmin):
     filter_horizontal = ['grades', 'grouping_types', 'materials', 'physical_space_types', 'prior_activities', 'skills', 'standards', 'subjects', 'teaching_method_types', 'tech_setup_types', 'tips']
@@ -114,7 +115,7 @@ class ActivityAdmin(ContentAdmin):
     if RELATION_MODELS:
         inlines.append(InlineActivityRelation)
 
-    list_display = ('title', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
+    list_display = ('get_title', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
     list_filter = ('pedagogical_purpose_type',)
     raw_id_fields = ("credit",)
     search_fields = ['title', 'subtitle_guiding_question', 'description', 'id_number']
@@ -149,6 +150,9 @@ class ActivityAdmin(ContentAdmin):
         for field in ACTIVITY_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
         return fieldsets
+
+    def grade_levels(self, obj):
+        return obj.grades.all().as_grade_range()
 
 class ActivityInline(admin.TabularInline):
     model = LessonActivity
@@ -209,7 +213,7 @@ class LessonAdmin(ContentAdmin):
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
     else:
         inlines = [ActivityInline,]
-    list_display = ('title', 'thumbnail_display', 'description', 'appropriate_display', 'published_date')
+    list_display = ('get_title', 'thumbnail_display', 'description', 'appropriate_display', 'published_date')
     list_filter = ('published_date',)
     search_fields = ['title', 'description', 'id_number']
 
