@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.localflavor.us.us_states import STATE_CHOICES
+from django.utils.html import strip_tags
 
 from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, TEACHING_APPROACH_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
@@ -117,7 +118,7 @@ class ContentManager(models.Manager):
 class Activity(models.Model):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS, help_text='''Select the audience(s) for which this content is appropriate. Selecting audiences means that a separate audience view of the page will exist for those audiences.
 
-Note that the text you input in this form serves as the default text. If you indicate this activity is for multiple audiences, you either need to add text variations or the default text must be okay for all audiences. Per the NG Education instructional content guidelines, these are the only possible audience overlaps for activities: T/IE and F/K and S.''')
+Note that the text you input in this form serves as the default text. If you indicate this activity is appropriate for multiple audiences, you either need to add text variations or the default text must be appropriate for those audiences.''')
     title = models.TextField(help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
     ads_excluded = models.BooleanField(default=True, verbose_name="Are ads excluded?", help_text="If unchecked, this field indicates that external ads are allowed.")
     assessment = models.TextField()
@@ -129,7 +130,7 @@ Note that the text you input in this form serves as the default text. If you ind
     id_number = models.IntegerField(null=True, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
     is_modular = models.BooleanField(default=True, help_text="If unchecked, this field indicates that this activity should not appear as stand-alone outside of a lesson view.")
     learner_group = models.SmallIntegerField(blank=True, null=True, choices=LEARNER_GROUP_TYPES)
-    notes_on_readability_score = models.TextField(blank=True, null=True, help_text="Use this field to record any details related to the readability of reading passages, such as those on handouts. Include Lexile score, grade-level equivalent, and any criteria used to determine why a higher score is acceptable (proper nouns, difficult vocabulary, etc.).")
+    notes_on_readability_score = models.TextField(blank=True, null=True, help_text="Use this internal-use only field to record any details related to the readability of reading passages, such as those on handouts. Include Lexile score, grade-level equivalent, and any criteria used to determine why a higher score is acceptable (proper nouns, difficult vocabulary, etc.).")
     pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
     published = models.BooleanField()
     published_date = models.DateTimeField(blank=True, null=True)
@@ -179,7 +180,7 @@ Note that the text you input in this form serves as the default text. If you ind
     objects = ContentManager()
 
     def __unicode__(self):
-        return self.title
+        return strip_tags(self.title)
     
     class Meta:
         ordering = ["title"]
@@ -273,7 +274,7 @@ class Lesson(models.Model): # Publish):
   # Global Metadata
     appropriate_for = BitField(flags=AUDIENCE_FLAGS, help_text='''Select the audience(s) for which this content is appropriate. Selecting audiences means that a separate audience view of the page will exist for those audiences. For a lesson, the only possible choices are Teachers and Informal Educators.
 
-Note that the text you input in this form serves as the default text. If you indicate this activity is for both T/IE audiences, you either need to add text variations or the default text must be okay for both T/IE audiences.''')
+Note that the text you input in this form serves as the default text. If you indicate this activity is appropriate for both T/IE audiences, you either need to add text variations or the default text must be appropriate for for both audiences.''')
 
   # Time and Date Metadata
     relevant_start_date = HistoricalDateField(blank=True, null=True)
@@ -282,7 +283,7 @@ Note that the text you input in this form serves as the default text. If you ind
     objects = ContentManager()
 
     def __unicode__(self):
-        return self.title
+        return strip_tags(self.title)
     
     class Meta:
         ordering = ["title"]
