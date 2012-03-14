@@ -15,9 +15,16 @@ def tab_num(fieldset):
             return count
     return 0
 
-@register.filter(name='get_model')
-def get_model(field):
-    for name, model in settings.LESSON_SETTINGS['REQUIRED_FIELDS']:
+def get_model(field, setting):
+    for name, model in settings.LESSON_SETTINGS[setting]:
         if field == name:
             return model
     return None
+
+@register.filter(name='get_activity_model')
+def get_activity_model(field):
+    return get_model(field, 'ACTIVITY_FIELDS')
+
+@register.filter(name='get_lesson_model')
+def get_lesson_model(field):
+    return get_model(field, 'LESSON_FIELDS')

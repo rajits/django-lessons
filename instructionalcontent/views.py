@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 
-from settings import RELATION_MODELS, REQUIRED_FIELDS
+from settings import RELATION_MODELS, LESSON_FIELDS
 from instructionalcontent.models import Activity, Lesson
 
 def activity_detail(request, slug, template_name='lessons/activity_detail.html'):
@@ -27,7 +27,7 @@ def lesson_detail(request, slug, template_name='lessons/lesson_detail.html'):
         'activities': activities,
     }
 
-    for field in REQUIRED_FIELDS:
+    for field in LESSON_FIELDS:
         related_ctypes = lesson.get_related_content_type(field[0])
         if len(related_ctypes) > 0:
             context[field[0]] = related_ctypes[0].content_object

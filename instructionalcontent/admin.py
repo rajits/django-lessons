@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from genericcollection import GenericCollectionTabularInline
 
 from models import *
-from settings import RELATION_MODELS, JAVASCRIPT_URL, REQUIRED_FIELDS
+from settings import RELATION_MODELS, JAVASCRIPT_URL, ACTIVITY_FIELDS, LESSON_FIELDS
 
 from tinymce.widgets import TinyMCE
 from audience.models import AUDIENCE_FLAGS
@@ -57,7 +57,7 @@ class ActivityForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ActivityForm, self).__init__(*args, **kwargs)
-        for field in REQUIRED_FIELDS:
+        for field in ACTIVITY_FIELDS:
             field_name = field[0]
             app_label, model = field[1].split('.')
             ctype = ContentType.objects.get(app_label=app_label, model=model)
@@ -70,7 +70,7 @@ class ActivityForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ActivityForm, self).clean()
-        for field in REQUIRED_FIELDS:
+        for field in ACTIVITY_FIELDS:
             field_name = field[0]
             app_label, model = field[1].split('.')
 
@@ -146,7 +146,7 @@ class ActivityAdmin(ContentAdmin):
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
-        for field in REQUIRED_FIELDS:
+        for field in ACTIVITY_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
         return fieldsets
 
@@ -171,7 +171,7 @@ class LessonForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(LessonForm, self).__init__(*args, **kwargs)
-        for field in REQUIRED_FIELDS:
+        for field in LESSON_FIELDS:
             field_name = field[0]
             app_label, model = field[1].split('.')
             ctype = ContentType.objects.get(app_label=app_label, model=model)
@@ -184,15 +184,17 @@ class LessonForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(LessonForm, self).clean()
-        for field in REQUIRED_FIELDS:
+        for field in LESSON_FIELDS:
             field_name = field[0]
             app_label, model = field[1].split('.')
 
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
             elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
+                # save the model, or else it will not have an id
+                self.save() # commit=True
+
                 lr = LessonRelation()
-                # return an object of the model without saving to the DB
                 lr.lesson = self.instance # self.save(commit=False)
                 lr.content_type = ContentType.objects.get(app_label=app_label, model=model)
                 lr.object_id = self.cleaned_data[field_name].id
@@ -228,7 +230,7 @@ class LessonAdmin(ContentAdmin):
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
-        for field in REQUIRED_FIELDS:
+        for field in LESSON_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
         return fieldsets
 
