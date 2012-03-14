@@ -203,13 +203,13 @@ class LessonForm(forms.ModelForm):
         return cleaned_data
 
 class LessonAdmin(ContentAdmin):
-    filter_horizontal = ['grades', 'materials', 'secondary_types', 'subjects']
+    filter_horizontal = ['materials', 'secondary_types']
     form = LessonForm
     if RELATION_MODELS:
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
     else:
         inlines = [ActivityInline,]
-    list_display = ('title', 'thumbnail_display', 'description', 'appropriate_display', 'grade_levels', 'published_date')
+    list_display = ('title', 'thumbnail_display', 'description', 'appropriate_display', 'published_date')
     list_filter = ('published_date',)
     search_fields = ['title', 'description', 'id_number']
 
@@ -226,7 +226,7 @@ class LessonAdmin(ContentAdmin):
             ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),
             ('Background & Vocabulary', {'fields': ['background_information'], 'classes': ['collapse']}),
             ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
-            ('Global Metadata', {'fields': ['appropriate_for', 'secondary_types', 'subjects', 'grades'], 'classes': ['collapse']}),
+            ('Global Metadata', {'fields': ['appropriate_for', 'secondary_types'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]

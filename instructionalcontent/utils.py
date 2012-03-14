@@ -179,9 +179,6 @@ def init_data():
                     an artificial continent, based on a set of physical and cultural features of the area.'''
     l.duration = 100
     l.other_notes = 'This is lesson 1 in a series of 10 lessons in a unit on Europe.'
-    # instance needs a pk before a m2m relationship can be used
-    l.save()
-    l.grades = grades
     l.save()
 
     lr = LessonActivity(lesson=l, activity=a)

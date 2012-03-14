@@ -245,7 +245,6 @@ class Lesson(models.Model): # Publish):
     description = models.TextField()
     duration = models.IntegerField(verbose_name="Duration in Minutes")
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
-    grades = models.ManyToManyField(Grade)
     id_number = models.IntegerField(null=True, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
     is_modular = models.BooleanField(help_text="If unchecked, this field indicates that this lesson should NOT appear as stand-alone outside of a unit view.")
     last_updated_date = models.DateTimeField(auto_now=True)
@@ -254,7 +253,6 @@ class Lesson(models.Model): # Publish):
     published_date = models.DateTimeField(blank=True, null=True)
     secondary_types = models.ManyToManyField(AlternateType, blank=True, null=True, verbose_name="Secondary Content Types")
     slug = models.SlugField(unique=True, help_text="The URL slug is auto-generated, but producers should adjust it if: a) punctuation in the title causes display errors; and/or b) the title changes after the slug has been generated.")
-    subjects = models.ManyToManyField(Subject, blank=True, null=True)
     subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
 
   # Directions
