@@ -28,3 +28,15 @@ def get_activity_model(field):
 @register.filter(name='get_lesson_model')
 def get_lesson_model(field):
     return get_model(field, 'LESSON_FIELDS')
+
+@register.filter(name='lesson_slug')
+def lesson_slug(id):
+    from instructionalcontent.models import Lesson
+
+    return Lesson.objects.get(id=id).slug
+
+@register.filter(name='activity_slug')
+def activity_slug(id):
+    from instructionalcontent.models import Activity
+
+    return Activity.objects.get(id=id).slug
