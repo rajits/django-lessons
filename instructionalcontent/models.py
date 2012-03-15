@@ -148,7 +148,7 @@ Note that the text you input in this form serves as the default text. If you ind
     materials = models.ManyToManyField(Material)
     grouping_types = models.ManyToManyField(GroupingType)
     other_notes = models.TextField(blank=True, null=True)
-    physical_space_types = models.ManyToManyField(PhysicalSpaceType)
+    physical_space_types = models.ManyToManyField(PhysicalSpaceType, blank=True, null=True)
     prior_activities = models.ManyToManyField('self', blank=True, null=True, verbose_name="Recommended Prior Activities")
     setup = models.TextField(blank=True, null=True)
    #Required Technology
