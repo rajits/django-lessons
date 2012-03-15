@@ -5,7 +5,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from django.utils.html import strip_tags
 
-from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, TEACHING_APPROACH_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
+from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
 
 from audience.models import AUDIENCE_FLAGS
 from BeautifulSoup import BeautifulSoup
@@ -53,6 +53,9 @@ class PluginType(TypeModel):
 class Skill(CategoryBase):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     url = models.CharField(max_length=128, blank=True, null=True)
+
+class TeachingApproachType(TypeModel):
+    pass
 
 class TeachingMethodType(TypeModel):
     pass
@@ -121,7 +124,7 @@ Note that the text you input in this form serves as the default text. If you ind
     duration = models.IntegerField(verbose_name="Duration Minutes")
     extending_the_learning = models.TextField(blank=True, null=True)
     grades = models.ManyToManyField(Grade)
-    id_number = models.IntegerField(null=True, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
+    id_number = models.CharField(max_length=10, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
     is_modular = models.BooleanField(default=True, help_text="If unchecked, this field indicates that this activity should not appear as stand-alone outside of a lesson view.")
     learner_group = models.SmallIntegerField(blank=True, null=True, choices=LEARNER_GROUP_TYPES)
     notes_on_readability_score = models.TextField(blank=True, null=True, help_text="Use this internal-use only field to record any details related to the readability of reading passages, such as those on handouts. Include Lexile score, grade-level equivalent, and any criteria used to determine why a higher score is acceptable (proper nouns, difficult vocabulary, etc.).")
@@ -140,7 +143,7 @@ Note that the text you input in this form serves as the default text. If you ind
    #Objectives
     learning_objectives = models.TextField(help_text="If this activity is part of an already-created lesson and you update the learning objectives, you must also also make the same change in lesson for this field.")
     skills = models.ManyToManyField(Skill, limit_choices_to={'parent__isnull': False})
-    teaching_approach_type = models.CharField(max_length=17, choices=TEACHING_APPROACH_TYPES)
+    teaching_approach_type = models.ManyToManyField(TeachingApproachType)
     teaching_method_types = models.ManyToManyField(TeachingMethodType)
 
    #Preparation
@@ -152,6 +155,7 @@ Note that the text you input in this form serves as the default text. If you ind
     prior_activities = models.ManyToManyField('self', blank=True, null=True, verbose_name="Recommended Prior Activities")
     setup = models.TextField(blank=True, null=True)
    #Required Technology
+    internet_access_type = models.CharField(max_length=8)
     plugin_types = models.ForeignKey(PluginType, blank=True, null=True)
     tech_setup_types = models.ManyToManyField(TechSetupType, blank=True, null=True)
 
@@ -240,7 +244,7 @@ class Lesson(models.Model): # Publish):
     description = models.TextField()
     duration = models.IntegerField(verbose_name="Duration in Minutes")
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
-    id_number = models.IntegerField(null=True, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
+    id_number = models.CharField(max_length=10, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
     is_modular = models.BooleanField(help_text="If unchecked, this field indicates that this lesson should NOT appear as stand-alone outside of a unit view.")
     last_updated_date = models.DateTimeField(auto_now=True)
     overview_rcslide = models.ForeignKey(ResourceCarouselSlide, null=True, blank=True, related_name="rc_slide")

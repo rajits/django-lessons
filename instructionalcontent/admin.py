@@ -78,9 +78,10 @@ class ActivityForm(forms.ModelForm):
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
             elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
+                self.save() # commit=False
+
                 ar = ActivityRelation()
-                # return an object of the model without saving to the DB
-                ar.activity = self.instance # self.save(commit=False)
+                ar.activity = self.instance
                 ar.content_type = ContentType.objects.get(app_label=app_label, model=model)
                 ar.object_id = self.cleaned_data[field_name].id
                 ar.content_object = self.cleaned_data[field_name]
@@ -137,7 +138,8 @@ class ActivityAdmin(ContentAdmin):
                 {'fields': [
                     'setup', 'accessibility_notes', 'other_notes',
                     'grouping_types', 'materials', 'tech_setup_types',
-                    'plugin_types', 'physical_space_types'
+                    'internet_access_type' 'plugin_types',
+                    'physical_space_types'
                  ],
                  'classes': ['collapse']}),
             ('Background', {'fields': ['background_information', 'prior_knowledge', 'prior_activities'], 'classes': ['collapse']}),

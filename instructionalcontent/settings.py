@@ -17,6 +17,11 @@ DEFAULT_SETTINGS = {
         ('standardized', 'Standardized Testing'),
         ('testing', 'Testing'),
     ),
+    'INTERNET_ACCESS_TYPES': (
+        (1, 'No'),
+        (2, 'Optional'),
+        (3, 'Required'),
+    ),
     'LEARNER_GROUP_TYPES': (
         (1, 'Advanced Placement'),
         (2, 'English Language Learners (ELL)'),
@@ -43,16 +48,6 @@ DEFAULT_SETTINGS = {
         ('ocean', 'Ocean Literacy Essential Principles and Fundamental Concepts'),
         ('state', 'TEST: State Standards'),
         ('econ', 'Voluntary National Content Standards in Economics'),
-    ),
-    'TEACHING_APPROACH_TYPES': (
-        ('constructivist', 'constructivist'),
-        ('inquiry', 'Inquiry-based learning'),
-        ('interdisciplinary', 'Interdisciplinary'),
-        ('for-use', 'Learning-for-use'),
-        ('montessori', 'Montessori'),
-        ('object', 'Object-based learning'),
-        ('project', 'Project-based learning'),
-        ('thematic', 'Thematic approach'),
     ),
     'JAVASCRIPT_URL': settings.MEDIA_URL + 'js/'
 }
