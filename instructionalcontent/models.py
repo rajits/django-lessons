@@ -22,11 +22,18 @@ def ul_as_list(html):
     soup = BeautifulSoup(html)
     return [li.contents[0] for li in soup('li')]
 
-class GroupingType(models.Model):
+class TypeModel(models.Model):
     name = models.CharField(max_length=128)
+
+    class Meta:
+        abstract = True
+        ordering = ["name"]
 
     def __unicode__(self):
         return self.name
+
+class GroupingType(TypeModel):
+    pass
 
 class Material(models.Model):
     name = models.TextField()
@@ -37,35 +44,18 @@ class Material(models.Model):
     class Meta:
         ordering = ["name"]
 
-class PhysicalSpaceType(models.Model):
-    name = models.CharField(max_length=128)
+class PhysicalSpaceType(TypeModel):
     is_default = models.NullBooleanField()
 
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ["name"]
-
-class PluginType(models.Model):
-    name = models.CharField(max_length=128)
+class PluginType(TypeModel):
     source_url = models.CharField(max_length=128)
-
-    def __unicode__(self):
-        return self.name
-    
-    class Meta:
-        ordering = ["name"]
 
 class Skill(CategoryBase):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     url = models.CharField(max_length=128, blank=True, null=True)
 
-class TeachingMethodType(models.Model):
-    name = models.CharField(max_length=128)
-
-    def __unicode__(self):
-        return self.name
+class TeachingMethodType(TypeModel):
+    pass
 
 class TechSetupType(models.Model):
     title = models.CharField(max_length=64)
@@ -81,6 +71,9 @@ TIP_TYPE_CHOICES = (
     (2, 'Modification'),
 )
 
+def truncate(string, limit):
+    return string[:limit] + (string[limit:] and '...')
+
 class Tip(models.Model):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     content_creation_time = models.DateTimeField(auto_now_add=True)
@@ -89,10 +82,11 @@ class Tip(models.Model):
     body = models.TextField()
     category = models.ForeignKey(EducationCategory, blank=True, null=True)
 
+    class Meta:
+        ordering = ["body"]
+
     def __unicode__(self):
-        # truncate
-        limit = 44
-        return self.body[:limit] + (self.body[limit:] and '...')
+        return truncate(strip_tags(self.body), 44)
 
 class Standard(models.Model):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS)

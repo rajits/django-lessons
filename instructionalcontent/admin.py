@@ -248,6 +248,9 @@ class LessonAdmin(ContentAdmin):
             return None
     thumbnail_display.allow_tags = True
 
+class TypeAdmin(admin.ModelAdmin):
+    search_fields = ['name']
+
 class AppropriateAdmin(admin.ModelAdmin):
     formfield_overrides = {
         BitField: {
@@ -262,11 +265,32 @@ class AppropriateAdmin(admin.ModelAdmin):
 
 class StandardAdmin(AppropriateAdmin):
     filter_horizontal = ['grades']
+    list_display = ('standard_type', 'name', 'grade_levels')
+    list_filter = ('standard_type', 'state', 'grades')
+    search_fields = ['name', 'definition']
+
+    def grade_levels(self, obj):
+        return obj.grades.all().as_grade_range()
+    grade_levels.short_description = 'Grades'
+
+class TipAdmin(AppropriateAdmin):
+    list_display = ('body_display', 'tip_type', 'appropriate_display')
+    list_filter = ('tip_type',)
+    search_fields = ['body', 'id_number']
+
+    def appropriate_display(self, obj):
+        return bitfield_display(obj.appropriate_for)
+    appropriate_display.short_description = 'Appropriate For'
+    appropriate_display.allow_tags = True
+
+    def body_display(self, obj):
+        return truncate(strip_tags(obj.body), 90)
+    body_display.short_description = 'Body'
 
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(GroupingType)
 admin.site.register(Lesson, LessonAdmin)
-admin.site.register(Material)
+admin.site.register(Material, TypeAdmin)
 admin.site.register(Standard, StandardAdmin)
-admin.site.register(TeachingMethodType)
-admin.site.register(Tip, AppropriateAdmin)
+admin.site.register(TeachingMethodType, TypeAdmin)
+admin.site.register(Tip, TipAdmin)
