@@ -6,9 +6,9 @@ from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from django.utils.html import strip_tags
 
 from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS, INTERNET_ACCESS_TYPES
+from utils import truncate, ul_as_list
 
 from audience.models import AUDIENCE_FLAGS
-from BeautifulSoup import BeautifulSoup
 from bitfield import BitField
 from categories.models import Category, CategoryBase
 from credits.models import CreditGroup
@@ -17,10 +17,6 @@ from edumetadata.fields import HistoricalDateField
 #from publisher import register
 #from publisher.models import Publish
 from education.edu_core.models import GlossaryTerm, Resource, ResourceCarouselSlide
-
-def ul_as_list(html):
-    soup = BeautifulSoup(html)
-    return [li.contents[0] for li in soup('li')]
 
 class TypeModel(models.Model):
     name = models.CharField(max_length=128)
@@ -73,9 +69,6 @@ TIP_TYPE_CHOICES = (
     (1, 'Tip'),
     (2, 'Modification'),
 )
-
-def truncate(string, limit):
-    return string[:limit] + (string[limit:] and '...')
 
 class Tip(models.Model):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS)

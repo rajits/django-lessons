@@ -9,6 +9,8 @@ from genericcollection import GenericCollectionTabularInline
 
 from models import *
 from settings import RELATION_MODELS, JAVASCRIPT_URL, ACTIVITY_FIELDS, LESSON_FIELDS
+from utils import truncate, ul_as_list
+from widgets import ImportWidgetWrapper
 
 from tinymce.widgets import TinyMCE
 from audience.models import AUDIENCE_FLAGS
@@ -176,6 +178,9 @@ if RELATION_MODELS:
         formset = LessonFormSet
 
 class LessonForm(forms.ModelForm):
+    background_information = TextField(widget=ImportWidgetWrapper)
+    learning_objectives = TextField(widget=ImportWidgetWrapper)
+
     class Meta:
         model = Lesson
 
