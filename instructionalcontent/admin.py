@@ -78,14 +78,17 @@ class ActivityForm(forms.ModelForm):
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
             elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
-                self.save() # commit=False
+                try:
+                    self.save()
 
-                ar = ActivityRelation()
-                ar.activity = self.instance
-                ar.content_type = ContentType.objects.get(app_label=app_label, model=model)
-                ar.object_id = self.cleaned_data[field_name].id
-                ar.content_object = self.cleaned_data[field_name]
-                ar.save()
+                    ar = ActivityRelation()
+                    ar.activity = self.instance
+                    ar.content_type = ContentType.objects.get(app_label=app_label, model=model)
+                    ar.object_id = self.cleaned_data[field_name].id
+                    ar.content_object = self.cleaned_data[field_name]
+                    ar.save()
+                except ValueError:
+                    raise forms.ValidationError("The Activity could not be created because the data didn't validate.")
       # print self._errors
         return cleaned_data
 
@@ -111,7 +114,7 @@ class ContentAdmin(admin.ModelAdmin):
     get_title.short_description = 'Title'
 
 class ActivityAdmin(ContentAdmin):
-    filter_horizontal = ['grades', 'grouping_types', 'materials', 'physical_space_types', 'prior_activities', 'skills', 'standards', 'subjects', 'teaching_method_types', 'tech_setup_types', 'tips']
+    filter_horizontal = ['grades', 'grouping_types', 'materials', 'physical_space_types', 'prior_activities', 'skills', 'standards', 'subjects', 'teaching_method_types', 'tech_setup_types', 'tips', 'teaching_approaches']
     form = ActivityForm
     inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
     if RELATION_MODELS:
@@ -133,7 +136,7 @@ class ActivityAdmin(ContentAdmin):
                  ],
                  'classes': ['collapse']}),
             ('Directions', {'fields': ['directions', 'assessment_type', 'assessment', 'extending_the_learning', 'tips'], 'classes': ['collapse']}),
-            ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_types', 'teaching_method_types', 'skills', 'standards'], 'classes': ['collapse']}),
+            ('Objectives', {'fields': ['learning_objectives', 'teaching_approaches', 'teaching_method_types', 'skills', 'standards'], 'classes': ['collapse']}),
             ('Preparation',
                 {'fields': [
                     'setup', 'accessibility_notes', 'other_notes',
@@ -198,15 +201,18 @@ class LessonForm(forms.ModelForm):
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
             elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
-                # save the model, or else it will not have an id
-                self.save() # commit=True
+                try:
+                    # save the model, or else it will not have an id
+                    self.save() # commit=True
 
-                lr = LessonRelation()
-                lr.lesson = self.instance # self.save(commit=False)
-                lr.content_type = ContentType.objects.get(app_label=app_label, model=model)
-                lr.object_id = self.cleaned_data[field_name].id
-                lr.content_object = self.cleaned_data[field_name]
-                lr.save()
+                    lr = LessonRelation()
+                    lr.lesson = self.instance # self.save(commit=False)
+                    lr.content_type = ContentType.objects.get(app_label=app_label, model=model)
+                    lr.object_id = self.cleaned_data[field_name].id
+                    lr.content_object = self.cleaned_data[field_name]
+                    lr.save()
+                except ValueError:
+                    raise forms.ValidationError("The Lesson could not be created because the data didn't validate.")
         return cleaned_data
 
 class LessonAdmin(ContentAdmin):

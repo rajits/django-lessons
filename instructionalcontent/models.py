@@ -5,7 +5,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from django.utils.html import strip_tags
 
-from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
+from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS, INTERNET_ACCESS_TYPES
 
 from audience.models import AUDIENCE_FLAGS
 from BeautifulSoup import BeautifulSoup
@@ -54,7 +54,7 @@ class Skill(CategoryBase):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     url = models.CharField(max_length=128, blank=True, null=True)
 
-class TeachingApproachType(TypeModel):
+class TeachingApproach(TypeModel):
     pass
 
 class TeachingMethodType(TypeModel):
@@ -143,7 +143,7 @@ Note that the text you input in this form serves as the default text. If you ind
    #Objectives
     learning_objectives = models.TextField(help_text="If this activity is part of an already-created lesson and you update the learning objectives, you must also also make the same change in lesson for this field.")
     skills = models.ManyToManyField(Skill, limit_choices_to={'parent__isnull': False})
-    teaching_approach_types = models.ManyToManyField(TeachingApproachType)
+    teaching_approaches = models.ManyToManyField(TeachingApproach)
     teaching_method_types = models.ManyToManyField(TeachingMethodType)
 
    #Preparation
@@ -155,7 +155,7 @@ Note that the text you input in this form serves as the default text. If you ind
     prior_activities = models.ManyToManyField('self', blank=True, null=True, verbose_name="Recommended Prior Activities")
     setup = models.TextField(blank=True, null=True)
    #Required Technology
-    internet_access_type = models.CharField(max_length=8)
+    internet_access_type = models.CharField(max_length=8, choices=INTERNET_ACCESS_TYPES)
     plugin_types = models.ForeignKey(PluginType, blank=True, null=True)
     tech_setup_types = models.ManyToManyField(TechSetupType, blank=True, null=True)
 
