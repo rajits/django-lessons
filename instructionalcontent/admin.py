@@ -8,7 +8,8 @@ from django.utils.html import strip_tags
 from genericcollection import GenericCollectionTabularInline
 
 from models import *
-from settings import RELATION_MODELS, JAVASCRIPT_URL, ACTIVITY_FIELDS, LESSON_FIELDS
+from settings import (RELATION_MODELS, JAVASCRIPT_URL, ACTIVITY_FIELDS, 
+                      LESSON_FIELDS, CREDIT_MODEL)
 
 from tinymce.widgets import TinyMCE
 from audience.models import AUDIENCE_FLAGS
@@ -119,7 +120,8 @@ class ActivityAdmin(ContentAdmin):
 
     list_display = ('get_title', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
     list_filter = ('pedagogical_purpose_type',)
-    raw_id_fields = ("credit",)
+    if CREDIT_MODEL is not None:
+        raw_id_fields = ("credit",)
     search_fields = ['title', 'subtitle_guiding_question', 'description', 'id_number']
 
     def get_fieldsets(self, request, obj=None):
@@ -138,14 +140,17 @@ class ActivityAdmin(ContentAdmin):
                 {'fields': [
                     'setup', 'accessibility_notes', 'other_notes',
                     'grouping_types', 'materials', 'tech_setup_types',
-                    'internet_access_type' 'plugin_types',
+                    'internet_access_type', 'plugin_types',
                     'physical_space_types'
                  ],
                  'classes': ['collapse']}),
             ('Background', {'fields': ['background_information', 'prior_knowledge', 'prior_activities'], 'classes': ['collapse']}),
-          # ('Vocabulary', {'fields': [], 'classes': ['collapse']}),
-            ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
-          # ('HTML Header Metadata', {'fields': [], 'classes': ['collapse']}),
+            # ('Vocabulary', {'fields': [], 'classes': ['collapse']}),
+        ]
+        if CREDIT_MODEL is not None:
+            fieldsets.append(('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}))
+        fieldsets += [
+            # ('HTML Header Metadata', {'fields': [], 'classes': ['collapse']}),
             ('Content Related Metadata', {'fields': ['category', 'categories', 'subjects', 'grades'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),

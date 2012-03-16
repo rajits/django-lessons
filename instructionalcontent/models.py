@@ -1,22 +1,40 @@
 #import datetime
 from django.db import models
+from django.db.models.loading import get_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from django.utils.html import strip_tags
 
-from settings import ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, RELATIONS
+from settings import (ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, 
+                      PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, 
+                      RELATIONS, CREDIT_MODEL, INTERNET_ACCESS_TYPES)
 
 from audience.models import AUDIENCE_FLAGS
 from BeautifulSoup import BeautifulSoup
 from bitfield import BitField
 from categories.models import Category, CategoryBase
-from credits.models import CreditGroup
+
 from edumetadata.models import *
 from edumetadata.fields import HistoricalDateField
 #from publisher import register
 #from publisher.models import Publish
-from education.edu_core.models import GlossaryTerm, Resource, ResourceCarouselSlide
+
+if CREDIT_MODEL is not None:
+    CreditModel = get_model(*CREDIT_MODEL.split('.'))
+
+try:
+    from education.edu_core.models import GlossaryTerm, Resource, ResourceCarouselSlide
+except ImportError:
+    # Temporary shim for testing
+    class GlossaryTerm(models.Model):
+        name = models.CharField(max_length=128)
+    
+    class Resource(models.Model):
+        name = models.CharField(max_length=128)
+    
+    class ResourceCarouselSlide(models.Model):
+        name = models.CharField(max_length=128)
 
 def ul_as_list(html):
     soup = BeautifulSoup(html)
@@ -164,7 +182,8 @@ Note that the text you input in this form serves as the default text. If you ind
     prior_knowledge = models.TextField()
 
   # Credits, Sponsors, Partners
-    credit = models.ForeignKey(CreditGroup, blank=True, null=True)
+    if CREDIT_MODEL:
+        credit = models.ForeignKey(CreditModel, blank=True, null=True)
 
   # Content Related Metadata
     category = models.ForeignKey(Category, blank=True, null=True, verbose_name="Primary Category", related_name="primary_category")
@@ -267,7 +286,8 @@ class Lesson(models.Model): # Publish):
     background_information = models.TextField(blank=True, null=True, help_text='Producers can either copy/paste background information into this field, or click the "import text" link to import background information from all activities in this lesson into this field and edit them.') 
 
   # Credits, Sponsors, Partners
-    credit = models.ForeignKey(CreditGroup, blank=True, null=True)
+    if CREDIT_MODEL:
+        credit = models.ForeignKey(CreditModel, blank=True, null=True)
 
   # Global Metadata
     appropriate_for = BitField(flags=AUDIENCE_FLAGS, help_text='''Select the audience(s) for which this content is appropriate. Selecting audiences means that a separate audience view of the page will exist for those audiences. For a lesson, the only possible choices are Teachers and Informal Educators.
