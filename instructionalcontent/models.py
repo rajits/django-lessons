@@ -173,7 +173,7 @@ Note that the text you input in this form serves as the default text. If you ind
     prior_activities = models.ManyToManyField('self', blank=True, null=True, verbose_name="Recommended Prior Activities")
     setup = models.TextField(blank=True, null=True)
    #Required Technology
-    internet_access_type = models.CharField(max_length=8)
+    internet_access_type = models.CharField(max_length=8, choices=INTERNET_ACCESS_TYPES)
     plugin_types = models.ForeignKey(PluginType, blank=True, null=True)
     tech_setup_types = models.ManyToManyField(TechSetupType, blank=True, null=True)
 
