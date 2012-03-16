@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
+from django.db.models.loading import get_model
 from django.utils.html import strip_tags
 
 from genericcollection import GenericCollectionTabularInline
@@ -61,12 +62,12 @@ class ActivityForm(forms.ModelForm):
         super(ActivityForm, self).__init__(*args, **kwargs)
         for field in ACTIVITY_FIELDS:
             field_name = field[0]
-            app_label, model = field[1].split('.')
-            ctype = ContentType.objects.get(app_label=app_label, model=model)
-            self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all(), widget=forms.TextInput)
+            model = get_model(*field[1].split('.'))
+            # ctype = ContentType.objects.get(app_label=app_label, model=model)
+            self.fields[field_name] = forms.ModelChoiceField(queryset=model.objects.all(), widget=forms.TextInput)
             # for existing lessons, initialize the fields
             if kwargs.has_key('instance'):
-                objects = ActivityRelation.objects.filter(activity=kwargs['instance'], content_type=ctype)
+                objects = kwargs['instance'].activityrelation_set.filter(relation_type=field_name)
                 if len(objects) > 0:
                     self.fields[field_name].initial = objects[0].object_id
 
@@ -78,16 +79,6 @@ class ActivityForm(forms.ModelForm):
 
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
-            elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
-                self.save() # commit=False
-
-                ar = ActivityRelation()
-                ar.activity = self.instance
-                ar.content_type = ContentType.objects.get(app_label=app_label, model=model)
-                ar.object_id = self.cleaned_data[field_name].id
-                ar.content_object = self.cleaned_data[field_name]
-                ar.save()
-      # print self._errors
         return cleaned_data
 
 class ContentAdmin(admin.ModelAdmin):
@@ -161,6 +152,20 @@ class ActivityAdmin(ContentAdmin):
 
     def grade_levels(self, obj):
         return obj.grades.all().as_grade_range()
+    
+    def save_model(self, request, obj, form, change, *args, **kwargs):
+        super(ActivityAdmin, self).save_model(request, obj, form, change, *args, **kwargs)
+        
+        for field, model in ACTIVITY_FIELDS:
+            try:
+                item = obj.activityrelation_set.get(relation_type=field)
+                item.object_id = form[field].data
+                item.save()
+            except ActivityRelation.DoesNotExist:
+                app_label, model = model.split('.')
+                ctype = ContentType.objects.get(app_label=app_label, model=model)
+                item = obj.activityrelation_set.create(relation_type=field, object_id=form[field].data, content_type_id=ctype.id)
+
 
 class ActivityInline(admin.TabularInline):
     model = LessonActivity
