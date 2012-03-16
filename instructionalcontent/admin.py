@@ -185,8 +185,12 @@ if RELATION_MODELS:
         formset = LessonFormSet
 
 class LessonForm(forms.ModelForm):
-    background_information = TextField(widget=ImportWidgetWrapper)
-    learning_objectives = TextField(widget=ImportWidgetWrapper)
+  # background_information = forms.CharField(widget=ImportWidgetWrapper(forms.TextArea, 
+  #             self.admin_site, obj_id=obj_id, field=db_field.name,
+  #             object_name=self.object_name))
+  # learning_objectives = forms.CharField(widget=ImportWidgetWrapper(forms.TextArea, 
+  #             self.admin_site, obj_id=obj_id, field=db_field.name,
+  #             object_name=self.object_name))
 
     class Meta:
         model = Lesson
@@ -195,12 +199,11 @@ class LessonForm(forms.ModelForm):
         super(LessonForm, self).__init__(*args, **kwargs)
         for field in LESSON_FIELDS:
             field_name = field[0]
-            app_label, model = field[1].split('.')
-            ctype = ContentType.objects.get(app_label=app_label, model=model)
-            self.fields[field_name] = forms.ModelChoiceField(queryset=ctype.model_class().objects.all(), widget=forms.TextInput)
+            model = get_model(*field[1].split('.'))
+            self.fields[field_name] = forms.ModelChoiceField(queryset=model.objects.all(), widget=forms.TextInput)
             # for existing lessons, initialize the fields
             if kwargs.has_key('instance'):
-                objects = LessonRelation.objects.filter(lesson=kwargs['instance'], content_type=ctype)
+                objects = kwargs['instance'].lessonrelation_set.filter(relation_type=field_name)
                 if len(objects) > 0:
                     self.fields[field_name].initial = objects[0].object_id
 
@@ -212,19 +215,6 @@ class LessonForm(forms.ModelForm):
 
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
-            elif self.cleaned_data[field_name].id != self.fields[field_name].initial:
-                try:
-                    # save the model, or else it will not have an id
-                    self.save() # commit=True
-
-                    lr = LessonRelation()
-                    lr.lesson = self.instance # self.save(commit=False)
-                    lr.content_type = ContentType.objects.get(app_label=app_label, model=model)
-                    lr.object_id = self.cleaned_data[field_name].id
-                    lr.content_object = self.cleaned_data[field_name]
-                    lr.save()
-                except ValueError:
-                    raise forms.ValidationError("The Lesson could not be created because the data didn't validate.")
         return cleaned_data
 
 class LessonAdmin(ContentAdmin):
@@ -236,6 +226,8 @@ class LessonAdmin(ContentAdmin):
         inlines = [ActivityInline,]
     list_display = ('get_title', 'thumbnail_display', 'description', 'appropriate_display', 'published_date')
     list_filter = ('published_date',)
+    if CREDIT_MODEL is not None:
+        raw_id_fields = ("credit",)
     search_fields = ['title', 'description', 'id_number']
 
     def appropriate_display(self, obj):
@@ -250,7 +242,10 @@ class LessonAdmin(ContentAdmin):
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),
             ('Background & Vocabulary', {'fields': ['background_information'], 'classes': ['collapse']}),
-            ('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}),
+        ]
+        if CREDIT_MODEL is not None:
+            fieldsets.append(('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}))
+        fieldsets += [
             ('Global Metadata', {'fields': ['secondary_types'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
@@ -258,6 +253,19 @@ class LessonAdmin(ContentAdmin):
         for field in LESSON_FIELDS:
             fieldsets[0][1]['fields'].insert(4, field[0])
         return fieldsets
+
+    def save_model(self, request, obj, form, change, *args, **kwargs):
+        super(LessonAdmin, self).save_model(request, obj, form, change, *args, **kwargs)
+
+        for field, model in LESSON_FIELDS:
+            try:
+                item = obj.lessonrelation_set.get(relation_type=field)
+                item.object_id = form[field].data
+                item.save()
+            except LessonRelation.DoesNotExist:
+                app_label, model = model.split('.')
+                ctype = ContentType.objects.get(app_label=app_label, model=model)
+                item = obj.lessonrelation_set.create(relation_type=field, object_id=form[field].data, content_type_id=ctype.id)
 
     def thumbnail_display(self, obj):
         ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
