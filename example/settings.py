@@ -41,7 +41,7 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = "%s/%s/" % (ROOT_PATH, 'media')
+MEDIA_ROOT = os.path.join(ROOT_PATH, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -49,7 +49,7 @@ MEDIA_ROOT = "%s/%s/" % (ROOT_PATH, 'media')
 MEDIA_URL = '/media/'
 
 # required by django-concepts
-STATIC_URL = '/static/'
+STATIC_URL = '/media/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -68,10 +68,8 @@ TEMPLATE_LOADERS = (
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'reversion.middleware.RevisionMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
   # 'django.contrib.messages.middleware.MessageMiddleware',
-    'publisher.middleware.PreviewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
@@ -101,6 +99,7 @@ INSTALLED_APPS = (
   # 'reversion',
   # 'publisher',
     'instructionalcontent',
+    'audience',
     'dummy',
 )
 
@@ -133,6 +132,10 @@ LESSON_SETTINGS = {
     'RELATION_MODELS': (
         'dummy.promo',
       # 'lessons.activity', # for use as model student work, picture of practice
+    ),
+    'ACTIVITY_FIELDS': (
+        ('resource_carousel', 'dummy.resourcecarousel'),
+        ('key_image', 'dummy.photo'),
     ),
     'REQUIRED_FIELDS': (
         ('resource_carousel', 'dummy.resourcecarousel'),

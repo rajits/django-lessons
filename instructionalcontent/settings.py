@@ -49,7 +49,8 @@ DEFAULT_SETTINGS = {
         ('state', 'TEST: State Standards'),
         ('econ', 'Voluntary National Content Standards in Economics'),
     ),
-    'JAVASCRIPT_URL': settings.MEDIA_URL + 'js/'
+    'JAVASCRIPT_URL': settings.MEDIA_URL + 'js/',
+    'CREDIT_MODEL': None,
 }
 
 DEFAULT_SETTINGS.update(getattr(settings, 'LESSON_SETTINGS', {}))

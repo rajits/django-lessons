@@ -83,8 +83,8 @@
                 {% for field in line %}
                   <div{% if not line.fields|length_is:"1" %} class="field-box"{% endif %}>
                       {{ field.label_tag }}{{ field.field }}
-                      {% if field.field.name|get_model %}
-                        <a id="lookup_id_{{field.field.html_name}}" class="related-lookup" onclick="return showGenericRequiredModelLookupPopup(this, '{{ field.field.name|get_model }}');" href="#">
+                      {% if field.field.name|get_lesson_model %}
+                        <a id="lookup_id_{{field.field.html_name}}" class="related-lookup" onclick="return showGenericRequiredModelLookupPopup(this, '{{ field.field.name|get_lesson_model }}');" href="#">
                             <img width="16" height="16" alt="Lookup" src="{% admin_media_prefix %}img/admin/selector-search.gif"/>
                         </a>
                       {% endif %}

@@ -1,5 +1,5 @@
 from django import template
-from django.conf import settings
+from instructionalcontent.settings import ACTIVITY_FIELDS, LESSON_FIELDS
 
 register = template.Library()
 
@@ -16,18 +16,18 @@ def tab_num(fieldset):
     return 0
 
 def get_model(field, setting):
-    for name, model in settings.LESSON_SETTINGS[setting]:
+    for name, model in setting:
         if field == name:
             return model
     return None
 
 @register.filter(name='get_activity_model')
 def get_activity_model(field):
-    return get_model(field, 'ACTIVITY_FIELDS')
+    return get_model(field, ACTIVITY_FIELDS)
 
 @register.filter(name='get_lesson_model')
 def get_lesson_model(field):
-    return get_model(field, 'LESSON_FIELDS')
+    return get_model(field, LESSON_FIELDS)
 
 @register.filter(name='lesson_slug')
 def lesson_slug(id):
