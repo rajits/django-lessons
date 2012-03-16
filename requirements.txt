@@ -1,6 +1,6 @@
 #--extra-index-url http://callowayproject.com/pypi/
 BeautifulSoup
-django-audience==0.3.2
+django-audience==0.3.6
 django-categories==1.0.2
 django-concepts==0.2
 django-edumetadata==0.3.1

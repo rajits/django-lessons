@@ -33,10 +33,16 @@ def get_lesson_model(field):
 def lesson_slug(id):
     from instructionalcontent.models import Lesson
 
-    return Lesson.objects.get(id=id).slug
+    if id:
+        return Lesson.objects.get(id=id).slug
+    else:
+        return None
 
 @register.filter(name='activity_slug')
 def activity_slug(id):
     from instructionalcontent.models import Activity
 
-    return Activity.objects.get(id=id).slug
+    if id:
+        return Activity.objects.get(id=id).slug
+    else:
+        return None

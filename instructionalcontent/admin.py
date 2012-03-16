@@ -133,12 +133,12 @@ class ActivityAdmin(ContentAdmin):
                  ],
                  'classes': ['collapse']}),
             ('Directions', {'fields': ['directions', 'assessment_type', 'assessment', 'extending_the_learning', 'tips'], 'classes': ['collapse']}),
-            ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_type', 'teaching_method_types', 'skills', 'standards'], 'classes': ['collapse']}),
+            ('Objectives', {'fields': ['learning_objectives', 'teaching_approach_types', 'teaching_method_types', 'skills', 'standards'], 'classes': ['collapse']}),
             ('Preparation',
                 {'fields': [
                     'setup', 'accessibility_notes', 'other_notes',
                     'grouping_types', 'materials', 'tech_setup_types',
-                    'internet_access_type' 'plugin_types',
+                    'internet_access_type', 'plugin_types',
                     'physical_space_types'
                  ],
                  'classes': ['collapse']}),
