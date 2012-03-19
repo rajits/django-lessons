@@ -105,7 +105,7 @@ class ContentAdmin(admin.ModelAdmin):
     get_title.short_description = 'Title'
 
 class ActivityAdmin(ContentAdmin):
-    filter_horizontal = ['grades', 'grouping_types', 'materials', 'physical_space_types', 'prior_activities', 'skills', 'standards', 'subjects', 'teaching_method_types', 'tech_setup_types', 'tips', 'teaching_approaches']
+    filter_horizontal = ['grades', 'grouping_types', 'materials', 'physical_space_types', 'prior_activities', 'skills', 'standards', 'subjects', 'teaching_method_types', 'tech_setup_types', 'tips', 'teaching_approaches', 'secondary_content_types']
     form = ActivityForm
     inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
     if RELATION_MODELS:
@@ -144,7 +144,8 @@ class ActivityAdmin(ContentAdmin):
             fieldsets.append(('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}))
         fieldsets += [
             # ('HTML Header Metadata', {'fields': [], 'classes': ['collapse']}),
-            ('Content Related Metadata', {'fields': ['category', 'categories', 'subjects', 'grades'], 'classes': ['collapse']}),
+            ('Global Metadata', {'fields': ['secondary_content_types'], 'classes': ['collapse']}),
+            ('Content Related Metadata', {'fields': ['subjects', 'grades'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
@@ -218,7 +219,7 @@ class LessonForm(forms.ModelForm):
         return cleaned_data
 
 class LessonAdmin(ContentAdmin):
-    filter_horizontal = ['materials', 'secondary_types']
+    filter_horizontal = ['materials', 'secondary_content_types']
     form = LessonForm
     if RELATION_MODELS:
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
@@ -246,7 +247,7 @@ class LessonAdmin(ContentAdmin):
         if CREDIT_MODEL is not None:
             fieldsets.append(('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}))
         fieldsets += [
-            ('Global Metadata', {'fields': ['secondary_types'], 'classes': ['collapse']}),
+            ('Global Metadata', {'fields': ['secondary_content_types'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]

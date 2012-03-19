@@ -13,7 +13,7 @@ from utils import truncate, ul_as_list
 
 from audience.models import AUDIENCE_FLAGS
 from bitfield import BitField
-from categories.models import Category, CategoryBase
+from categories.models import CategoryBase
 
 from edumetadata.models import *
 from edumetadata.fields import HistoricalDateField
@@ -32,7 +32,7 @@ except ImportError:
     
     class Resource(models.Model):
         name = models.CharField(max_length=128)
-    
+
     class ResourceCarouselSlide(models.Model):
         name = models.CharField(max_length=128)
 
@@ -179,8 +179,7 @@ Note that the text you input in this form serves as the default text. If you ind
         credit = models.ForeignKey(CreditModel, blank=True, null=True)
 
   # Content Related Metadata
-    category = models.ForeignKey(Category, blank=True, null=True, verbose_name="Primary Category", related_name="primary_category")
-    categories = models.ManyToManyField(Category, blank=True, null=True, verbose_name="Secondary Categories", related_name="secondary_categories")
+    secondary_content_types = models.ManyToManyField(AlternateType, blank=True, null=True)
 
   # Time and Date Metadata
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
@@ -259,10 +258,9 @@ class Lesson(models.Model): # Publish):
     id_number = models.CharField(max_length=10, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
     is_modular = models.BooleanField(help_text="If unchecked, this field indicates that this lesson should NOT appear as stand-alone outside of a unit view.")
     last_updated_date = models.DateTimeField(auto_now=True)
-    overview_rcslide = models.ForeignKey(ResourceCarouselSlide, null=True, blank=True, related_name="rc_slide")
     published = models.BooleanField()
     published_date = models.DateTimeField(blank=True, null=True)
-    secondary_types = models.ManyToManyField(AlternateType, blank=True, null=True, verbose_name="Secondary Content Types")
+    secondary_content_types = models.ManyToManyField(AlternateType, blank=True, null=True)
     slug = models.SlugField(unique=True, help_text="The URL slug is auto-generated, but producers should adjust it if: a) punctuation in the title causes display errors; and/or b) the title changes after the slug has been generated.")
     subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
 
@@ -419,9 +417,12 @@ Note that the text you input in this form serves as the default text. If you ind
     def save(self):
         from education.edu_core.models import ResourceCarouselModuleType, ResourceCategoryType
 
-        if not self.overview_rcslide:
+        try:
+            item = self.lessonrelation_set.get(relation_type='resource_carousel_slide')
+        except LessonRelation.DoesNotExist:
             if not self.id:
                 super(Lesson, self).save()
+            ctype = ContentType.objects.get(app_label='edu_core', model='resourcecarouselslide')
 
             name = "Overview Lesson %s" % self.id
             rcs_type = ResourceCarouselModuleType.objects.get(name="Overview Module")
@@ -432,11 +433,13 @@ Note that the text you input in this form serves as the default text. If you ind
                     title=name,
                     resource_carousel_module_type=rcs_type,
                     resource_category_type=_rctype)
-            _ctype = ContentType.objects.get_for_model(Lesson)
+          # _ctype = ContentType.objects.get_for_model(Lesson)
           # new_rcs.object_id_order = u"%s-%s" % (_ctype.id, self.id)
             new_rcs.save()
 
-            self.overview_rcslide = new_rcs
+            item = self.lessonrelation_set.create(
+                relation_type='resource_carousel_slide',
+                object_id=new_rcs.id, content_type_id=ctype.id)
         super(Lesson, self).save()
 
 class LessonRelation(models.Model):
