@@ -8,7 +8,8 @@ from django.utils.html import strip_tags
 
 from settings import (ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, 
                       PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, 
-                      RELATIONS, CREDIT_MODEL, INTERNET_ACCESS_TYPES)
+                      RELATIONS, CREDIT_MODEL, INTERNET_ACCESS_TYPES,
+                      REPORTING_MODEL)
 from utils import truncate, ul_as_list
 
 from audience.models import AUDIENCE_FLAGS
@@ -22,6 +23,8 @@ from edumetadata.fields import HistoricalDateField
 
 if CREDIT_MODEL is not None:
     CreditModel = get_model(*CREDIT_MODEL.split('.'))
+if REPORTING_MODEL is not None:
+    ReportingModel = get_model(*REPORTING_MODEL.split('.'))
 
 try:
     from education.edu_core.models import GlossaryTerm, Resource, ResourceCarouselSlide
@@ -129,7 +132,7 @@ class Activity(models.Model):
 Note that the text you input in this form serves as the default text. If you indicate this activity is appropriate for multiple audiences, you either need to add text variations or the default text must be appropriate for those audiences.''')
     title = models.TextField(help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
     ads_excluded = models.BooleanField(default=True, verbose_name="Are ads excluded?", help_text="If unchecked, this field indicates that external ads are allowed.")
-    assessment = models.TextField()
+    assessment = models.TextField(blank=True, null=True)
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     description = models.TextField()
     duration = models.IntegerField(verbose_name="Duration Minutes")
@@ -177,6 +180,10 @@ Note that the text you input in this form serves as the default text. If you ind
   # Credits, Sponsors, Partners
     if CREDIT_MODEL:
         credit = models.ForeignKey(CreditModel, blank=True, null=True)
+
+  # Global Metadata
+    if REPORTING_MODEL:
+        reporting_categories = models.ManyToManyField(ReportingModel, blank=True, null=True)
 
   # Content Related Metadata
     secondary_content_types = models.ManyToManyField(AlternateType, blank=True, null=True)
@@ -250,13 +257,12 @@ class ActivityRelation(models.Model):
 
 class Lesson(models.Model): # Publish):
     title = models.TextField(help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
-    ads_excluded = models.BooleanField(help_text="If unchecked, this field indicates that external ads are allowed.")
+    ads_excluded = models.BooleanField(default=True, help_text="If unchecked, this field indicates that external ads are allowed.")
     create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
-    duration = models.IntegerField(verbose_name="Duration in Minutes")
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
     id_number = models.CharField(max_length=10, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
-    is_modular = models.BooleanField(help_text="If unchecked, this field indicates that this lesson should NOT appear as stand-alone outside of a unit view.")
+    is_modular = models.BooleanField(default=True, help_text="If unchecked, this field indicates that this lesson should NOT appear as stand-alone outside of a unit view.")
     last_updated_date = models.DateTimeField(auto_now=True)
     published = models.BooleanField()
     published_date = models.DateTimeField(blank=True, null=True)
@@ -284,6 +290,8 @@ class Lesson(models.Model): # Publish):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS, help_text='''Select the audience(s) for which this content is appropriate. Selecting audiences means that a separate audience view of the page will exist for those audiences. For a lesson, the only possible choices are Teachers and Informal Educators.
 
 Note that the text you input in this form serves as the default text. If you indicate this activity is appropriate for both T/IE audiences, you either need to add text variations or the default text must be appropriate for for both audiences.''')
+    if REPORTING_MODEL:
+        reporting_categories = models.ManyToManyField(ReportingModel, blank=True, null=True)
 
   # Time and Date Metadata
     relevant_start_date = HistoricalDateField(blank=True, null=True)

@@ -51,6 +51,7 @@ DEFAULT_SETTINGS = {
     ),
     'JAVASCRIPT_URL': settings.MEDIA_URL + 'js/',
     'CREDIT_MODEL': None,
+    'REPORTING_MODEL': None,
 }
 
 DEFAULT_SETTINGS.update(getattr(settings, 'LESSON_SETTINGS', {}))

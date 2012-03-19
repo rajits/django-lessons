@@ -10,7 +10,7 @@ from genericcollection import GenericCollectionTabularInline
 
 from models import *
 from settings import (RELATION_MODELS, JAVASCRIPT_URL, ACTIVITY_FIELDS, 
-                      LESSON_FIELDS, CREDIT_MODEL)
+                      LESSON_FIELDS, CREDIT_MODEL, REPORTING_MODEL)
 from utils import truncate, ul_as_list
 from widgets import ImportWidgetWrapper
 
@@ -142,9 +142,11 @@ class ActivityAdmin(ContentAdmin):
         ]
         if CREDIT_MODEL is not None:
             fieldsets.append(('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}))
+        if REPORTING_MODEL is None:
+            fieldsets.append(('Global Metadata', {'fields': ['secondary_content_types'], 'classes': ['collapse']}))
+        else:
+            fieldsets.append(('Global Metadata', {'fields': ['secondary_content_types', 'reporting_categories'], 'classes': ['collapse']}))
         fieldsets += [
-            # ('HTML Header Metadata', {'fields': [], 'classes': ['collapse']}),
-            ('Global Metadata', {'fields': ['secondary_content_types'], 'classes': ['collapse']}),
             ('Content Related Metadata', {'fields': ['subjects', 'grades'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
@@ -238,7 +240,7 @@ class LessonAdmin(ContentAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
-            ('Overview', {'fields': ['appropriate_for', 'title', 'slug', 'subtitle_guiding_question', 'description', 'duration', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
+            ('Overview', {'fields': ['appropriate_for', 'title', 'slug', 'subtitle_guiding_question', 'description', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),
@@ -246,8 +248,11 @@ class LessonAdmin(ContentAdmin):
         ]
         if CREDIT_MODEL is not None:
             fieldsets.append(('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}))
+        if REPORTING_MODEL is None:
+            fieldsets.append(('Global Metadata', {'fields': ['secondary_content_types'], 'classes': ['collapse']}))
+        else:
+            fieldsets.append(('Global Metadata', {'fields': ['secondary_content_types', 'reporting_categories'], 'classes': ['collapse']}))
         fieldsets += [
-            ('Global Metadata', {'fields': ['secondary_content_types'], 'classes': ['collapse']}),
             ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]

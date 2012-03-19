@@ -8,7 +8,6 @@ l.appropriate_for = 1
 l.subtitle_guiding_question = 'Why are the borders of countries located in certain places?'
 l.description = '''Students think about regions and borders by determining where they would place borders in 
                 an artificial continent, based on a set of physical and cultural features of the area.'''
-l.duration = 100
 l.other_notes = 'This is lesson 1 in a series of 10 lessons in a unit on Europe.'
 l.save()
 
