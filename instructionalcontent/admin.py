@@ -295,7 +295,8 @@ class AppropriateAdmin(admin.ModelAdmin):
 
     class Media:
         css = {'all': ('/media/static/audience/bitfield.css',)}
-        js = ('/media/static/audience/bitfield.js',)
+        js = ('/media/static/audience/bitfield.js',
+              JAVASCRIPT_URL + 'jquery-1.7.1.min.js')
 
 class StandardAdmin(AppropriateAdmin):
     filter_horizontal = ['grades']
