@@ -130,7 +130,7 @@ class Activity(models.Model):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS, help_text='''Select the audience(s) for which this content is appropriate. Selecting audiences means that a separate audience view of the page will exist for those audiences.
 
 Note that the text you input in this form serves as the default text. If you indicate this activity is appropriate for multiple audiences, you either need to add text variations or the default text must be appropriate for those audiences.''')
-    title = models.TextField(help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
+    title = models.CharField(max_length=256, help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
     ads_excluded = models.BooleanField(default=True, verbose_name="Are ads excluded?", help_text="If unchecked, this field indicates that external ads are allowed.")
     assessment = models.TextField(blank=True, null=True)
     assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
@@ -257,7 +257,7 @@ class ActivityRelation(models.Model):
         return out
 
 class Lesson(models.Model): # Publish):
-    title = models.TextField(help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
+    title = models.CharField(max_length=256, help_text="GLOBAL: Use the text variations field to create versions for audiences other than the default.")
     ads_excluded = models.BooleanField(default=True, help_text="If unchecked, this field indicates that external ads are allowed.")
     create_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField()
