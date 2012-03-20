@@ -118,7 +118,7 @@ class ActivityAdmin(ContentAdmin):
         inlines.append(InlineActivityRelation)
 
     list_display = ('get_title', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
-    list_filter = ('pedagogical_purpose_type',)
+    list_filter = ('pedagogical_purpose_type', 'published', 'published_date')
     if CREDIT_MODEL is not None:
         raw_id_fields = ("credit",)
     search_fields = ['title', 'subtitle_guiding_question', 'description', 'id_number']
@@ -235,7 +235,7 @@ class LessonAdmin(ContentAdmin):
     else:
         inlines = [ActivityInline,]
     list_display = ('get_title', 'thumbnail_display', 'get_description', 'appropriate_display', 'published_date')
-    list_filter = ('published_date',)
+    list_filter = ('published_date', 'published')
     if CREDIT_MODEL is not None:
         raw_id_fields = ("credit",)
     search_fields = ['title', 'description', 'id_number']
