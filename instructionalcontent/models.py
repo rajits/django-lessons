@@ -272,6 +272,7 @@ class Lesson(models.Model): # Publish):
     subtitle_guiding_question = models.TextField(verbose_name="Subtitle or Guiding Question")
 
   # Directions
+    assessment_type = models.CharField(max_length=15, blank=True, null=True, choices=ASSESSMENT_TYPES)
     assessment = models.TextField(blank=True, null=True, help_text="This field is for a new, lesson-level assessment. It is not impacted by activity-level assessments.")
 
   # Objectives
@@ -362,6 +363,15 @@ Note that the text you input in this form serves as the default text. If you ind
             bg_info += activity.background_information
         return bg_info
 
+    def get_grades(self):
+        grades = []
+
+        for activity in self.get_activities():
+            grades += activity.grades.all()
+
+        deduped_grades = set(grades)
+        return list(deduped_grades)
+
     def get_materials(self, activities=None):
         materials = self.materials.all()
 
@@ -414,7 +424,7 @@ Note that the text you input in this form serves as the default text. If you ind
         return list(deduped_setup)
 
     def get_subjects(self, activities=None):
-        subjects = self.subjects.all()
+        subjects = []
 
         if activities is None:
             activities = self.get_activities()
