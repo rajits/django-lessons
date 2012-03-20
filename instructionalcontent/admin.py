@@ -105,7 +105,11 @@ class ContentAdmin(admin.ModelAdmin):
     get_title.short_description = 'Title'
 
 class ActivityAdmin(ContentAdmin):
-    filter_horizontal = ['grades', 'grouping_types', 'materials', 'physical_space_types', 'prior_activities', 'skills', 'standards', 'subjects', 'teaching_method_types', 'tech_setup_types', 'tips', 'teaching_approaches', 'secondary_content_types']
+    filter_horizontal = ['eras', 'grades', 'grouping_types', 'materials',
+                         'physical_space_types', 'prior_activities', 'skills',
+                         'standards', 'subjects', 'teaching_method_types',
+                         'tech_setup_types', 'tips', 'teaching_approaches',
+                         'secondary_content_types']
     form = ActivityForm
     inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
     if RELATION_MODELS:
@@ -148,7 +152,7 @@ class ActivityAdmin(ContentAdmin):
             fieldsets.append(('Global Metadata', {'fields': ['secondary_content_types', 'reporting_categories'], 'classes': ['collapse']}))
         fieldsets += [
             ('Content Related Metadata', {'fields': ['subjects', 'grades'], 'classes': ['collapse']}),
-            ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
+            ('Time and Date Metadata', {'fields': ['eras', 'geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in ACTIVITY_FIELDS:
@@ -221,7 +225,7 @@ class LessonForm(forms.ModelForm):
         return cleaned_data
 
 class LessonAdmin(ContentAdmin):
-    filter_horizontal = ['materials', 'secondary_content_types']
+    filter_horizontal = ['eras', 'materials', 'secondary_content_types']
     form = LessonForm
     if RELATION_MODELS:
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
@@ -253,7 +257,7 @@ class LessonAdmin(ContentAdmin):
         else:
             fieldsets.append(('Global Metadata', {'fields': ['secondary_content_types', 'reporting_categories'], 'classes': ['collapse']}))
         fieldsets += [
-            ('Time and Date Metadata', {'fields': ['geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
+            ('Time and Date Metadata', {'fields': ['eras', 'geologic_time', 'relevant_start_date', 'relevant_end_date'], 'classes': ['collapse']}),
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in LESSON_FIELDS:

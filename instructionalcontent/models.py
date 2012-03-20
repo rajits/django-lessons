@@ -189,6 +189,7 @@ Note that the text you input in this form serves as the default text. If you ind
     secondary_content_types = models.ManyToManyField(AlternateType, blank=True, null=True)
 
   # Time and Date Metadata
+    eras = models.ManyToManyField(HistoricalEra, blank=True, null=True)
     geologic_time = models.ForeignKey(GeologicTime, blank=True, null=True)
     relevant_start_date = HistoricalDateField(blank=True, null=True)
     relevant_end_date = HistoricalDateField(blank=True, null=True)
@@ -294,6 +295,7 @@ Note that the text you input in this form serves as the default text. If you ind
         reporting_categories = models.ManyToManyField(ReportingModel, blank=True, null=True)
 
   # Time and Date Metadata
+    eras = models.ManyToManyField(HistoricalEra, blank=True, null=True)
     relevant_start_date = HistoricalDateField(blank=True, null=True)
     relevant_end_date = HistoricalDateField(blank=True, null=True)
 
