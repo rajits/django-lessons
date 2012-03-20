@@ -110,6 +110,8 @@ class ActivityAdmin(ContentAdmin):
                          'standards', 'subjects', 'teaching_method_types',
                          'tech_setup_types', 'tips', 'teaching_approaches',
                          'secondary_content_types']
+    if REPORTING_MODEL:
+        filter_horizontal += ['reporting_categories']
     form = ActivityForm
     inlines = [ConceptItemInline, VocabularyInline, ResourceInline, QuestionAnswerInline]
     if RELATION_MODELS:
@@ -141,8 +143,7 @@ class ActivityAdmin(ContentAdmin):
                     'physical_space_types'
                  ],
                  'classes': ['collapse']}),
-            ('Background', {'fields': ['background_information', 'prior_knowledge', 'prior_activities'], 'classes': ['collapse']}),
-            # ('Vocabulary', {'fields': [], 'classes': ['collapse']}),
+            ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge', 'prior_activities'], 'classes': ['collapse']}),
         ]
         if CREDIT_MODEL is not None:
             fieldsets.append(('Credits, Sponsors, Partners', {'fields': ['credit'], 'classes': ['collapse']}))
@@ -226,12 +227,14 @@ class LessonForm(forms.ModelForm):
 
 class LessonAdmin(ContentAdmin):
     filter_horizontal = ['eras', 'materials', 'secondary_content_types']
+    if REPORTING_MODEL:
+        filter_horizontal += ['reporting_categories']
     form = LessonForm
     if RELATION_MODELS:
         inlines = [ConceptItemInline, ActivityInline, InlineLessonRelation,]
     else:
         inlines = [ActivityInline,]
-    list_display = ('get_title', 'thumbnail_display', 'description', 'appropriate_display', 'published_date')
+    list_display = ('get_title', 'thumbnail_display', 'get_description', 'appropriate_display', 'published_date')
     list_filter = ('published_date',)
     if CREDIT_MODEL is not None:
         raw_id_fields = ("credit",)
@@ -241,6 +244,10 @@ class LessonAdmin(ContentAdmin):
         return bitfield_display(obj.appropriate_for)
     appropriate_display.short_description = 'Appropriate For'
     appropriate_display.allow_tags = True
+
+    def get_description(self, obj):
+        return truncate(strip_tags(obj.description), 180)
+    get_description.short_description = 'Description'
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
