@@ -103,7 +103,7 @@ class Tip(models.Model):
         ordering = ["body"]
 
     def __unicode__(self):
-        return truncate(strip_tags(self.body), 44)
+        return truncate(strip_tags(self.body), 71)
 
 class Standard(models.Model):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS)
@@ -111,6 +111,7 @@ class Standard(models.Model):
     name = models.CharField(max_length=256, null=True, blank=True)
     standard_type = models.CharField(max_length=14, choices=STANDARD_TYPES)
     state = models.CharField(max_length=2, null=True, blank=True, choices=STATE_CHOICES)
+    thinkfinity_code = models.CharField(max_length=100, blank=True, null=True)
     url = models.CharField(max_length=128, null=True, blank=True)
     when_updated = models.DateTimeField(null=True, blank=True, auto_now=True)
     grades = models.ManyToManyField(Grade)
@@ -202,6 +203,14 @@ Note that the text you input in this form serves as the default text. If you ind
     class Meta:
         ordering = ["title"]
         verbose_name_plural = 'Activities'
+
+    def thumbnail_html(self):
+        ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
+        ar = ActivityRelation.objects.filter(activity=self, content_type=ctype)
+        if len(ar) > 0:
+            return '<img src="%s"/>' % ar[0].content_object.thumbnail_url()
+        else:
+            return None
 
 class Vocabulary(models.Model):
     activity = models.ForeignKey(Activity)
@@ -461,6 +470,14 @@ Note that the text you input in this form serves as the default text. If you ind
                 relation_type='resource_carousel_slide',
                 object_id=new_rcs.id, content_type_id=ctype.id)
         super(Lesson, self).save()
+
+    def thumbnail_html(self):
+        ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
+        lr = LessonRelation.objects.filter(lesson=self, content_type=ctype)
+        if len(lr) > 0:
+            return '<img src="%s"/>' % lr[0].content_object.thumbnail_url()
+        else:
+            return None
 
 class LessonRelation(models.Model):
     lesson = models.ForeignKey(Lesson)

@@ -1,4 +1,6 @@
 from django import template
+
+from instructionalcontent.models import Activity, Lesson
 from instructionalcontent.settings import ACTIVITY_FIELDS, LESSON_FIELDS
 
 register = template.Library()
@@ -31,8 +33,6 @@ def get_lesson_model(field):
 
 @register.filter(name='lesson_slug')
 def lesson_slug(id):
-    from instructionalcontent.models import Lesson
-
     if id:
         return Lesson.objects.get(id=id).slug
     else:
@@ -40,9 +40,15 @@ def lesson_slug(id):
 
 @register.filter(name='activity_slug')
 def activity_slug(id):
-    from instructionalcontent.models import Activity
-
     if id:
         return Activity.objects.get(id=id).slug
     else:
         return None
+
+@register.filter(name='activity_thumbnail')
+def activity_thumbnail(id):
+    return Activity.objects.get(id=id).thumbnail_html()
+
+@register.filter(name='lesson_thumbnail')
+def lesson_thumbnail(id):
+    return Lesson.objects.get(id=id).thumbnail_html()

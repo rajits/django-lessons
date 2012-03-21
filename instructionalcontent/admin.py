@@ -99,7 +99,8 @@ class ContentAdmin(admin.ModelAdmin):
         js = ('/media/static/audience/bitfield.js',
               JAVASCRIPT_URL + 'jquery-1.7.1.min.js',
               JAVASCRIPT_URL + 'genericcollections.js',
-              JAVASCRIPT_URL + 'admin.js')
+              JAVASCRIPT_URL + 'admin.js',
+              JAVASCRIPT_URL + 'sectioned_tinymce_widget.js')
 
     def get_title(self, obj):
         return strip_tags(obj.title)
@@ -178,12 +179,7 @@ class ActivityAdmin(ContentAdmin):
                 item = obj.activityrelation_set.create(relation_type=field, object_id=form[field].data, content_type_id=ctype.id)
 
     def thumbnail_display(self, obj):
-        ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
-        ar = ActivityRelation.objects.filter(activity=obj, content_type=ctype)
-        if len(ar) > 0:
-            return '<img src="%s"/>' % ar[0].content_object.thumbnail_url()
-        else:
-            return None
+        return obj.thumbnail_html()
     thumbnail_display.allow_tags = True
 
 class ActivityInline(admin.TabularInline):
@@ -299,12 +295,7 @@ class LessonAdmin(ContentAdmin):
                 item = obj.lessonrelation_set.create(relation_type=field, object_id=form[field].data, content_type_id=ctype.id)
 
     def thumbnail_display(self, obj):
-        ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
-        lr = LessonRelation.objects.filter(lesson=obj, content_type=ctype)
-        if len(lr) > 0:
-            return '<img src="%s"/>' % lr[0].content_object.thumbnail_url()
-        else:
-            return None
+        return obj.thumbnail_html()
     thumbnail_display.allow_tags = True
 
 class TypeAdmin(admin.ModelAdmin):
