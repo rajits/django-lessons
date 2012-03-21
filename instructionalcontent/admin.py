@@ -181,6 +181,11 @@ class ActivityInline(admin.TabularInline):
     model = LessonActivity
     raw_id_fields = ('activity',)
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'transition_text':
+            return db_field.formfield(widget=TinyMCE(mce_attrs={'theme': "simple", 'height': 5}))
+        return super(ActivityInline, self).formfield_for_dbfield(db_field, **kwargs)
+
 if RELATION_MODELS:
     class LessonFormSet(forms.models.BaseInlineFormSet):
         def get_queryset(self):
