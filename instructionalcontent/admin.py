@@ -53,6 +53,7 @@ if RELATION_MODELS:
                 if x.content_type.app_label + '.' + x.content_type.model in RELATION_MODELS]
 
     class InlineActivityRelation(GenericCollectionTabularInline):
+        extra = 7
         model = ActivityRelation
         formset = ActivityFormSet
 
@@ -117,7 +118,7 @@ class ActivityAdmin(ContentAdmin):
     if RELATION_MODELS:
         inlines.append(InlineActivityRelation)
 
-    list_display = ('get_title', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
+    list_display = ('get_title', 'thumbnail_display', 'description', 'pedagogical_purpose_type', 'grade_levels', 'published_date')
     list_filter = ('pedagogical_purpose_type', 'published', 'published_date')
     if CREDIT_MODEL is not None:
         raw_id_fields = ("credit",)
@@ -176,6 +177,14 @@ class ActivityAdmin(ContentAdmin):
                 ctype = ContentType.objects.get(app_label=app_label, model=model)
                 item = obj.activityrelation_set.create(relation_type=field, object_id=form[field].data, content_type_id=ctype.id)
 
+    def thumbnail_display(self, obj):
+        ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
+        ar = ActivityRelation.objects.filter(activity=obj, content_type=ctype)
+        if len(ar) > 0:
+            return '<img src="%s"/>' % ar[0].content_object.thumbnail_url()
+        else:
+            return None
+    thumbnail_display.allow_tags = True
 
 class ActivityInline(admin.TabularInline):
     model = LessonActivity
