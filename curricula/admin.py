@@ -228,12 +228,6 @@ class LessonForm(forms.ModelForm):
                 raise forms.ValidationError("%s is required." % field_name)
         return cleaned_data
 
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        print db_field.name
-        if db_field.name in ('background_information', 'learning_objectives'):
-            return db_field.formfield(widget=ImportWidgetWrapper(forms.TextArea, self.admin_site, field=db_field.name, object_name=self.object_name)) # , obj_id=obj_id))
-        return super(LessonForm, self).formfield_for_dbfield(db_field, **kwargs)
-
 class LessonAdmin(ContentAdmin):
     filter_horizontal = ['eras', 'materials', 'secondary_content_types']
     if REPORTING_MODEL:
@@ -253,6 +247,13 @@ class LessonAdmin(ContentAdmin):
         return bitfield_display(obj.appropriate_for)
     appropriate_display.short_description = 'Appropriate For'
     appropriate_display.allow_tags = True
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        '''override'''
+        formfield = super(LessonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name in ('background_information', 'learning_objectives'):
+            formfield.widget = ImportWidgetWrapper(formfield.widget) #, self.admin_site, field=db_field.name, object_name=self.object_name, obj_id=obj_id)
+        return formfield
 
     def get_description(self, obj):
         return truncate(strip_tags(obj.description), 180)
@@ -300,20 +301,7 @@ class LessonAdmin(ContentAdmin):
 class TypeAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
-class AppropriateAdmin(admin.ModelAdmin):
-    formfield_overrides = {
-        BitField: {
-            'choices': AUDIENCE_FLAGS,
-            'widget': AdminBitFieldWidget()
-        }
-    }
-
-    class Media:
-        css = {'all': ('/media/static/audience/bitfield.css',)}
-        js = ('/media/static/audience/bitfield.js',
-              JAVASCRIPT_URL + 'jquery-1.7.1.min.js')
-
-class StandardAdmin(AppropriateAdmin):
+class StandardAdmin(admin.ModelAdmin):
     filter_horizontal = ['grades']
     list_display = ('standard_type', 'name', 'grade_levels')
     list_filter = ('standard_type', 'state', 'grades')
@@ -323,10 +311,21 @@ class StandardAdmin(AppropriateAdmin):
         return obj.grades.all().as_grade_range()
     grade_levels.short_description = 'Grades'
 
-class TipAdmin(AppropriateAdmin):
+class TipAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        BitField: {
+            'choices': AUDIENCE_FLAGS,
+            'widget': AdminBitFieldWidget()
+        }
+    }
     list_display = ('body_display', 'tip_type', 'appropriate_display')
     list_filter = ('tip_type',)
     search_fields = ['body', 'id_number']
+
+    class Media:
+        css = {'all': ('/media/static/audience/bitfield.css',)}
+        js = ('/media/static/audience/bitfield.js',
+              JAVASCRIPT_URL + 'jquery-1.7.1.min.js')
 
     def appropriate_display(self, obj):
         return bitfield_display(obj.appropriate_for)

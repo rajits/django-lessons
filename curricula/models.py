@@ -112,7 +112,6 @@ class Tip(models.Model):
         return truncate(strip_tags(self.body), 71)
 
 class Standard(models.Model):
-    appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     definition = models.TextField('Standard text', null=True, blank=True)
     name = models.CharField(max_length=256, null=True, blank=True)
     standard_type = models.CharField(max_length=14, choices=STANDARD_TYPES)

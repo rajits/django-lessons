@@ -1,3 +1,5 @@
+import copy
+
 from django import forms
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
@@ -43,22 +45,22 @@ class ImportWidgetWrapper(WidgetWrapper):
     """
     Wrap a widget and add the link buttons at the end
     """
-    def __init__(self, widget, admin_site, obj_id, field, object_name):
+    def __init__(self, widget): # , admin_site, obj_id, field, object_name):
         self.widget = widget
-        self.admin_site = admin_site
-        self.obj_id = obj_id
-        self.field = field
-        self.app_label = "curricula"
-        self.object_name = object_name
+      # self.admin_site = admin_site
+      # self.obj_id = obj_id
+      # self.field = field
+      # self.app_label = "curricula"
+      # self.object_name = object_name
         super(ImportWidgetWrapper, self).__init__(widget)
-    
+
     def render(self, name, value, *args, **kwargs):
         output = [self.widget.render(name, value, *args, **kwargs)]
-        
-        if self.obj_id is not None:
-            output.append(u'<div style="display:inline-block;padding-left:10px">')
-            output.append(u'<a href="" class="import-text" id="add_id_%s"> ' # onclick="return showAddAnotherPopup(this);"> '
-                          % name)
-            output.append(u'&nbsp;%s</a>&nbsp;<br>' % _('Import Text from Activities'))
-            output.append(u'</div>')
+
+        output.append(u'<div style="display:inline-block;padding-left:10px">')
+        output.append(u'<a href="" class="import-text" id="add_id_%s"> ' # onclick="return showAddAnotherPopup(this);"> '
+                      % name)
+        output.append(u'&nbsp;%s</a>&nbsp;<br>' % _('Import Text from Activities'))
+        output.append(u'</div>')
+
         return mark_safe(u''.join(output))
