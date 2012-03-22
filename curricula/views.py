@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
-from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.template import RequestContext
+from django.utils import simplejson
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from settings import RELATION_MODELS, LESSON_FIELDS
@@ -64,3 +65,14 @@ def learning_objectives(request, id):
     return render_to_response('lessons/learning_objectives.html',
                               context,
                               context_instance=RequestContext(request))
+
+def get_breakout_terms(request, id):
+    '''
+    AJAX response for TinyMCE for Glossification.
+    '''
+    activity = get_object_or_404(Activity, id=id)
+    breakout_terms = activity.vocabulary_set.all()
+    # user lower case terms
+    terms = [gt.glossary_term.word.lower() for gt in breakout_terms]
+    res = simplejson.dumps(terms)
+    return HttpResponse(res)
