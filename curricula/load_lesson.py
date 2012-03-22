@@ -1,4 +1,4 @@
-from instructionalcontent.models import Activity, Lesson, LessonActivity
+from curricula.models import Activity, Lesson, LessonActivity
 
 a, created = Activity.objects.get_or_create(slug='drawing-political-borders')
 a2, created = Activity.objects.get_or_create(slug='comparing-political-borders')

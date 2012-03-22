@@ -5,7 +5,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^instructionalcontent/', include('instructionalcontent.urls')),
+    (r'^curricula/', include('curricula.urls')),
     (r'^concepts/', include('concepts.urls')),
   # (r'^publishing/', include('publisher.urls')),
     (r'^admin/', include(admin.site.urls)),

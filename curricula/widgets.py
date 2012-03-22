@@ -48,7 +48,7 @@ class ImportWidgetWrapper(WidgetWrapper):
         self.admin_site = admin_site
         self.obj_id = obj_id
         self.field = field
-        self.app_label = "instructionalcontent"
+        self.app_label = "curricula"
         self.object_name = object_name
         super(ImportWidgetWrapper, self).__init__(widget)
     

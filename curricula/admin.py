@@ -203,13 +203,6 @@ if RELATION_MODELS:
         formset = LessonFormSet
 
 class LessonForm(forms.ModelForm):
-  # background_information = forms.CharField(widget=ImportWidgetWrapper(forms.TextArea, 
-  #             self.admin_site, obj_id=obj_id, field=db_field.name,
-  #             object_name=self.object_name))
-  # learning_objectives = forms.CharField(widget=ImportWidgetWrapper(forms.TextArea, 
-  #             self.admin_site, obj_id=obj_id, field=db_field.name,
-  #             object_name=self.object_name))
-
     class Meta:
         model = Lesson
 
@@ -234,6 +227,12 @@ class LessonForm(forms.ModelForm):
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
         return cleaned_data
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        print db_field.name
+        if db_field.name in ('background_information', 'learning_objectives'):
+            return db_field.formfield(widget=ImportWidgetWrapper(forms.TextArea, self.admin_site, field=db_field.name, object_name=self.object_name)) # , obj_id=obj_id))
+        return super(LessonForm, self).formfield_for_dbfield(db_field, **kwargs)
 
 class LessonAdmin(ContentAdmin):
     filter_horizontal = ['eras', 'materials', 'secondary_content_types']

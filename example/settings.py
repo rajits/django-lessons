@@ -98,7 +98,7 @@ INSTALLED_APPS = (
     'edumetadata',
   # 'reversion',
   # 'publisher',
-    'instructionalcontent',
+    'curricula',
     'audience',
     'dummy',
 )
@@ -144,10 +144,10 @@ LESSON_SETTINGS = {
 }
 
 CATEGORIES_SETTINGS = {
-    'FK_REGISTRY': { 'instructionalcontent.Lesson': (
+    'FK_REGISTRY': { 'curricula.Lesson': (
         {'name': 'primary_category', 'related_name': 'primary_cat', 'blank': True, 'null': True},
     )},
-    'M2M_REGISTRY': { 'instructionalcontent.Lesson': (
+    'M2M_REGISTRY': { 'curricula.Lesson': (
         {'name': 'secondary_categories', 'blank': True, 'null': True },
     )}
 }

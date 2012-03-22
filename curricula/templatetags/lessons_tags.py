@@ -1,7 +1,7 @@
 from django import template
 
-from instructionalcontent.models import Activity, Lesson
-from instructionalcontent.settings import ACTIVITY_FIELDS, LESSON_FIELDS
+from curricula.models import Activity, Lesson
+from curricula.settings import ACTIVITY_FIELDS, LESSON_FIELDS
 
 register = template.Library()
 
@@ -47,8 +47,14 @@ def activity_slug(id):
 
 @register.filter(name='activity_thumbnail')
 def activity_thumbnail(id):
-    return Activity.objects.get(id=id).thumbnail_html()
+    try:
+        return Activity.objects.get(id=id).thumbnail_html()
+    except Activity.DoesNotExist:
+        return None
 
 @register.filter(name='lesson_thumbnail')
 def lesson_thumbnail(id):
-    return Lesson.objects.get(id=id).thumbnail_html()
+    try:
+        return Lesson.objects.get(id=id).thumbnail_html()
+    except Lessons.DoesNotExist:
+        return None

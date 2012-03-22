@@ -1,8 +1,8 @@
 recursive-include doc_src *
 recursive-include docs *
 
-recursive-include instructionalcontent/media *
-recursive-include instructionalcontent/templates *
+recursive-include curricula/media *
+recursive-include curricula/templates *
 
 include LICENSE
 include README

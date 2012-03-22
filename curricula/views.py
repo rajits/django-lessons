@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.utils.translation import ugettext, ugettext_lazy as _
 
 from settings import RELATION_MODELS, LESSON_FIELDS
-from instructionalcontent.models import Activity, Lesson
+from curricula.models import Activity, Lesson
 
 def activity_detail(request, slug, template_name='lessons/activity_detail.html'):
     activity = get_object_or_404(Activity, slug=slug)
