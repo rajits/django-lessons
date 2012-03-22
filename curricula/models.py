@@ -210,6 +210,21 @@ Note that the text you input in this form serves as the default text. If you ind
         ordering = ["title"]
         verbose_name_plural = 'Activities'
 
+    if RELATION_MODELS:
+        def get_related_content_type(self, content_type):
+            """
+            Get all related items of the specified content type
+            """
+            return self.activityrelation_set.filter(
+                content_type__name=content_type)
+
+        def get_relation_type(self, relation_type):
+            """
+            Get all relations of the specified relation type
+            """
+            return self.activityrelation_set.filter(
+                relation_type=relation_type)
+
     def thumbnail_html(self):
         ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
         ar = ActivityRelation.objects.filter(activity=self, content_type=ctype)
