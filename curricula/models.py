@@ -91,13 +91,19 @@ TIP_TYPE_CHOICES = (
     (2, 'Modification'),
 )
 
+class TipCategory(CategoryBase):
+    """
+    Tip-specific categories
+    """
+    pass
+
 class Tip(models.Model):
     appropriate_for = BitField(flags=AUDIENCE_FLAGS)
     content_creation_time = models.DateTimeField(auto_now_add=True)
     id_number = models.CharField(max_length=5, blank=True, null=True)
     tip_type = models.PositiveSmallIntegerField(choices=TIP_TYPE_CHOICES)
     body = models.TextField()
-    category = models.ForeignKey(EducationCategory, blank=True, null=True)
+    category = models.ForeignKey(TipCategory, blank=True, null=True)
 
     class Meta:
         ordering = ["body"]
