@@ -1,7 +1,7 @@
 from django import template
 
 from curricula.models import Activity, Lesson
-from curricula.settings import ACTIVITY_FIELDS, LESSON_FIELDS
+from curricula.settings import KEY_IMAGE, RESOURCE_CAROUSEL, RC_SLIDE
 
 register = template.Library()
 
@@ -25,11 +25,11 @@ def get_model(field, setting):
 
 @register.filter(name='get_activity_model')
 def get_activity_model(field):
-    return get_model(field, ACTIVITY_FIELDS)
+    return get_model(field, (KEY_IMAGE, RESOURCE_CAROUSEL))
 
 @register.filter(name='get_lesson_model')
 def get_lesson_model(field):
-    return get_model(field, LESSON_FIELDS)
+    return get_model(field, (KEY_IMAGE, RC_SLIDE))
 
 @register.filter(name='lesson_slug')
 def lesson_slug(id):

@@ -462,35 +462,6 @@ Note that the text you input in this form serves as the default text. If you ind
         deduped_subjects = set(subjects)
         return list(deduped_subjects)
 
-    # this override is, unfortunately, copied from education.edu_core.models - raj
-    def save(self):
-        from education.edu_core.models import ResourceCarouselModuleType, ResourceCategoryType
-
-        try:
-            item = self.lessonrelation_set.get(relation_type='resource_carousel_slide')
-        except LessonRelation.DoesNotExist:
-            if not self.id:
-                super(Lesson, self).save()
-            ctype = ContentType.objects.get(app_label='edu_core', model='resourcecarouselslide')
-
-            name = "Overview Lesson %s" % self.id
-            rcs_type = ResourceCarouselModuleType.objects.get(name="Overview Module")
-            _rctype = ResourceCategoryType.objects.get(name="Websites")
-
-            new_rcs = ResourceCarouselSlide.objects.create(
-                    name=name,
-                    title=name,
-                    resource_carousel_module_type=rcs_type,
-                    resource_category_type=_rctype)
-          # _ctype = ContentType.objects.get_for_model(Lesson)
-          # new_rcs.object_id_order = u"%s-%s" % (_ctype.id, self.id)
-            new_rcs.save()
-
-            item = self.lessonrelation_set.create(
-                relation_type='resource_carousel_slide',
-                object_id=new_rcs.id, content_type_id=ctype.id)
-        super(Lesson, self).save()
-
     def thumbnail_html(self):
         ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
         lr = LessonRelation.objects.filter(lesson=self, content_type=ctype)

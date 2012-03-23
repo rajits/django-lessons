@@ -9,8 +9,9 @@ from django.utils.html import strip_tags
 from genericcollection import GenericCollectionTabularInline
 
 from models import *
-from settings import (RELATION_MODELS, JAVASCRIPT_URL, ACTIVITY_FIELDS, 
-                      LESSON_FIELDS, CREDIT_MODEL, REPORTING_MODEL)
+from settings import (RELATION_MODELS, JAVASCRIPT_URL, KEY_IMAGE,
+                      RESOURCE_CAROUSEL, RC_SLIDE, CREDIT_MODEL,
+                      REPORTING_MODEL)
 from utils import truncate, ul_as_list
 from widgets import ImportWidgetWrapper
 
@@ -19,6 +20,19 @@ from audience.models import AUDIENCE_FLAGS
 from audience.widgets import AdminBitFieldWidget, bitfield_display
 from bitfield import BitField
 from concepts.admin import ConceptItemInline
+
+ACTIVITY_FIELDS = (KEY_IMAGE, RESOURCE_CAROUSEL)
+LESSON_FIELDS = (KEY_IMAGE, RC_SLIDE)
+
+try:
+    from education.edu_core.models import ResourceCarouselModuleType, ResourceCategoryType
+except ImportError:
+    # Temporary shim for testing
+    class ResourceCarouselModuleType(models.Model):
+        name = models.CharField(max_length=128)
+
+    class ResourceCategoryType(models.Model):
+        name = models.CharField(max_length=128)
 
 class VocabularyInline(admin.TabularInline):
     extra = 10
@@ -78,7 +92,6 @@ class ActivityForm(forms.ModelForm):
         cleaned_data = super(ActivityForm, self).clean()
         for field in ACTIVITY_FIELDS:
             field_name = field[0]
-            app_label, model = field[1].split('.')
 
             if field_name not in self.cleaned_data:
                 raise forms.ValidationError("%s is required." % field_name)
@@ -206,26 +219,32 @@ class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
 
+    def initialize_values(self, kwargs, field_name):
+        if kwargs.has_key('instance'):
+            objects = kwargs['instance'].lessonrelation_set.filter(relation_type=field_name)
+            if len(objects) > 0:
+                self.fields[field_name].initial = objects[0].object_id
+
     def __init__(self, *args, **kwargs):
         super(LessonForm, self).__init__(*args, **kwargs)
-        for field in LESSON_FIELDS:
-            field_name = field[0]
-            model = get_model(*field[1].split('.'))
-            self.fields[field_name] = forms.ModelChoiceField(queryset=model.objects.all(), widget=forms.TextInput)
-            # for existing lessons, initialize the fields
-            if kwargs.has_key('instance'):
-                objects = kwargs['instance'].lessonrelation_set.filter(relation_type=field_name)
-                if len(objects) > 0:
-                    self.fields[field_name].initial = objects[0].object_id
+
+        field_name = KEY_IMAGE[0]
+        qset = get_model(*KEY_IMAGE[1].split('.')).objects.all()
+        self.fields[field_name] = forms.ModelChoiceField(queryset=qset, widget=forms.TextInput)
+        self.initialize_values(kwargs, field_name)
+
+        field_name = RC_SLIDE[0]
+        qset = get_model(*RC_SLIDE[1].split('.')).objects.all()
+        self.fields[field_name] = forms.ModelChoiceField(queryset=qset, widget=forms.TextInput, required=False)
+        self.initialize_values(kwargs, field_name)
 
     def clean(self):
         cleaned_data = super(LessonForm, self).clean()
-        for field in LESSON_FIELDS:
-            field_name = field[0]
-            app_label, model = field[1].split('.')
 
-            if field_name not in self.cleaned_data:
-                raise forms.ValidationError("%s is required." % field_name)
+        field_name = 'key_image'
+
+        if field_name not in self.cleaned_data:
+            raise forms.ValidationError("%s is required." % field_name)
         return cleaned_data
 
 class LessonAdmin(ContentAdmin):
@@ -285,14 +304,39 @@ class LessonAdmin(ContentAdmin):
         super(LessonAdmin, self).save_model(request, obj, form, change, *args, **kwargs)
 
         for field, model in LESSON_FIELDS:
-            try:
-                item = obj.lessonrelation_set.get(relation_type=field)
-                item.object_id = form[field].data
-                item.save()
-            except LessonRelation.DoesNotExist:
-                app_label, model = model.split('.')
-                ctype = ContentType.objects.get(app_label=app_label, model=model)
-                item = obj.lessonrelation_set.create(relation_type=field, object_id=form[field].data, content_type_id=ctype.id)
+            if form[field].data == '':
+                # (EDU-2469) Lesson - User should not need to enter RC slide but
+                # the system should generate one and associate with the Lesson
+                try:
+                    item = obj.lessonrelation_set.get(relation_type=field)
+                except LessonRelation.DoesNotExist:
+                    app_label, model = model.split('.')
+                    # following code is, unfortunately, copied from education.edu_core.models - raj
+                    ctype = ContentType.objects.get(app_label=app_label, model=model)
+
+                    name = "Overview Lesson %s" % obj.id
+                    rcs_type = ResourceCarouselModuleType.objects.get(name="Overview Module")
+                    _rctype = ResourceCategoryType.objects.get(name="Websites")
+
+                    new_rcs = ResourceCarouselSlide.objects.create(
+                            name=name,
+                            title=name,
+                            resource_carousel_module_type=rcs_type,
+                            resource_category_type=_rctype)
+                    new_rcs.save()
+
+                    item = obj.lessonrelation_set.create(
+                        relation_type=field, object_id=new_rcs.id,
+                        content_type_id=ctype.id)
+            else:
+                try:
+                    item = obj.lessonrelation_set.get(relation_type=field)
+                    item.object_id = form[field].data
+                    item.save()
+                except LessonRelation.DoesNotExist:
+                    app_label, model = model.split('.')
+                    ctype = ContentType.objects.get(app_label=app_label, model=model)
+                    item = obj.lessonrelation_set.create(relation_type=field, object_id=form[field].data, content_type_id=ctype.id)
 
     def thumbnail_display(self, obj):
         return obj.thumbnail_html()

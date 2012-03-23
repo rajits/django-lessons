@@ -3,8 +3,9 @@ from django.db.models import Q
 
 DEFAULT_SETTINGS = {
     'RELATION_MODELS': [],
-    'ACTIVITY_FIELDS': [],
-    'LESSON_FIELDS': [],
+    'KEY_IMAGE': None,
+    'RESOURCE_CAROUSEL': None,
+    'RC_SLIDE': None,
     'ASSESSMENT_TYPES': (
         ('alternative', 'Alternative Assessment'),
         ('authentic', 'Authentic Assessment'),
