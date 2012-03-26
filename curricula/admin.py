@@ -212,6 +212,7 @@ if RELATION_MODELS:
                 if x.content_type.app_label + '.' + x.content_type.model in RELATION_MODELS]
 
     class InlineLessonRelation(GenericCollectionTabularInline):
+        extra = 7
         model = LessonRelation
         formset = LessonFormSet
 

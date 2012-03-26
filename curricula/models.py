@@ -373,7 +373,7 @@ Note that the text you input in this form serves as the default text. If you ind
         pass
 
     def get_learning_objectives(self, activities=None):
-        objectives = ul_as_list(self.learning_objectives)
+        objectives = []
 
         if activities is None:
             activities = self.get_activities()
@@ -384,13 +384,14 @@ Note that the text you input in this form serves as the default text. If you ind
 
     def get_background_information(self, activities=None):
         '''Used by the admin to import text'''
-        bg_info = self.background_information
+        bg_info = []
 
         if activities is None:
             activities = self.get_activities()
         for activity in activities:
-            bg_info += activity.background_information
-        return bg_info
+            bg_info.append(activity.background_information)
+        deduped_info = set(bg_info)
+        return list(deduped_info)
 
     def get_grades(self):
         grades = []

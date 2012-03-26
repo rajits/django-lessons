@@ -7,14 +7,14 @@ from django.utils.translation import ugettext, ugettext_lazy as _
 from settings import RELATION_MODELS, KEY_IMAGE, RC_SLIDE
 from curricula.models import Activity, Lesson
 
-def activity_detail(request, slug, template_name='lessons/activity_detail.html'):
+def activity_detail(request, slug, template_name='curricula/activity_detail.html'):
     activity = get_object_or_404(Activity, slug=slug)
 
     return render_to_response(template_name, {
         'activity': activity,
     }, context_instance=RequestContext(request))
 
-def lesson_detail(request, slug, template_name='lessons/lesson_detail.html'):
+def lesson_detail(request, slug, template_name='curricula/lesson_detail.html'):
     lesson = get_object_or_404(Lesson, slug=slug)
 
     getvars = request.GET.copy()
@@ -43,26 +43,17 @@ def lesson_detail(request, slug, template_name='lessons/lesson_detail.html'):
 
 def background_information(request, id):
     lesson = get_object_or_404(Lesson, id=id)
-    background_information = ''
 
-    for activity in lesson.get_activities():
-        background_information += activity.background_information
-
-    context = { 'background_information': background_information, }
-    return render_to_response('lessons/background_information.html',
+    context = { 'background_information': lesson.get_background_information(), }
+    return render_to_response('curricula/fragments/bg_info.html',
                               context,
                               context_instance=RequestContext(request))
 
 def learning_objectives(request, id):
     lesson = get_object_or_404(Lesson, id=id)
-    learning_objectives = []
 
-    for activity in lesson.get_activities():
-        learning_objectives += ul_as_list(activity.learning_objectives)
-    deduped_objectives = set(learning_objectives)
-
-    context = { 'learning_objectives': list(learning_objectives), }
-    return render_to_response('lessons/learning_objectives.html',
+    context = { 'learning_objectives': lesson.get_learning_objectives(), }
+    return render_to_response('curricula/fragments/objectives.html',
                               context,
                               context_instance=RequestContext(request))
 
