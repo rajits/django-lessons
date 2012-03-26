@@ -56,5 +56,5 @@ def activity_thumbnail(id):
 def lesson_thumbnail(id):
     try:
         return Lesson.objects.get(id=id).thumbnail_html()
-    except Lessons.DoesNotExist:
+    except Lesson.DoesNotExist:
         return None
