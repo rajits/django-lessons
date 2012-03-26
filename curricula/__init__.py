@@ -4,9 +4,9 @@ django-lessons
 __version_info__ = {
     'major': 0,
     'minor': 8,
-    'micro': 6,
-    'releaselevel': 'beta',
-    'serial': 4
+    'micro': 7,
+    'releaselevel': 'final',
+    'serial': 1
 }
 
 def get_version():
