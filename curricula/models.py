@@ -239,6 +239,9 @@ class Vocabulary(models.Model):
     class Meta:
         verbose_name_plural = 'Vocabulary'
 
+    def __unicode__(self):
+        return self.glossary_term.__unicode__()
+
 class QuestionAnswer(models.Model):
     activity = models.ForeignKey(Activity)
     question = models.TextField()

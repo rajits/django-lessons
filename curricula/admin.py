@@ -13,7 +13,7 @@ from settings import (RELATION_MODELS, JAVASCRIPT_URL, KEY_IMAGE,
                       RESOURCE_CAROUSEL, RC_SLIDE, CREDIT_MODEL,
                       REPORTING_MODEL)
 from utils import truncate, ul_as_list
-from widgets import ImportWidgetWrapper
+from widgets import VocabularyIdWidget
 
 from tinymce.widgets import TinyMCE
 from audience.models import AUDIENCE_FLAGS
@@ -38,6 +38,12 @@ class VocabularyInline(admin.TabularInline):
     extra = 10
     model = Vocabulary
     raw_id_fields = ('glossary_term',)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        formfield = super(VocabularyInline, self).formfield_for_dbfield(db_field, **kwargs)
+        if db_field.name == 'glossary_term':
+            formfield.widget = VocabularyIdWidget(Vocabulary._meta.get_field('glossary_term').rel)
+        return formfield
 
 class QuestionAnswerInline(admin.TabularInline):
     extra = 1
@@ -267,13 +273,6 @@ class LessonAdmin(ContentAdmin):
         return bitfield_display(obj.appropriate_for)
     appropriate_display.short_description = 'Appropriate For'
     appropriate_display.allow_tags = True
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        '''override'''
-        formfield = super(LessonAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-        if db_field.name in ('background_information', 'learning_objectives'):
-            formfield.widget = ImportWidgetWrapper(formfield.widget) #, self.admin_site, field=db_field.name, object_name=self.object_name, obj_id=obj_id)
-        return formfield
 
     def get_description(self, obj):
         return truncate(strip_tags(obj.description), 180)
