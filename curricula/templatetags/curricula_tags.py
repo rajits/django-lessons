@@ -1,6 +1,7 @@
 from django import template
+from django.contrib.contenttypes.models import ContentType
 
-from curricula.models import Activity, Lesson
+from curricula.models import Activity, Lesson, ActivityRelation, LessonRelation
 from curricula.settings import KEY_IMAGE, RESOURCE_CAROUSEL, RC_SLIDE
 
 register = template.Library()
@@ -58,6 +59,24 @@ def lesson_thumbnail(id):
         return Lesson.objects.get(id=id).thumbnail_html()
     except Lesson.DoesNotExist:
         return None
+
+@register.filter(name='resource_carousel')
+def resource_carousel(id):
+    app_label, model = RESOURCE_CAROUSEL[1].split('.')
+    ctype = ContentType.objects.get(app_label=app_label, model=model)
+    activity = Activity.objects.get(id=id)
+    ar = ActivityRelation.objects.get(activity=activity, content_type=ctype)
+
+    return ar.content_object.name
+
+@register.filter(name='rc_slide')
+def rc_slide(id):
+    app_label, model = RC_SLIDE[1].split('.')
+    ctype = ContentType.objects.get(app_label=app_label, model=model)
+    lesson = Lesson.objects.get(id=id)
+    lr = LessonRelation.objects.get(lesson=lesson, content_type=ctype)
+
+    return lr.content_object.name
 
 @register.tag('get_related_content_type')
 def do_get_related_content_type(parser, token):
