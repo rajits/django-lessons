@@ -117,7 +117,7 @@ class Standard(models.Model):
     standard_type = models.CharField(max_length=14, choices=STANDARD_TYPES)
     state = models.CharField(max_length=2, null=True, blank=True, choices=STATE_CHOICES)
     thinkfinity_code = models.CharField(max_length=100, blank=True, null=True)
-    url = models.CharField(max_length=128, null=True, blank=True)
+    url = models.CharField(max_length=256, null=True, blank=True)
     when_updated = models.DateTimeField(null=True, blank=True, auto_now=True)
     grades = models.ManyToManyField(Grade)
 
