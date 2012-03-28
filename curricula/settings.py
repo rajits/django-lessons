@@ -39,6 +39,7 @@ DEFAULT_SETTINGS = {
         (3, 'engage'),
     ),
     'STANDARD_TYPES': (
+        ('energy', 'Energy Literacy Essential Principles and Fundamental Concepts'),
         ('language', 'IRA/NCTE Standards for the English Language Arts'),
         ('social-studies', 'National Council for Social Studies Curriculum Standards'),
         ('geography', 'National Geography Standards'),
