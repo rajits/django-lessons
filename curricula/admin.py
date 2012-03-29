@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db.models.loading import get_model
 from django.utils.html import strip_tags
 
-from genericcollection import GenericCollectionTabularInline
+from genericcollection import GenericCollectionInlineModelAdmin
 
 from models import *
 from settings import (RELATION_MODELS, JAVASCRIPT_URL, KEY_IMAGE,
@@ -72,10 +72,11 @@ if RELATION_MODELS:
             return [x for x in super(ActivityFormSet, self).get_queryset()
                 if x.content_type.app_label + '.' + x.content_type.model in RELATION_MODELS]
 
-    class InlineActivityRelation(GenericCollectionTabularInline):
+    class InlineActivityRelation(GenericCollectionInlineModelAdmin):
         extra = 7
         model = ActivityRelation
         formset = ActivityFormSet
+        template = 'admin/edit_inline/ic_coll_tabular.html'
 
 class ActivityForm(forms.ModelForm):
     class Meta:
@@ -217,10 +218,11 @@ if RELATION_MODELS:
             return [x for x in super(LessonFormSet, self).get_queryset()
                 if x.content_type.app_label + '.' + x.content_type.model in RELATION_MODELS]
 
-    class InlineLessonRelation(GenericCollectionTabularInline):
+    class InlineLessonRelation(GenericCollectionInlineModelAdmin):
         extra = 7
         model = LessonRelation
         formset = LessonFormSet
+        template = 'admin/edit_inline/ic_coll_tabular.html'
 
 class LessonForm(forms.ModelForm):
     class Meta:
