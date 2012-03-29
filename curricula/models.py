@@ -9,7 +9,7 @@ from django.utils.html import strip_tags
 from settings import (ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, 
                       PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, 
                       RELATIONS, CREDIT_MODEL, INTERNET_ACCESS_TYPES,
-                      REPORTING_MODEL)
+                      REPORTING_MODEL, KEY_IMAGE)
 from utils import truncate, ul_as_list
 
 from audience.models import AUDIENCE_FLAGS
@@ -109,7 +109,10 @@ class Tip(models.Model):
         ordering = ["body"]
 
     def __unicode__(self):
-        return truncate(strip_tags(self.body), 71)
+        if self.category:
+            return '%s: %s' % (self.category.name, truncate(strip_tags(self.body), 38))
+        else:
+            return truncate(strip_tags(self.body), 71)
 
 class Standard(models.Model):
     definition = models.TextField('Standard text', null=True, blank=True)
@@ -225,7 +228,8 @@ Note that the text you input in this form serves as the default text. If you ind
                 relation_type=relation_type)
 
     def thumbnail_html(self):
-        ctype = ContentType.objects.get(app_label='core_media', model='ngphoto')
+        app_label, model = KEY_IMAGE[1].split('.')
+        ctype = ContentType.objects.get(app_label=app_label, model=model)
         ar = ActivityRelation.objects.filter(activity=self, content_type=ctype)
         if len(ar) > 0:
             return '<img src="%s"/>' % ar[0].content_object.thumbnail_url()
