@@ -1,4 +1,5 @@
 from curricula.models import Activity, Lesson, LessonActivity
+from django.contrib.contenttypes.models import ContentType
 
 a, created = Activity.objects.get_or_create(slug='drawing-political-borders')
 a2, created = Activity.objects.get_or_create(slug='comparing-political-borders')
@@ -17,3 +18,27 @@ lr.save()
 
 lr2 = LessonActivity(lesson=l, activity=a2)
 lr2.save()
+
+l.lessonrelation_set.create(
+    object_id=161,
+    content_type=ContentType.objects.get(app_label='acknowledge', model='organization'),
+    relation_type='Page footer',
+)
+
+l.lessonrelation_set.create(
+    object_id=2,
+    content_type=ContentType.objects.get(app_label='edu_core', model='promo'),
+    relation_type='Content footer',
+)
+
+l.lessonrelation_set.create(
+    object_id=3,
+    content_type=ContentType.objects.get(app_label='edu_core', model='promo'),
+    relation_type='Right Rail',
+)
+
+l.lessonrelation_set.create(
+    object_id=10,
+    content_type=ContentType.objects.get(app_label='edu_core', model='sharethisservice'),
+    relation_type='Add this',
+)
