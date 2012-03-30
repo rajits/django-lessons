@@ -171,7 +171,7 @@ Note that the text you input in this form serves as the default text. If you ind
 
    #Objectives
     learning_objectives = models.TextField(help_text="If this activity is part of an already-created lesson and you update the learning objectives, you must also also make the same change in lesson for this field.")
-    skills = models.ManyToManyField(Skill, limit_choices_to={'parent__isnull': False})
+    skills = models.ManyToManyField(Skill, limit_choices_to={'children__isnull': True})
     teaching_approaches = models.ManyToManyField(TeachingApproach)
     teaching_method_types = models.ManyToManyField(TeachingMethodType)
 
