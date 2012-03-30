@@ -71,12 +71,15 @@ def resource_carousel(id):
 
 @register.filter(name='rc_slide')
 def rc_slide(id):
-    app_label, model = RC_SLIDE[1].split('.')
-    ctype = ContentType.objects.get(app_label=app_label, model=model)
-    lesson = Lesson.objects.get(id=id)
-    lr = LessonRelation.objects.get(lesson=lesson, content_type=ctype)
+    try:
+        lesson = Lesson.objects.get(id=id)
+        app_label, model = RC_SLIDE[1].split('.')
+        ctype = ContentType.objects.get(app_label=app_label, model=model)
+        lr = LessonRelation.objects.get(lesson=lesson, content_type=ctype)
 
-    return lr.content_object.name
+        return lr.content_object.name
+    except LessonRelation.DoesNotExist:
+        return None
 
 @register.tag('get_related_content_type')
 def do_get_related_content_type(parser, token):
