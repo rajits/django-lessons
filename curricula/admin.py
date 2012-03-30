@@ -55,6 +55,7 @@ class QuestionAnswerInline(admin.TabularInline):
         }
     }
     model = QuestionAnswer
+    verbose_name_plural = 'Question Answers (S/F/K Quiz Yourself!)'
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         if db_field.name in ('question', 'answer'):
@@ -131,7 +132,7 @@ class ActivityAdmin(ContentAdmin):
                          'physical_space_types', 'prior_activities', 'skills',
                          'standards', 'subjects', 'teaching_method_types',
                          'tech_setup_types', 'tips', 'teaching_approaches',
-                         'secondary_content_types']
+                         'secondary_content_types', 'learner_groups']
     if REPORTING_MODEL:
         filter_horizontal += ['reporting_categories']
     form = ActivityForm
@@ -150,19 +151,18 @@ class ActivityAdmin(ContentAdmin):
             ('Overview',
                 {'fields': [
                     'appropriate_for', 'title', 'slug',
-                    'subtitle_guiding_question', 'description',
-                    'pedagogical_purpose_type', 'duration', 'id_number',
-                    'is_modular', 'ads_excluded', 'notes_on_readability_score'
+                    'subtitle_guiding_question', 'pedagogical_purpose_type',
+                    'description', 'duration', 'learner_groups', 'is_modular',
+                    'ads_excluded', 'id_number', 'notes_on_readability_score'
                  ],
                  'classes': ['collapse']}),
             ('Directions', {'fields': ['directions', 'assessment_type', 'assessment', 'extending_the_learning', 'tips'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives', 'teaching_approaches', 'teaching_method_types', 'skills', 'standards'], 'classes': ['collapse']}),
             ('Preparation',
                 {'fields': [
-                    'setup', 'accessibility_notes', 'other_notes',
-                    'grouping_types', 'materials', 'tech_setup_types',
-                    'internet_access_type', 'plugin_types',
-                    'physical_space_types'
+                    'materials', 'tech_setup_types', 'internet_access_type',
+                    'plugin_types', 'physical_space_types', 'setup',
+                    'grouping_types', 'accessibility_notes', 'other_notes'
                  ],
                  'classes': ['collapse']}),
             ('Background & Vocabulary', {'fields': ['background_information', 'prior_knowledge', 'prior_activities'], 'classes': ['collapse']}),
@@ -179,7 +179,7 @@ class ActivityAdmin(ContentAdmin):
             ('Publishing', {'fields': ['published', 'published_date'], 'classes': ['collapse']}),
         ]
         for field in ACTIVITY_FIELDS:
-            fieldsets[0][1]['fields'].insert(4, field[0])
+            fieldsets[0][1]['fields'].insert(5, field[0])
         return fieldsets
 
     def grade_levels(self, obj):
@@ -282,7 +282,7 @@ class LessonAdmin(ContentAdmin):
 
     def get_fieldsets(self, request, obj=None):
         fieldsets = [
-            ('Overview', {'fields': ['appropriate_for', 'title', 'slug', 'subtitle_guiding_question', 'description', 'id_number', 'is_modular', 'ads_excluded'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
+            ('Overview', {'fields': ['appropriate_for', 'title', 'slug', 'subtitle_guiding_question', 'description', 'is_modular', 'ads_excluded', 'id_number'], 'classes': ['collapse']}), # , 'create_date', 'last_updated_date'], 'classes': ['collapse']}),
             ('Directions', {'fields': ['assessment_type', 'assessment'], 'classes': ['collapse']}),
             ('Objectives', {'fields': ['learning_objectives'], 'classes': ['collapse']}),
             ('Preparation', {'fields': ['materials', 'other_notes'], 'classes': ['collapse']}),

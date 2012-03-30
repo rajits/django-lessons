@@ -23,16 +23,6 @@ DEFAULT_SETTINGS = {
         (2, 'Optional'),
         (3, 'Required'),
     ),
-    'LEARNER_GROUP_TYPES': (
-        (1, 'Advanced Placement'),
-        (2, 'English Language Learners (ELL)'),
-        (3, 'Gifted and Talented'),
-        (4, 'International Baccalaureate'),
-        (5, 'Special Education'),
-        (6, 'Struggling Students'),
-        (7, 'Adult Education'),
-        (8, 'Continuing Education'),
-    ),
     'PEDAGOGICAL_PURPOSE_TYPE_CHOICES': (
         (1, 'apply'),
         (2, 'develop'),

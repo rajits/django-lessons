@@ -6,7 +6,7 @@ from django.contrib.contenttypes import generic
 from django.contrib.localflavor.us.us_states import STATE_CHOICES
 from django.utils.html import strip_tags
 
-from settings import (ASSESSMENT_TYPES, LEARNER_GROUP_TYPES, STANDARD_TYPES, 
+from settings import (ASSESSMENT_TYPES, STANDARD_TYPES,
                       PEDAGOGICAL_PURPOSE_TYPE_CHOICES, RELATION_MODELS, 
                       RELATIONS, CREDIT_MODEL, INTERNET_ACCESS_TYPES,
                       REPORTING_MODEL, KEY_IMAGE)
@@ -51,6 +51,12 @@ class TypeModel(models.Model):
 
 class GroupingType(TypeModel):
     pass
+
+class LearnerGroup(models.Model):
+    name = models.CharField(max_length=31)
+
+    def __unicode__(self):
+        return self.name
 
 class Material(models.Model):
     name = models.TextField()
@@ -149,7 +155,7 @@ Note that the text you input in this form serves as the default text. If you ind
     grades = models.ManyToManyField(Grade)
     id_number = models.CharField(max_length=10, help_text="This field is for the internal NG Education ID number. This is required for all instructional content.")
     is_modular = models.BooleanField(default=True, help_text="If unchecked, this field indicates that this activity should not appear as stand-alone outside of a lesson view.")
-    learner_group = models.SmallIntegerField(blank=True, null=True, choices=LEARNER_GROUP_TYPES)
+    learner_groups = models.ManyToManyField(LearnerGroup, blank=True, null=True)
     notes_on_readability_score = models.TextField(blank=True, null=True, help_text="Use this internal-use only field to record any details related to the readability of reading passages, such as those on handouts. Include Lexile score, grade-level equivalent, and any criteria used to determine why a higher score is acceptable (proper nouns, difficult vocabulary, etc.).")
     pedagogical_purpose_type = models.SmallIntegerField(blank=True, null=True, choices=PEDAGOGICAL_PURPOSE_TYPE_CHOICES)
     published = models.BooleanField()
