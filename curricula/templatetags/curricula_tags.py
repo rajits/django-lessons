@@ -8,7 +8,8 @@ register = template.Library()
 
 tabs = (
     ('Overview', 'Directions', 'Objectives', 'Background & Vocabulary', 'Credits, Sponsors, Partners'),
-    ('Global Metadata', 'Content Related Metadata', 'Time and Date Metadata', 'Publishing'),
+    ('Global Metadata', 'Content Related Metadata', 'Time and Date Metadata'),
+    ('Publishing',),
 )
 
 @register.filter(name='tab_num')
