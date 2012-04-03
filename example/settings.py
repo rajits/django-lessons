@@ -3,12 +3,14 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 import os, sys
+
+ROOT_PATH = os.path.dirname(os.path.realpath(__file__))
+
 APP = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-PROJ_ROOT = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(APP)
 
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+    ('Rajit K Sarkar', 'rsarkar@celerity.com'),
 )
 
 MANAGERS = ADMINS
@@ -39,15 +41,15 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.abspath(os.path.join('media'))
-#STATIC_ROOT = os.path.join(MEDIA_ROOT, 'static')
-#ADMIN_MEDIA_ROOT = os.path.join(STATIC_ROOT, 'admin_media')
+MEDIA_ROOT = os.path.join(ROOT_PATH, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
-STATIC_URL = '/media' + MEDIA_URL
+MEDIA_URL = '/media/'
+
+# required by django-concepts
+STATIC_URL = '/media/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -67,15 +69,18 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+  # 'django.contrib.messages.middleware.MessageMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
 ROOT_URLCONF = 'example.urls'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    "%s/%s/" % (ROOT_PATH, 'templates'),
+)
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.auth',
+    'django.core.context_processors.request',
 )
 
 INSTALLED_APPS = (
@@ -84,35 +89,71 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'lessons',
-    'tinymce', # this needs to be placed *after* lessons
+  # 'django.contrib.messages',
+  # 'south',
+    'tinymce',
+    'categories',
+    'categories.editor',
+    'concepts',
+    'edumetadata',
+  # 'reversion',
+  # 'publisher',
+    'curricula',
+    'audience',
+    'dummy',
 )
 
-TINYMCE_JS_URL = MEDIA_URL + 'js/tiny_mce/tiny_mce_src.js'
-TINYMCE_JS_ROOT = MEDIA_ROOT + '/js/tiny_mce'
+TINYMCE_JS_URL = "%sjs/tiny_mce/tiny_mce_src.js" % MEDIA_URL
+
 TINYMCE_DEFAULT_CONFIG = {
-    'plugins': "table,spellchecker,paste,searchreplace",
     'theme': "advanced",
-  # 'relative_urls': False,
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 10,
-  # 'language': "en",
-}
-TINYMCE_SPELLCHECKER = True
-TINYMCE_COMPRESSOR = True
-TINYMCE_ADMIN_FIELDS = {
-    'lessons.activity': ('description', 'subtitle_guiding_question', 'learning_objectives', 'background_information', 'prior_knowledge', 'accessibility_notes', 'directions'),
-    'lessons.lesson': ('description', 'assessment', 'learning_objectives', 'background_information'),
-    'lessons.tip': ('body',),
+    'plugins': "safari,spellchecker,pagebreak,advimage,advlink,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,directionality,fullscreen,noneditable,nonbreaking,xhtmlxtras",
+    'theme_advanced_buttons3_add': "|,spellchecker",
+    'theme_advanced_buttons1': "fullscreen,preview,code,print,spellchecker,|,cut,copy,paste,pastetext,pasteword,undo,redo,|,search,replace,|,rawmode",
+    'theme_advanced_buttons2': "formatselect,fontselect,fontsizeselect,insertfile,insertimage,|,bold,underline,italic,strikethrough,|,link,unlink,|,numlist,bullist,|,sub,sup,charmap,insertdate,inserttime,|,outdent,indent,|,justifyleft,justifycenter,justifyright,justifyfull,|,ltr,rtl,|,backcolor,forecolor,pagebreak",
+    'theme_advanced_buttons3': "",
+    'theme_advanced_disable' : 'cut,copy,paste,cite,abbr,acronym,fontselect,fontsizeselect,forecolor,backcolor,forecolorpicker,backcolorpicker,blockquote,del,ins',
+    'theme_advanced_toolbar_location': "top",
+    'theme_advanced_toolbar_align': "left",
+    'theme_advanced_statusbar_location': "bottom",
+    'theme_advanced_resizing' : "true",
+    'theme_advanced_resize_horizontal' : 1,
+    'theme_advanced_resizing_max_width' : "750",
+    'width' : "750",
+    'height': "250",
+    'entity_encoding' : 'raw',
 }
 
+TINYMCE_SPELLCHECKER = True
+TINYMCE_COMPRESSOR = False
+TINYMCE_FILEBROWSER = False
+
 LESSON_SETTINGS = {
-    'RELATION_MODELS': (),
-    'PEDAGOGICAL_PURPOSE_TYPE_CHOICES': (
-        ('A', 'apply'),
-        ('D', 'develop'),
-        ('E', 'engage'),
+    'RELATION_MODELS': (
+        'dummy.promo',
+      # 'lessons.activity', # for use as model student work, picture of practice
     ),
+    'ACTIVITY_FIELDS': (
+        ('resource_carousel', 'dummy.resourcecarousel'),
+        ('key_image', 'dummy.photo'),
+    ),
+    'REQUIRED_FIELDS': (
+        ('resource_carousel', 'dummy.resourcecarousel'),
+        ('key_image', 'dummy.photo'),
+    ),
+}
+
+CATEGORIES_SETTINGS = {
+    'FK_REGISTRY': { 'curricula.Lesson': (
+        {'name': 'primary_category', 'related_name': 'primary_cat', 'blank': True, 'null': True},
+    )},
+    'M2M_REGISTRY': { 'curricula.Lesson': (
+        {'name': 'secondary_categories', 'blank': True, 'null': True },
+    )}
+}
+
+CONCEPTS_SETTINGS = {
+    'WEIGHTS': ((0, 'Hide'), (10, 'Very Low'), (20, 'Low'), (30, 'Medium'), (40, 'High'), (50, ' Very High')),
 }
 
 try:
